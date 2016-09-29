@@ -7,25 +7,25 @@
  */
 #include "objeto_cartesiano.h"
 
-int ObjetoCartesiano::getX() {return x;}
-int ObjetoCartesiano::getY() {return y;}
-int ObjetoCartesiano::getZ() {return z;}
+float ObjetoCartesiano::getX() {return x;}
+float ObjetoCartesiano::getY() {return y;}
+float ObjetoCartesiano::getZ() {return z;}
 
 
-void ObjetoCartesiano::set_values(int _x, int _y, int _z){
+void ObjetoCartesiano::set_values(float _x, float _y, float _z){
 	x = _x;
 	y = _y;
 	z = _z;
 }
 
-void ObjetoCartesiano::set_X(int valor){
+void ObjetoCartesiano::set_X(float valor){
 	x = valor;
 }
 
-void ObjetoCartesiano::set_Y(int valor){
+void ObjetoCartesiano::set_Y(float valor){
 	y = valor;
 }
 
-void ObjetoCartesiano::set_Z(int valor){
+void ObjetoCartesiano::set_Z(float valor){
 	z = valor;
 }

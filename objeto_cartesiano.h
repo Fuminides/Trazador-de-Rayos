@@ -3,18 +3,18 @@
 
 class ObjetoCartesiano {
  	protected:
-	 	int x, y, z;
+	 	float x, y, z;
 
 	public:
-	 	void set_values(int, int, int);
+	 	void set_values(float, float, float);
 
-	 	void set_X(int);
-	 	void set_Y(int);
-	 	void set_Z(int);
+	 	void set_X(float);
+	 	void set_Y(float);
+	 	void set_Z(float);
 
-	 	int getX();
-	 	int getY();
-	 	int getZ();
+	 	float getX();
+	 	float getY();
+	 	float getZ();
 
 	 	virtual bool esVector() = 0; 
  };
