@@ -38,3 +38,32 @@ Vector productoVectorial(Vector v1, Vector v2){
 	return vR; 
 }
 
+Vector sumaVectores(Vector v1,Vector v2){
+	Vector vR;
+    vR.set_values(v1.getX()+v2.getX(),v1.getY()+v2.getY(),v1.getZ()+v2.getZ());
+    return vR;
+}
+
+Vector restaVectores(Vector v1,Vector v2){
+	Vector vR;
+    vR.set_values(v1.getX()-v2.getX(),v1.getY()-v2.getY(),v1.getZ()-v2.getZ());
+    return vR;
+}
+
+Vector restaPuntos(Punto p1,Punto p2){
+	Vector vR;
+    vR.set_values(p2.getX()-p1.getX(),p2.getY()-p1.getY(),p2.getZ()-p1.getZ());
+    return vR;
+}
+
+Vector valoxVector(Vector v,float alfa){
+	Vector vR;
+    vR.set_values(alfa*v.getX(),alfa*v.getY(),alfa*v.getZ());
+    return vR;
+}
+
+Punto sumaPuntoVector(Punto p,Vector v){
+	Punto p2;
+    p2.set_values(p.getX()+v.getX(),p.getY()+v.getY(),p.getZ()+v.getZ());
+    return p2;
+}

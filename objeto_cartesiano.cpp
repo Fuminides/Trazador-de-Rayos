@@ -1,6 +1,6 @@
 /**
  * Javier Fumanal Idocin 684229
- * Silvia Uson Fortanet
+ * Silvia Uson Fortanet 681721
  *
  * Clase que representa a cualquier elemento con x, y, z. Es decir, que
  * este definido por tres coordenadas cartesianas.
