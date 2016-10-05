@@ -5,6 +5,7 @@
 
  class Vector : public ObjetoCartesiano {
  public:
+ 	
  	bool esVector();
 
  	/**
