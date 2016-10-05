@@ -6,6 +6,16 @@
  class Vector : public ObjetoCartesiano {
  public:
  	bool esVector();
+
+ 	/**
+ 	 * Devuelve el modulo del vector.
+ 	 */
+	float modulo();
+
+	/**
+	 * Normaliza el vector
+	 */
+	void normalizar();
  };
 
  #endif

@@ -7,6 +7,7 @@ class ObjetoCartesiano {
 
 	public:
 	 	void set_values(float, float, float);
+	 	void set_values(float, float, float, float);
 
 	 	void set_X(float);
 	 	void set_Y(float);

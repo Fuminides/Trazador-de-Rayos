@@ -1,5 +1,15 @@
 #include "matriz.hpp"
 
+void Matriz::set_values(Vector _v1, Vector _v2, Vector _v3){
+	Vector vR;
+	vR.set_values(0.0,0.0,0.0,1.0);
+
+	vectores[0] = _v1;
+	vectores[1] = _v2;
+	vectores[2] = _v3;
+	vectores[3] = vR;
+}
+
 void Matriz::set_values(Vector _v1, Vector _v2, Vector _v3, Vector _v4){
 	vectores[0] = _v1;
 	vectores[1] = _v2;
@@ -48,4 +58,18 @@ void Matriz::setVector3(Vector v){
 
 void Matriz::setVector4(Vector v){
 	vectores[3] = v;
+}
+
+std::string Matriz::toString(){
+	std::string matriz ("");
+	int i,j;
+
+	for(i = 1; i < 5; i++){
+		for(j = 1; j < 5; j++){
+			matriz = matriz + std::to_string(get(j,i)) + " ";
+		}
+		matriz = matriz + '\n';
+	}
+
+	return matriz; 
 }

@@ -5,17 +5,53 @@
 #include "punto.hpp"
 #include "matriz.hpp"
 
-Matriz matrizPorVector(Matriz m, Vector v);
+/**
+ * Multiplica una matriz por columnas por un vector columna
+ */
+Vector matrizPorVector(Matriz m, Vector v);
+
+/**
+ * Multiplica una matriz por columnas por un punto
+ */
+Punto matrizPorPunto(Matriz m, Punto v);
+
+/**
+ * Multiplica dos vectores de forma matricial,
+ * es equivalente al producto escalar.
+ */
 float multiplicacionMatricial(Vector v1, Vector v2);
 float productoEscalar(Vector v1, Vector v2);
-float modulo(Vector v);
-Vector productoVectorial(Vector v1, Vector v2);
-Vector normalizar(Vector v);
+
+/**
+ * Operaciones basicas de vectores
+ */
 Vector sumaVectores(Vector v1,Vector v2);
 Vector restaVectores(Vector v1,Vector v2);
+
+/**
+ * Devuelve el vector que describe la direccion de la recta
+ * que delimitan dos puntos.
+ */
 Vector restaPuntos(Punto p1,Punto p2);
-Vector valoxVector(Vector v,float alfa);
+
+/**
+ * Devuelve el producto vectorial de dos vectores 3D.
+ */
+Vector productoVectorial(Vector v1, Vector v2);
+
+/**
+ * Multiplica un vector por un escalar
+ */
+Vector valorPorVector(Vector v,float alfa);
+
+/**
+ * Suma un vector a un punto (lo mismo que mover al punto en la direccion del vector).
+ */
 Punto sumaPuntoVector(Punto p,Vector v);
+
+/**
+ * Suma las coordenadas de dos puntos.
+ */
 Punto sumaPuntos(Punto p, Punto p2);
 
 #endif

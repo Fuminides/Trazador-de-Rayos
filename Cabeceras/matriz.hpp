@@ -2,6 +2,8 @@
 #define matriz_h_ 
 
 #include "vector.hpp"
+#include <string>
+
 
 class Matriz {
 
@@ -10,6 +12,7 @@ class Matriz {
 public:
 
 	void set_values(Vector _v1, Vector _v2, Vector _v3, Vector _v4);
+	void set_values(Vector _v1, Vector _v2, Vector _v3);
 
 	Vector getVector(int indice);
 	Vector getVector1();
@@ -24,6 +27,8 @@ public:
 	void setVector2(Vector v);
 	void setVector3(Vector v);
 	void setVector4(Vector v);
+
+	std::string toString();
 };
 
 #endif

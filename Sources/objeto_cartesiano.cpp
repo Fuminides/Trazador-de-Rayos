@@ -10,7 +10,7 @@
 float ObjetoCartesiano::getX() {return valores[0];}
 float ObjetoCartesiano::getY() {return valores[1];}
 float ObjetoCartesiano::getZ() {return valores[2];}
-float ObjetoCartesiano::getD() {return valores[2];}
+float ObjetoCartesiano::getD() {return valores[3];}
 
 
 
@@ -25,6 +25,13 @@ void ObjetoCartesiano::set_values(float _x, float _y, float _z){
 		valores[3] = 1;
 	}
 
+}
+
+void ObjetoCartesiano::set_values(float _x, float _y, float _z, float _d){
+	valores[0] = _x;
+	valores[1] = _y;
+	valores[2] = _z;
+	valores[3] = _d;
 }
 
 void ObjetoCartesiano::set_X(float valor){
