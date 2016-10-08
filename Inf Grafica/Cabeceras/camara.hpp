@@ -3,12 +3,17 @@
 
 #include "vector.hpp"
 #include "punto.hpp"
+#include "operadorVector.hpp"
 
 class Camara {
 
-	Punto posicion;
+	int resX, resY;
+	float distancia;
+	Punto posicion, plano;
 	Vector ejes[3];
 
+	void trazaRayos();
+	
 	public:
 
 		void set_values(Punto, Vector, Vector, Vector);
@@ -22,6 +27,8 @@ class Camara {
 		void setVY(Vector);
 		void setVZ(Vector);
 		void setPosicion(Punto);
+
+		void trazarRayos();
 
 		
 };
