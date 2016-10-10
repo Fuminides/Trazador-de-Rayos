@@ -27,8 +27,8 @@ void Camara::setPosicion(Punto p) { posicion = p; }
 void Camara::trazarRayos(){
 	int x, y;
 	Punto inicial, arriba, aux;
-	arriba = sumaPuntoVector(valorPorVector(ejes[2], (resolucionY / 2)));
-	inicial = sumaPuntoVector(arriba, valorPorVector(ejes[1], (resolucionX / 2)));
+	arriba = sumaPuntoVector(valorPorVector(ejes[2],(resY / 2)));
+	inicial = sumaPuntoVector(arriba, valorPorVector(ejes[1], (resX / 2)));
 	aux = inicial;
 	for ( x = 0; x < resX; x++ ){
 		for( y = 0; y < resY; y++ ){

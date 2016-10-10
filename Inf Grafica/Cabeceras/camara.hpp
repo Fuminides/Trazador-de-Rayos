@@ -16,8 +16,7 @@ class Camara {
 	
 	public:
 
-		void set_values(Punto, Vector, Vector, Vector);
-
+		void set_values(Punto, Vector, Vector, Vector,int resolucionX,int resolucionY, float _distancia);
 		Vector getVX();
 		Vector getVY();
 		Vector getVZ();
