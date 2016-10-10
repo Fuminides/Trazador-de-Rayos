@@ -1,5 +1,5 @@
 #include "camara.hpp"
-
+#include "operadorEscena.hpp"
 void Camara::set_values(Punto p, Vector v1, Vector v2, Vector v3, int resolucionX,
 	int resolucionY, float _distancia){
 	distancia = _distancia;
@@ -21,8 +21,18 @@ void Camara::setVX(Vector v) { ejes[0] = v; }
 void Camara::setVY(Vector v) { ejes[1] = v; }
 void Camara::setVZ(Vector v) { ejes[2] = v; }
 
+
 Punto Camara::getPosicion() { return posicion; }
 void Camara::setPosicion(Punto p) { posicion = p; }
+/*
+ * Crea el rayo con origen en el punto p
+ */
+Rayo Camara::trazaRayo(Punto p){
+            Rayo r;
+            r.setOrigen(p);
+            r.setDistancia(1);
+            return r;
+}
 
 void Camara::trazarRayos(){
 	int x, y;
@@ -32,7 +42,8 @@ void Camara::trazarRayos(){
 	aux = inicial;
 	for ( x = 0; x < resX; x++ ){
 		for( y = 0; y < resY; y++ ){
-			trazarRayo(aux);
+            //Añadir el rayo a la escena , si es necesario.
+            Rayo r=trazaRayo(aux);            
 			aux = sumaPuntoVector(aux, valorPorVector(ejes[1], -1));
 		}
 

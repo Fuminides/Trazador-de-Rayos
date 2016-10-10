@@ -3,6 +3,7 @@
 
 #include "vector.hpp"
 #include "punto.hpp"
+#include "rayo.hpp"
 #include "operadorVector.hpp"
 
 class Camara {
@@ -12,7 +13,7 @@ class Camara {
 	Punto posicion, plano;
 	Vector ejes[3];
 
-	void trazaRayos();
+	Rayo trazaRayo(Punto p);
 	
 	public:
 
