@@ -5,6 +5,7 @@
 #include "vector.hpp"
 #include "operadorVector.hpp"
 #include "matriz.hpp"
+#include "camara.hpp"
 
 using namespace std;
 
@@ -39,4 +40,14 @@ int main(int argc, char ** argv){
     cout << m.toString() << '\n';
     v6 = matrizPorVector(m, v6);
     cout << "v6 por matriz: (" << v6.getX() << ", " << v6.getY() << ", " << v6.getZ() << ")" << '\n';
+    Punto p;
+    Camara c;
+    Vector u1, u2, u3;
+
+    p.set_values(0,0,0);
+    u1.set_values(1.0,0,0);
+    u2.set_values(0,1.0,0);
+    u3.set_values(0,0,1.0);
+    c.set_values(p, u1, u2, u3, 16, 9, 10);
+    c.trazarRayos();
 }

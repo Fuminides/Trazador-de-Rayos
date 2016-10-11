@@ -22,13 +22,16 @@ void Camara::setVY(Vector v) { ejes[1] = v; }
 void Camara::setVZ(Vector v) { ejes[2] = v; }
 
 Punto Camara::getPosicion() { return posicion; }
-void Camara::setPosicion(Punto p) { posicion = p; }
+void Camara::setPosicion(Punto p) { 
+	posicion = p; 
+	plano = sumaPuntoVector(posicion, valorPorVector(ejes[0], distancia));
+}
 
 void Camara::trazarRayos(){
 	int x, y;
 	Punto inicial, arriba, aux;
-	arriba = sumaPuntoVector(valorPorVector(ejes[2], (resolucionY / 2)));
-	inicial = sumaPuntoVector(arriba, valorPorVector(ejes[1], (resolucionX / 2)));
+	arriba = sumaPuntoVector(plano, valorPorVector(ejes[1], (resY / 2)));
+	inicial = sumaPuntoVector(arriba, valorPorVector(ejes[2], (resX / 2)));
 	aux = inicial;
 	for ( x = 0; x < resX; x++ ){
 		for( y = 0; y < resY; y++ ){
@@ -39,5 +42,9 @@ void Camara::trazarRayos(){
 		inicial = sumaPuntoVector(inicial, valorPorVector(ejes[2], -1));
 		aux = inicial;
 	}
+}
+
+void Camara::trazarRayo(Punto p){
+	std::cout << "Trazo rayo por el punto: ( " << p.getX() << ", " << p.getY() << ", " << p.getZ() << ")" << '\n';  
 }
 

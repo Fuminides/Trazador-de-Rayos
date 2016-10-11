@@ -4,6 +4,7 @@
 #include "vector.hpp"
 #include "punto.hpp"
 #include "operadorVector.hpp"
+#include <iostream>
 
 class Camara {
 
@@ -12,11 +13,11 @@ class Camara {
 	Punto posicion, plano;
 	Vector ejes[3];
 
-	void trazaRayos();
+	void trazarRayo(Punto);
 	
 	public:
 
-		void set_values(Punto, Vector, Vector, Vector);
+		void set_values(Punto, Vector, Vector, Vector, int, int, float);
 
 		Vector getVX();
 		Vector getVY();
