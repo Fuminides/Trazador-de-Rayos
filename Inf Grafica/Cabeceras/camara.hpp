@@ -3,8 +3,12 @@
 
 #include "vector.hpp"
 #include "punto.hpp"
+#include "rayo.hpp"
 #include "operadorVector.hpp"
+#include "operadorEscena.hpp"
+
 #include <iostream>
+#include <list>
 
 class Camara {
 
@@ -12,8 +16,9 @@ class Camara {
 	float distancia;
 	Punto posicion, plano;
 	Vector ejes[3];
+	
 
-	void trazarRayo(Punto);
+	Rayo trazarRayo(Punto p);
 	
 	public:
 
@@ -29,7 +34,7 @@ class Camara {
 		void setVZ(Vector);
 		void setPosicion(Punto);
 
-		void trazarRayos();
+		std::list<Rayo> trazarRayos();
 
 		
 };

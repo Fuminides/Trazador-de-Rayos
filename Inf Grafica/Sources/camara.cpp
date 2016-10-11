@@ -1,5 +1,6 @@
 #include "camara.hpp"
 
+
 void Camara::set_values(Punto p, Vector v1, Vector v2, Vector v3, int resolucionX,
 	int resolucionY, float _distancia){
 	distancia = _distancia;
@@ -21,30 +22,45 @@ void Camara::setVX(Vector v) { ejes[0] = v; }
 void Camara::setVY(Vector v) { ejes[1] = v; }
 void Camara::setVZ(Vector v) { ejes[2] = v; }
 
+
 Punto Camara::getPosicion() { return posicion; }
+
 void Camara::setPosicion(Punto p) { 
 	posicion = p; 
 	plano = sumaPuntoVector(posicion, valorPorVector(ejes[0], distancia));
 }
 
-void Camara::trazarRayos(){
+
+std::list<Rayo> Camara::trazarRayos(){
 	int x, y;
 	Punto inicial, arriba, aux;
+	std::list<Rayo> rayos;
+
 	arriba = sumaPuntoVector(plano, valorPorVector(ejes[1], (resY / 2)));
 	inicial = sumaPuntoVector(arriba, valorPorVector(ejes[2], (resX / 2)));
 	aux = inicial;
 	for ( x = 0; x < resX; x++ ){
 		for( y = 0; y < resY; y++ ){
-			trazarRayo(aux);
+
+            //Añadir el rayo a la escena , si es necesario.
+            Rayo r=trazarRayo(aux);
+            rayos.push_front(r);
+
 			aux = sumaPuntoVector(aux, valorPorVector(ejes[1], -1));
 		}
 
 		inicial = sumaPuntoVector(inicial, valorPorVector(ejes[2], -1));
 		aux = inicial;
 	}
+
+	return rayos;
 }
 
-void Camara::trazarRayo(Punto p){
-	std::cout << "Trazo rayo por el punto: ( " << p.getX() << ", " << p.getY() << ", " << p.getZ() << ")" << '\n';  
+Rayo Camara::trazarRayo(Punto p){
+	Vector dir = restaPuntos(p, posicion);
+	Rayo r;
+	r.set_values(posicion, dir);
+	return r;
+	//std::cout << "Trazo rayo por el punto: ( " << p.getX() << ", " << p.getY() << ", " << p.getZ() << ")" << '\n';  
 }
 
