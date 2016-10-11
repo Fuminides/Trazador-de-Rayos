@@ -1,14 +1,11 @@
 #include "operadorEscena.hpp"
-#include "rayo.hpp"
-#include "esfera.hpp"
-#include <vector>
-#include <stdio.h>
-#include <math.h>
+
 /*
  * Devuelve la distancia a la que un Rayo r intercepta a una esfera f, -1 en caso de que no 
  * la intercepte
  */
 float operadorEscena::interseccionRayoEsfera(Rayo r,Esfera a){
+
     //Estos calculos no estan bien , pero es por tener la idea hecha.
     float O=r.getOrigen().getX()+r.getOrigen().getY()+r.getOrigen().getZ();
     float C=a.getOrigen().getX()+a.getOrigen().getY()+a.getOrigen().getZ();

@@ -1,8 +1,12 @@
 #ifndef OPERADORESCENA_H
 #define OPERADORESCENA_H
+
 #include "rayo.hpp"
 #include "esfera.hpp"
 #include <vector>
+#include <stdio.h>
+#include <math.h>
+
 class operadorEscena
 {
 private:
