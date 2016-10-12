@@ -29,6 +29,9 @@ class Camara {
 		Vector getVZ();
 		Punto getPosicion();
 
+		int getResx();
+		int getResY();
+
 		void setVX(Vector);
 		void setVY(Vector);
 		void setVZ(Vector);

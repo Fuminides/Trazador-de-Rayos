@@ -32,3 +32,11 @@
     float Esfera::superficie(){
         return radio * radio * M_PI;
     }
+
+    void Esfera::setColor(Color c){
+        color = c;
+    }
+
+    Color Esfera::getColor(){
+        return color;
+    }

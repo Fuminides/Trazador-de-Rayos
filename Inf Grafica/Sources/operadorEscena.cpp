@@ -33,6 +33,78 @@ float operadorEscena::interseccionRayoEsfera(Rayo r,Esfera a){
     }
     
 }
+
+/*
+ * Añade una esfera al array de esferas de la escena
+ */
+void operadorEscena::anyadirEsfera(Esfera f){
+    esferas.push_back(f);
+    esferas.resize(esferas.size()+1);
+}
+
+/*
+ * Devuelve el numero de esferas que hay en la escena
+ */
+int operadorEscena::tamEsferas(){
+    return esferas.size();
+}
+
+/**
+ * Traza rayos por la pantalla y detecta
+ * que esferas han interceptado.
+ */
+void operadorEscena::dibujar(){
+    int distancia, min = -1;
+    Esfera choque;
+    std::list<Rayo> rayos = camara.trazarRayos();
+    std::vector<Color> a;
+    a.reserve(camara.getResX() * camara.getResY());
+
+    for ( Rayo rayo : rayos){
+        for ( Esfera esfera : esferas){
+            distancia = interseccionRayoEsfera(rayo, esfera);
+
+            if ( distancia >= 0 ){
+                if ( min == -1){
+                    min = distancia;
+                    choque = esfera;
+                }
+                else if (distancia < min){
+                    min = distancia;
+                    choque =esfera;
+                }
+            }
+        }
+        if ( min != -1){
+            a.push_back(choque.getColor());
+            min = -1;
+        }
+    }
+
+    //Habria que pintar el color de la esfera
+}
+
+void setCamara(Camara c){
+    camara = c;
+}
+
+//DEPRECATED
+/*
+ * Devuelve el numero de rayos que hay en la escena
+ */
+int operadorEscena::tamRayos(){
+    return rayos.size();
+    
+}
+
+/*
+ * Añade un rayo al array de rayos de la escena
+ */
+void operadorEscena::anyadirRayo(Rayo r){
+    rayos.push_back(r);
+    rayos.resize(rayos.size()+1);
+}
+
 /*
  * Devuelve la distancia de la esfera mas cercana con la que intercepta un rayo r
  */
@@ -49,31 +121,4 @@ float operadorEscena::intersecciones(Rayo r){
     }
     return menor;
     
-}
-/*
- * Añade un rayo al array de rayos de la escena
- */
-void operadorEscena::anyadirRayo(Rayo r){
-    rayos.push_back(r);
-    rayos.resize(rayos.size()+1);
-}
-/*
- * Añade una esfera al array de esferas de la escena
- */
-void operadorEscena::anyadirEsfera(Esfera f){
-    esferas.push_back(f);
-    esferas.resize(esferas.size()+1);
-}
-/*
- * Devuelve el numero de rayos que hay en la escena
- */
-int operadorEscena::tamRayos(){
-    return rayos.size();
-    
-}
-/*
- * Devuelve el numero de esferas que hay en la escena
- */
-int operadorEscena::tamEsferas(){
-    return esferas.size();
 }

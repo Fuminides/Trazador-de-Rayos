@@ -7,13 +7,16 @@
      private:    
          float radio;
          Punto origen;
+         Color color;
      public:
-        
+        void setColor(Color);
         float getRadio();
         void setRadio(float r);
         float superficie();
         Punto getOrigen();
         void setOrigen(float x, float y,float z);
+
+        Color getColor();
  };
 
  #endif

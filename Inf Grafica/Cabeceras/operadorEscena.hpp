@@ -3,16 +3,25 @@
 
 #include "rayo.hpp"
 #include "esfera.hpp"
+#include "camara.hpp"
 #include <vector>
+#include <list>
 #include <stdio.h>
 #include <math.h>
 
 class operadorEscena
 {
 private:
-     std :: vector < Esfera > esferas;
-     std :: vector < Rayo > rayos;
+
+    Camara camara;
+    std :: vector < Esfera > esferas;
+    std :: vector < Rayo > rayos;
 public:
+
+    /**
+     * Incluye una camara nueva en la escena
+     */
+    void setCamara(Camara); 
     /*
      * Devuelve la distancia a la que un Rayo r intercepta a una esfera f, -1 en caso de que no 
      * la intercepte

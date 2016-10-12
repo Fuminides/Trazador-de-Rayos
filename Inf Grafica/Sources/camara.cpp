@@ -18,6 +18,9 @@ Vector Camara::getVX() { return ejes[0]; }
 Vector Camara::getVY() { return ejes[1]; }
 Vector Camara::getVZ() { return ejes[2]; }
 
+int Camara::getResX() { return resX; }
+int Camara::getResY() { return resY; }
+
 void Camara::setVX(Vector v) { ejes[0] = v; }
 void Camara::setVY(Vector v) { ejes[1] = v; }
 void Camara::setVZ(Vector v) { ejes[2] = v; }
