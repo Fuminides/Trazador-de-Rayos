@@ -5,7 +5,6 @@
 #include "punto.hpp"
 #include "rayo.hpp"
 #include "operadorVector.hpp"
-#include "operadorEscena.hpp"
 
 #include <iostream>
 #include <list>
@@ -29,7 +28,7 @@ class Camara {
 		Vector getVZ();
 		Punto getPosicion();
 
-		int getResx();
+		int getResX();
 		int getResY();
 
 		void setVX(Vector);

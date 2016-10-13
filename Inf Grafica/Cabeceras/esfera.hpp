@@ -1,7 +1,8 @@
 #ifndef esfera_h_
 #define esfera_h_
-#include "punto.hpp"
 
+#include "punto.hpp"
+#include "color.hpp"
 
  class Esfera {
      private:    

@@ -4,10 +4,14 @@
 #include "rayo.hpp"
 #include "esfera.hpp"
 #include "camara.hpp"
+
 #include <vector>
+#include <string>
 #include <list>
 #include <stdio.h>
 #include <math.h>
+#include <iostream>
+#include <fstream>
 
 class operadorEscena
 {
@@ -47,6 +51,8 @@ public:
      * Devuelve el numero de esferas que hay en la escena
      */
     int tamRayos();
+
+    void dibujar();
 
 };
 

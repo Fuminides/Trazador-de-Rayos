@@ -54,11 +54,11 @@ int operadorEscena::tamEsferas(){
  * que esferas han interceptado.
  */
 void operadorEscena::dibujar(){
-    int distancia, min = -1;
+    int distancia, min = -1, filas = 0;
     Esfera choque;
     std::list<Rayo> rayos = camara.trazarRayos();
-    std::vector<Color> a;
-    a.reserve(camara.getResX() * camara.getResY());
+    std::vector<Color> pixels;
+    pixels.reserve(camara.getResX() * camara.getResY());
 
     for ( Rayo rayo : rayos){
         for ( Esfera esfera : esferas){
@@ -76,15 +76,30 @@ void operadorEscena::dibujar(){
             }
         }
         if ( min != -1){
-            a.push_back(choque.getColor());
+            pixels.push_back(choque.getColor());
             min = -1;
         }
     }
 
     //Habria que pintar el color de la esfera
+   int fila = camara.getResX(),
+    columna = camara.getResY();
+    std::ofstream myfile;
+    myfile.open ("example.ppm");
+    myfile << "P6 " << std::to_string(fila) << " " << std::to_string(columna) << " 255\n";
+    for ( Color color : pixels){
+        myfile << color.splash();
+        filas++;
+        if ( filas == fila ){
+            filas = 0;
+            myfile << "\n";
+        }
+    }
+
+    myfile.close();
 }
 
-void setCamara(Camara c){
+void operadorEscena::setCamara(Camara c){
     camara = c;
 }
 
