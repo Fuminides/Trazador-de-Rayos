@@ -40,7 +40,7 @@ std::list<Rayo> Camara::trazarRayos(){
 	std::list<Rayo> rayos;
 
 	arriba = sumaPuntoVector(plano, valorPorVector(ejes[1], (resY / 2)));
-	inicial = sumaPuntoVector(arriba, valorPorVector(ejes[2], (resX / 2)));
+	inicial = sumaPuntoVector(arriba, -1 * valorPorVector(ejes[2], (resX / 2)));
 	aux = inicial;
 	for ( x = 0; x < resX; x++ ){
 		for( y = 0; y < resY; y++ ){
@@ -49,7 +49,7 @@ std::list<Rayo> Camara::trazarRayos(){
             Rayo r=trazarRayo(aux);
             rayos.push_front(r);
 
-			aux = sumaPuntoVector(aux, valorPorVector(ejes[1], -1));
+			aux = sumaPuntoVector(aux, valorPorVector(ejes[1], 1));
 		}
 
 		inicial = sumaPuntoVector(inicial, valorPorVector(ejes[2], -1));

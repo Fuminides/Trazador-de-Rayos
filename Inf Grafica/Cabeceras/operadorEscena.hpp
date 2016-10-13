@@ -15,6 +15,7 @@
 
 class operadorEscena
 {
+    
 private:
 
     Camara camara;
