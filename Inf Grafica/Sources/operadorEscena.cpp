@@ -54,8 +54,11 @@ int operadorEscena::tamEsferas(){
  * que esferas han interceptado.
  */
 void operadorEscena::dibujar(){
+    Color defecto;
     int distancia, min = -1, filas = 0;
     Esfera choque;
+
+    defecto.set_values(0,0,255);
     std::list<Rayo> rayos = camara.trazarRayos();
     std::vector<Color> pixels;
     pixels.reserve(camara.getResX() * camara.getResY());
@@ -79,6 +82,9 @@ void operadorEscena::dibujar(){
             pixels.push_back(choque.getColor());
             min = -1;
         }
+        else{
+            pixels.push_back(defecto);
+        }
     }
 
     //Habria que pintar el color de la esfera
@@ -88,12 +94,9 @@ void operadorEscena::dibujar(){
     myfile.open ("example.ppm");
     myfile << "P6 " << std::to_string(fila) << " " << std::to_string(columna) << " 255\n";
     for ( Color color : pixels){
-        myfile << color.splash();
-        filas++;
-        if ( filas == fila ){
-            filas = 0;
-            myfile << "\n";
-        }
+        myfile << color.splashR();
+        myfile << color.splashG();
+        myfile << color.splashB();
     }
 
     myfile.close();

@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include "objeto_cartesiano.hpp"
+#include "operadorEscena.hpp"
 #include "punto.hpp"
 #include "vector.hpp"
 #include "operadorVector.hpp"
@@ -10,7 +11,7 @@
 using namespace std;
 
 int main(int argc, char ** argv){
-	Punto punto;
+	/*Punto punto;
 	punto.set_values(1,2,3);
     Punto punto1;
 	punto1.set_values(4,5,6);
@@ -49,5 +50,30 @@ int main(int argc, char ** argv){
     u2.set_values(0,1.0,0);
     u3.set_values(0,0,1.0);
     c.set_values(p, u1, u2, u3, 16, 9, 10);
-    c.trazarRayos();
+    c.trazarRayos();*/
+
+    operadorEscena escena;
+    Camara camara;
+    Punto origenCamara;
+    Vector vc1, vc2, vc3;
+    Esfera esfera;
+    Color rojo;
+
+    rojo.set_values(100, 0, 0);
+
+    origenCamara.set_values(0,0,0);
+    vc1.set_values(1,0,0);
+    vc2.set_values(0,1,0);
+    vc3.set_values(0,0,1);
+
+    esfera.setOrigen(70, 0 , 0);
+    esfera.setColor(rojo);
+    esfera.setRadio(50);
+
+    camara.set_values(origenCamara, vc1, vc2, vc3, 160* 2, 90 * 2, 50);
+
+    //escena.anyadirEsfera(esfera);
+    escena.setCamara(camara);
+
+    escena.dibujar();
 }

@@ -4,11 +4,13 @@
 #include <string>
 
 class Color {
-	int red, green, blue;
+	unsigned char red, green, blue;
 
 	public:
 		void set_values(int,int,int);
-		std::string splash();
+		unsigned char splashR();
+		unsigned char splashG();
+		unsigned char splashB();
 };
 
 #endif
