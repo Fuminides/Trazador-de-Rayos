@@ -42,17 +42,17 @@ std::list<Rayo> Camara::trazarRayos(){
 	arriba = sumaPuntoVector(plano, valorPorVector(ejes[1], (resY / 2)));
 	inicial = sumaPuntoVector(arriba, valorPorVector(ejes[2],  -1 * (resX / 2)));
 	aux = inicial;
-	for ( x = 0; x < resX; x++ ){
-		for( y = 0; y < resY; y++ ){
-
+	for ( x = 0; x < resY; x++ ){
+		for( y = 0; y < resX; y++ ){
+			//std::cout << "Inicio : " << std::to_string(aux.getX()) <<", "<<std::to_string(aux.getY())<<", "<<std::to_string(aux.getZ()) << '\n';
             //Añadir el rayo a la escena , si es necesario.
             Rayo r=trazarRayo(aux);
-            rayos.push_front(r);
+            rayos.push_back(r);
 
-			aux = sumaPuntoVector(aux, valorPorVector(ejes[1], 1));
+			aux = sumaPuntoVector(aux, valorPorVector(ejes[2], 1));
 		}
 
-		inicial = sumaPuntoVector(inicial, valorPorVector(ejes[2], -1));
+		inicial = sumaPuntoVector(inicial, valorPorVector(ejes[1], -1));
 		aux = inicial;
 	}
 
@@ -60,10 +60,13 @@ std::list<Rayo> Camara::trazarRayos(){
 }
 
 Rayo Camara::trazarRayo(Punto p){
+	//std::cout << "Rest : " << std::to_string(p.getX()) <<", "<<std::to_string(p.getY())<<", "<<std::to_string(p.getZ()) << '\n';
+	//std::cout << "Org : " << std::to_string(posicion.getX()) <<", "<<std::to_string(posicion.getY())<<", "<<std::to_string(posicion.getZ()) << '\n';
 	Vector dir = restaPuntos(p, posicion);
+	//std::cout << "Rayo : " << std::to_string(dir.getX()) <<", "<<std::to_string(dir.getY())<<", "<<std::to_string(dir.getZ()) << '\n';
+	//dir.normalizar();
 	Rayo r;
 	r.set_values(posicion, dir);
 	return r;
-	//std::cout << "Trazo rayo por el punto: ( " << p.getX() << ", " << p.getY() << ", " << p.getZ() << ")" << '\n';  
 }
 

@@ -61,19 +61,19 @@ int main(int argc, char ** argv){
 
     rojo.set_values(100, 0, 0);
 
-    origenCamara.set_values(0,0,0);
+    origenCamara.set_values(1,0,0);
     vc1.set_values(1,0,0);
     vc2.set_values(0,1,0);
     vc3.set_values(0,0,1);
 
     esfera.setOrigen(70, 0 , 0);
     esfera.setColor(rojo);
-    esfera.setRadio(50);
+    esfera.setRadio(0);
 
-    camara.set_values(origenCamara, vc1, vc2, vc3, 160* 2, 90 * 2, 50);
+    camara.set_values(origenCamara, vc1, vc2, vc3, 16* 100, 9 * 100, 50);
 
-    //escena.anyadirEsfera(esfera);
+    escena.anyadirEsfera(esfera);
     escena.setCamara(camara);
-
     escena.dibujar();
+
 }

@@ -37,7 +37,7 @@ Vector restaVectores(Vector v1,Vector v2){
 
 Vector restaPuntos(Punto p1,Punto p2){
 	Vector vR;
-    vR.set_values(p2.getX()-p1.getX(),p2.getY()-p1.getY(),p2.getZ()-p1.getZ());
+    vR.set_values(p1.getX()-p2.getX(), p1.getY()-p2.getY(), p1.getZ()-p2.getZ());
     return vR;
 }
 
