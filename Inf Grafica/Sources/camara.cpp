@@ -33,6 +33,8 @@ void Camara::setPosicion(Punto p) {
 	plano = sumaPuntoVector(posicion, valorPorVector(ejes[0], distancia));
 }
 
+float Camara::getDistancia(){ return distancia; }
+
 
 std::list<Rayo> Camara::trazarRayos(){
 	int x, y;
@@ -64,7 +66,7 @@ Rayo Camara::trazarRayo(Punto p){
 	//std::cout << "Org : " << std::to_string(posicion.getX()) <<", "<<std::to_string(posicion.getY())<<", "<<std::to_string(posicion.getZ()) << '\n';
 	Vector dir = restaPuntos(p, posicion);
 	//std::cout << "Rayo : " << std::to_string(dir.getX()) <<", "<<std::to_string(dir.getY())<<", "<<std::to_string(dir.getZ()) << '\n';
-	//dir.normalizar();
+	dir.normalizar();
 	Rayo r;
 	r.set_values(posicion, dir);
 	return r;

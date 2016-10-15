@@ -21,6 +21,10 @@ private:
     Camara camara;
     std :: vector < Esfera > esferas;
     std :: vector < Rayo > rayos;
+
+    float puntoPorVector(Punto p1, Vector p2);
+    float puntoPorPunto(Punto p1, Punto p2);
+    
 public:
 
     /**
