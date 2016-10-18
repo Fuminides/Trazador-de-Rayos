@@ -25,11 +25,11 @@ int main(int argc, char ** argv){
     vc2.set_values(0,1,0);
     vc3.set_values(0,0,1);
 
-    esfera.setOrigen(15, 10, 30);
+    esfera.setOrigen(100, 10, 10);
     esfera.setColor(rojo);
-    esfera.setRadio(5);
+    esfera.setRadio(10);
 
-    camara.set_values(origenCamara, vc1, vc2, vc3, 16* 10, 9 * 10, 15);
+    camara.set_values(origenCamara, vc1, vc2, vc3, 4* 30, 4 * 30);
 
     escena.anyadirEsfera(esfera);
     escena.setCamara(camara);

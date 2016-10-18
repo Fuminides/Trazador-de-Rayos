@@ -2,8 +2,8 @@
 
 
 void Camara::set_values(Punto p, Vector v1, Vector v2, Vector v3, int resolucionX,
-	int resolucionY, float _distancia){
-	distancia = _distancia;
+	int resolucionY){
+	distancia = resolucionX / (2 * 0.5773);
 	resX = resolucionX;
 	resY = resolucionY;
 	posicion = p;
