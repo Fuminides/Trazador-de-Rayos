@@ -16,7 +16,15 @@ unsigned char Color::splashB(){
 	return  blue;
 }
 
-/*
-std::string Color::splash(){
-	return  std::to_string(red) + " " +  std::to_string(green) + " " +  std::to_string(blue) + " ";  
-}*/
+void Color::multiplicar(float k){
+	red = (unsigned char) (int) red * k;
+	green = (unsigned char) (int) green * k;
+	blue = (unsigned char) (int) blue * k;
+
+}
+
+void Color::sumar(Color c){
+	red = c.red;
+	green = c.green;
+	blue = c.blue;
+}

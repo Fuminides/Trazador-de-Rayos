@@ -4,6 +4,7 @@
 #include "vector.hpp"
 #include "punto.hpp"
 #include "matriz.hpp"
+#include "luz.hpp"
 
 /**
  * Multiplica una matriz por columnas por un vector columna

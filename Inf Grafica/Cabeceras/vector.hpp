@@ -4,6 +4,7 @@
 #include "objeto_cartesiano.hpp"
 
  class Vector : public ObjetoCartesiano {
+ 	
  public:
  	
  	bool esVector();

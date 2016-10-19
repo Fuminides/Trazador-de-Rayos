@@ -11,6 +11,10 @@ class Color {
 		unsigned char splashR();
 		unsigned char splashG();
 		unsigned char splashB();
+
+		void multiplicar(float k);
+		void sumar(Color); 
+
 };
 
 #endif
