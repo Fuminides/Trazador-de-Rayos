@@ -26,7 +26,7 @@ void operadorEscena::dibujar(){
         for ( Figura * figuraP : figuras){
             //std::cout << "Chequeando esfera..." << '\n';
             distancia = figuraP->intersectar(rayo);
-
+            //std::cout << "Distancia " << std::to_string(distancia) << '\n';
             if ( distancia >= 0 ){
                 if ( min == -1){
                     min = distancia;
@@ -41,13 +41,18 @@ void operadorEscena::dibujar(){
         if ( min != -1){
             Punto puntoRender, origenRayos = camara.getPosicion();
             Vector direccion = rayo.getVector();
-            puntoRender.set_values(origenRayos.getX() + direccion.getX() * distancia, origenRayos.getY() + direccion.getY() * distancia, 
-                origenRayos.getZ() + direccion.getZ() * distancia);
+            //std::cout << "Rayo : " << std::to_string(direccion.getX()) <<", "<<std::to_string(direccion.getY())<<", "<<std::to_string(direccion.getZ()) << '\n';
+            //std::cout << "Pto : " << std::to_string(origenRayos.getX()) <<", "<<std::to_string(origenRayos.getY())<<", "<<std::to_string(origenRayos.getZ()) << '\n';
+            //std::cout << "Dis: " << std::to_string(min) << '\n';
+            puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
+                origenRayos.getZ() + direccion.getZ() * min);
+            //std::cout << "Pto : " << std::to_string(puntoRender.getX()) <<", "<<std::to_string(puntoRender.getY())<<", "<<std::to_string(puntoRender.getZ()) << '\n';
             pixels.push_back(renderizar(puntoRender, choque));
             min = -1;
         }
         else{
             pixels.push_back(defecto);
+
         }
     }
 
@@ -76,28 +81,31 @@ void operadorEscena::anyadirLuz(Luz l){
 }
 
 Color operadorEscena::renderizar(Punto p, Figura * figura){
-    double distancia; bool libre = true;
+    double distancia; bool libre = true, debug = false;
     Color inicial = figura->getColor();
+    //if ( inicial.splashB() == 255 ){ std::cout << "Interesante\n"; debug = true; }
     inicial.multiplicar(0.4); 
     
 
     for ( Luz luz: luces){
+        //if ( debug ) { std::cout << "Vamos, luz\n"; }
         Vector dirLuz = restaPuntos(luz.getOrigen(), p);
         Rayo puntoDirLuz;
         puntoDirLuz.set_values(p, dirLuz);
 
         distancia = figura->intersectar(puntoDirLuz);
-        //std::cout << "Punto : " << std::to_string(p.getX()) << ", " << std::to_string(p.getY()) << ", " << std::to_string(p.getZ()) << 
+        //if ( debug )std::cout << "Punto : " << std::to_string(p.getX()) << ", " << std::to_string(p.getY()) << ", " << std::to_string(p.getZ()) << 
         //", Vector: "  << std::to_string(dirLuz.getX()) << ", " << std::to_string(dirLuz.getY()) << ", " << std::to_string(dirLuz.getZ()) << ", Distancia: " << std::to_string(distancia) << '\n';
 
         if ( distancia >= 0 ){
+            //if (debug ) std::cout << "Misterio..."  <<"\n";
             libre = false;
             //Luz indirecta en el mas cercano
         }
 
         if ( libre ){
             inicial.sumar(phong(figura, p, dirLuz,restaPuntos(camara.getPosicion(),p), luz)); 
-            std::cout << "Final: " << inicial.to_string() << "\n";
+            //std::cout << "Final: " << inicial.to_string() << "\n";
         }
         else{
             //std::cout << "No phong: " << inicial.to_string() << "\n";
@@ -119,7 +127,7 @@ Color operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista, 
     luz.normalizar();
     vista.normalizar();
 
-    std::cout << "Luz: " << colorLuz.to_string() << "\n";
+    //std::cout << "Luz: " << colorLuz.to_string() << "\n";
 
     normal = figura->normal(x);
     R = restaVectores(valorPorVector(normal, 2 * productoEscalar(luz, normal)), luz);

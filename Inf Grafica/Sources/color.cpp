@@ -27,11 +27,14 @@ void Color::multiplicar(double k){
 }
 
 void Color::sumar(Color c){
-	if ( red + c.red > 255) { std::cout << "Overflow rojo! "; red = 255; }
+	if ( red + c.red > 255) { //std::cout << "Overflow rojo! "; 
+	red = 255; }
 	else {red = red + c.red; }
-	if ( green +c.green > 255) { std::cout << "Overflow verde!"; green = 255;} 
+	if ( green +c.green > 255) { //std::cout << "Overflow verde!"; 
+	green = 255;} 
 	else { green = green + c.green; }
-	if ( blue + c.blue > 255) {std::cout << "Overflow azul! "; blue = 255; }
+	if ( blue + c.blue > 255) { //std::cout << "Overflow azul! "; 
+	blue = 255; }
 	else{ blue = blue + c.blue;}
 }
 

@@ -16,14 +16,14 @@ int main(int argc, char ** argv){
     Punto origenCamara, origenLuz, origenLuz2;
     Vector vc1, vc2, vc3;
     Esfera esfera, esfera2;
-    Color rojo, blanco, verde;
+    Color rojo, blanco, azul;
     Luz luz1, luz2;
 
 
 
     rojo.set_values(255, 0, 0);
     blanco.set_values(255, 255, 255);
-    verde.set_values(0,255, 255);
+    azul.set_values(0,0, 255);
 
     origenCamara.set_values(1,0,0);
     vc1.set_values(1,0,0);
@@ -34,18 +34,19 @@ int main(int argc, char ** argv){
     esfera.setColor(rojo);
     esfera.setRadio(10);
 
-    esfera2.setOrigen(80, 45, 15);
-    esfera2.setColor(verde);
+    esfera2.setOrigen(100, 10, -30);
+    esfera2.setColor(azul);
     esfera2.setRadio(10);
 
-    origenLuz.set_values(100, 0, -45);
+    origenLuz.set_values(100, 0, 0);
     luz1.set_values(origenLuz, blanco, 100);
 
-    origenLuz2.set_values(100, 50, -45);
-    luz2.set_values(origenLuz2, verde, 100);
+    origenLuz2.set_values(100, 10, 0);
+    luz2.set_values(origenLuz2, azul, 1000);
 
     camara.set_values(origenCamara, vc1, vc2, vc3, 4* 300, 4 * 300);
 
+    
     escena.anyadirFigura(&esfera2);
     escena.anyadirFigura(&esfera);
 
