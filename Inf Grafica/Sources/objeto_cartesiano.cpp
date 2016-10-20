@@ -7,14 +7,14 @@
  */
 #include "objeto_cartesiano.hpp"
 
-float ObjetoCartesiano::getX() {return valores[0];}
-float ObjetoCartesiano::getY() {return valores[1];}
-float ObjetoCartesiano::getZ() {return valores[2];}
-float ObjetoCartesiano::getD() {return valores[3];}
+double ObjetoCartesiano::getX() {return valores[0];}
+double ObjetoCartesiano::getY() {return valores[1];}
+double ObjetoCartesiano::getZ() {return valores[2];}
+double ObjetoCartesiano::getD() {return valores[3];}
 
 
 
-void ObjetoCartesiano::set_values(float _x, float _y, float _z){
+void ObjetoCartesiano::set_values(double _x, double _y, double _z){
 	valores[0] = _x;
 	valores[1] = _y;
 	valores[2] = _z;
@@ -27,25 +27,25 @@ void ObjetoCartesiano::set_values(float _x, float _y, float _z){
 
 }
 
-void ObjetoCartesiano::set_values(float _x, float _y, float _z, float _d){
+void ObjetoCartesiano::set_values(double _x, double _y, double _z, double _d){
 	valores[0] = _x;
 	valores[1] = _y;
 	valores[2] = _z;
 	valores[3] = _d;
 }
 
-void ObjetoCartesiano::set_X(float valor){
+void ObjetoCartesiano::set_X(double valor){
 	valores[0] = valor;
 }
 
-void ObjetoCartesiano::set_Y(float valor){
+void ObjetoCartesiano::set_Y(double valor){
 	valores[1] = valor;
 }
 
-void ObjetoCartesiano::set_Z(float valor){
+void ObjetoCartesiano::set_Z(double valor){
 	valores[2] = valor;
 }
 
-float ObjetoCartesiano::get(int indice){
+double ObjetoCartesiano::get(int indice){
 	return valores[indice-1];
 }

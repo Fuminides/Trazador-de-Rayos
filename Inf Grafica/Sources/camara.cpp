@@ -33,7 +33,7 @@ void Camara::setPosicion(Punto p) {
 	plano = sumaPuntoVector(posicion, valorPorVector(ejes[0], distancia));
 }
 
-float Camara::getDistancia(){ return distancia; }
+double Camara::getDistancia(){ return distancia; }
 
 
 std::list<Rayo> Camara::trazarRayos(){

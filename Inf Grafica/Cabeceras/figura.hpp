@@ -18,7 +18,7 @@ public:
 	void setColor(Color);
 	Color getColor();
 
-	virtual float intersectar(Rayo r) = 0;
+	virtual double intersectar(Rayo r) = 0;
 	virtual Vector normal(Punto) = 0;
 };
 

@@ -36,7 +36,7 @@ Vector Matriz::getVector(int num){
 	return vectores[num];
 }
 
-float Matriz::get(int x, int y){
+double Matriz::get(int x, int y){
 	return vectores[x - 1].get(y);
 }
 

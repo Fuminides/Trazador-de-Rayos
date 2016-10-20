@@ -24,7 +24,7 @@ void operadorEscena::dibujar(){
     for ( Rayo rayo : rayos){
         //std::cout << "Rayo : " << std::to_string(rayo.getVector().getX()) <<", "<<std::to_string(rayo.getVector().getY())<<", "<<std::to_string(rayo.getVector().getZ()) << '\n';
         for ( Figura * figuraP : figuras){
-            std::cout << "Lanzando rayo..." << '\n';
+            //std::cout << "Chequeando esfera..." << '\n';
             distancia = figuraP->intersectar(rayo);
 
             if ( distancia >= 0 ){
@@ -76,7 +76,7 @@ void operadorEscena::anyadirLuz(Luz l){
 }
 
 Color operadorEscena::renderizar(Punto p, Figura * figura){
-    float distancia; bool libre = true;
+    double distancia; bool libre = true;
     Color inicial = figura->getColor();
     inicial.multiplicar(0.4); 
     
@@ -86,15 +86,13 @@ Color operadorEscena::renderizar(Punto p, Figura * figura){
         Rayo puntoDirLuz;
         puntoDirLuz.set_values(p, dirLuz);
 
-        for ( Figura * figuraP : figuras){
-            distancia = figuraP->intersectar(puntoDirLuz);
-            std::cout << "Punto : " << std::to_string(p.getX()) << ", " << std::to_string(p.getY()) << ", " << std::to_string(p.getZ()) << 
-            ", Vector: "  << std::to_string(dirLuz.getX()) << ", " << std::to_string(dirLuz.getY()) << ", " << std::to_string(dirLuz.getZ()) << ", Distancia: " << std::to_string(distancia) << '\n';
+        distancia = figura->intersectar(puntoDirLuz);
+        //std::cout << "Punto : " << std::to_string(p.getX()) << ", " << std::to_string(p.getY()) << ", " << std::to_string(p.getZ()) << 
+        //", Vector: "  << std::to_string(dirLuz.getX()) << ", " << std::to_string(dirLuz.getY()) << ", " << std::to_string(dirLuz.getZ()) << ", Distancia: " << std::to_string(distancia) << '\n';
 
-            if ( distancia >= 0 ){
-                libre = false;
-                //Luz indirecta en el mas cercano
-            }
+        if ( distancia >= 0 ){
+            libre = false;
+            //Luz indirecta en el mas cercano
         }
 
         if ( libre ){
@@ -105,7 +103,6 @@ Color operadorEscena::renderizar(Punto p, Figura * figura){
             //std::cout << "No phong: " << inicial.to_string() << "\n";
         }
 
-        
     }
 
     return inicial;
@@ -113,11 +110,11 @@ Color operadorEscena::renderizar(Punto p, Figura * figura){
 
 Color operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista, Luz fuente){
     Vector normal, R;
-    float distancia = restaPuntos(x, fuente.getOrigen()).modulo();
+    double distancia = restaPuntos(x, fuente.getOrigen()).modulo();
     fuente.atenuar(distancia);
 
     Color base, colorLuz = fuente.getColor();
-    float kd = 0.4, La = 0.2, n = 5, ks = 0.5;
+    double kd = 0.4, La = 0.2, n = 5, ks = 0.5;
     base.set_values(0,0,0);
     luz.normalizar();
     vista.normalizar();

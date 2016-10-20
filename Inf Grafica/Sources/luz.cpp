@@ -4,8 +4,8 @@ Color Luz::getColor(){
 	return color;
 }
 
-void Luz::atenuar(float distancia){
-	float ajuste = (potencia * potencia) / (distancia * distancia);
+void Luz::atenuar(double distancia){
+	double ajuste = (potencia * potencia) / (distancia * distancia);
 	color.multiplicar(ajuste);
 }
 

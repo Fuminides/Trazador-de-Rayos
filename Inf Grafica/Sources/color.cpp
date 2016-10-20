@@ -16,7 +16,7 @@ unsigned char Color::splashB(){
 	return  blue;
 }
 
-void Color::multiplicar(float k){
+void Color::multiplicar(double k){
 	if ( red * k > 255 ) { red = 255; }
 	else { red = (unsigned char) (int) red * k; }
 	if ( green * k > 255 ) { green = 255; }

@@ -13,12 +13,11 @@ class Color {
 		unsigned char splashG();
 		unsigned char splashB();
 
-		void multiplicar(float k);
+		void multiplicar(double k);
 		void sumar(Color); 
 
 		std::string to_string();
 
-		void atenuar(float);
 
 };
 

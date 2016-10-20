@@ -3,22 +3,22 @@
 
 class ObjetoCartesiano {
  	protected:
-	 	float valores[4];
+	 	double valores[4];
 
 	public:
-	 	void set_values(float, float, float);
-	 	void set_values(float, float, float, float);
+	 	void set_values(double, double, double);
+	 	void set_values(double, double, double, double);
 
-	 	void set_X(float);
-	 	void set_Y(float);
-	 	void set_Z(float);
+	 	void set_X(double);
+	 	void set_Y(double);
+	 	void set_Z(double);
 
-	 	float getX();
-	 	float getY();
-	 	float getZ();
-	 	float getD();
+	 	double getX();
+	 	double getY();
+	 	double getZ();
+	 	double getD();
 
-	 	float get(int indice);
+	 	double get(int indice);
 
 	 	virtual bool esVector() = 0; 
  };

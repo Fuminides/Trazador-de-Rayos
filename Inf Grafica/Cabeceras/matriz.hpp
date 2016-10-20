@@ -20,7 +20,7 @@ public:
 	Vector getVector3();
 	Vector getVector4();
 
-	float get(int x, int y);
+	double get(int x, int y);
 
 	void setVector(int, Vector v);
 	void setVector1(Vector v);

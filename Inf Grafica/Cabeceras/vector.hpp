@@ -12,7 +12,7 @@
  	/**
  	 * Devuelve el modulo del vector.
  	 */
-	float modulo();
+	double modulo();
 
 	/**
 	 * Normaliza el vector

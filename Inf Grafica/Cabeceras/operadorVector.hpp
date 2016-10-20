@@ -20,8 +20,8 @@ Punto matrizPorPunto(Matriz m, Punto v);
  * Multiplica dos vectores de forma matricial,
  * es equivalente al producto escalar.
  */
-float multiplicacionMatricial(Vector v1, Vector v2);
-float productoEscalar(Vector v1, Vector v2);
+double multiplicacionMatricial(Vector v1, Vector v2);
+double productoEscalar(Vector v1, Vector v2);
 
 /**
  * Operaciones basicas de vectores
@@ -43,7 +43,7 @@ Vector productoVectorial(Vector v1, Vector v2);
 /**
  * Multiplica un vector por un escalar
  */
-Vector valorPorVector(Vector v,float alfa);
+Vector valorPorVector(Vector v,double alfa);
 
 /**
  * Suma un vector a un punto (lo mismo que mover al punto en la direccion del vector).

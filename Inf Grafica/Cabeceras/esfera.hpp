@@ -10,12 +10,12 @@
 
  class Esfera : public Figura{
 
-        float radio;
+        double radio;
         Punto origen;
         Color color;
 
-        float puntoPorPunto(Punto p1, Punto p2);
-        float puntoPorVector(Punto p1, Vector p2);
+        double puntoPorPunto(Punto p1, Punto p2);
+        double puntoPorVector(Punto p1, Vector p2);
 
      public:
         
@@ -23,19 +23,19 @@
          * Devuelve la distancia a la que un Rayo r intercepta a una esfera f, -1 en caso de que no 
          * la intercepte
          */
-        float intersectar(Rayo);
+        double intersectar(Rayo);
         /*
          * Devuelve el radio de la esfera
          */ 
-        float getRadio();
+        double getRadio();
         /*
          * Asigna un valor al radio 
          */
-        void setRadio(float r);
+        void setRadio(double r);
         /*
          * Devuelve la superficie de la esfera
          */
-        float superficie();
+        double superficie();
         /*
          * Devuelve el origen de la esfera en el plano
          */
@@ -43,7 +43,7 @@
         /*
          * Asigna el valor del origen de la esfera
          */
-        void setOrigen(float x, float y,float z);
+        void setOrigen(double x, double y,double z);
         /*
          * Devuelve la normal de la figura dado un punto
          */

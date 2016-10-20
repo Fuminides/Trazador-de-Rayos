@@ -12,7 +12,7 @@
 class Camara {
 
 	int resX, resY;
-	float distancia;
+	double distancia;
 	Punto posicion, plano;
 	Vector ejes[3];
 	
@@ -27,7 +27,7 @@ class Camara {
 		Vector getVY();
 		Vector getVZ();
 		Punto getPosicion();
-		float getDistancia();
+		double getDistancia();
 
 		int getResX();
 		int getResY();
