@@ -2,6 +2,7 @@
 #define COLOR_H_ 
 
 #include <string>
+#include <iostream>
 
 class Color {
 	unsigned char red, green, blue;
@@ -14,6 +15,10 @@ class Color {
 
 		void multiplicar(float k);
 		void sumar(Color); 
+
+		std::string to_string();
+
+		void atenuar(float);
 
 };
 

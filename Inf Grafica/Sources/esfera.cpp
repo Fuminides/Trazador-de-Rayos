@@ -51,8 +51,10 @@
         float raiz=(2*OD - 2*CD) * (2*OD - 2*CD) - 4*OO*(OO+CC-2*OC-(getRadio()*getRadio()));
 
         //std::cout << "CD: " << std::to_string(CD) << ", OD: " << std::to_string(OD) << '\n';
-
+        
         if (raiz<0){
+            //std::cout << "CD: " << std::to_string(CD) << ", OD: " << std::to_string(OD) << '\n';
+            std::cout << "Raiz: " << std::to_string(raiz) << '\n';
             return -1;
         }
         else{
@@ -60,13 +62,14 @@
             float p1=-(2*puntoPorVector(O, D) -2* puntoPorVector(C, D));
             float d1=(p1+raiz)/(2*OO);
             float d2=(p1-raiz)/(2*OO);
-            //std::cout << "Raiz, Distancias: " << std::to_string(raiz) << ", " << std::to_string(d1) << " y " << std::to_string(d2) << '\n';
-            if (d1 > 0 && d1<=d2){
+            std::cout << "Raiz, Distancias: " << std::to_string(raiz) << ", " << std::to_string(d1) << " y " << std::to_string(d2) << '\n';
+            if (d1 >= 0 && d1<=d2){
                return d1;
             }
-            else if(d2 > 0 && d2<d1){
+            else if(d2 >= 0 && d2<d1){
                 return d2; 
             }
+
             else{
                 return -1;
             }

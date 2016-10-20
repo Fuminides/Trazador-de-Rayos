@@ -7,12 +7,16 @@
 class Luz  {
 	Color color;
 	Punto origen;
+	float potencia;
 
 public:
-	void set_values(Punto, Color);
+	void set_values(Punto, Color, int);
 
 	Color getColor();
 	Punto getOrigen();
+
+	void atenuar(float);
+
 };
 
 #endif
