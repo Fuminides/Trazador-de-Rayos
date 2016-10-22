@@ -53,7 +53,13 @@ public:
     /**
      * Renderiza el color de un punto
      */
-    Color renderizar(Punto c, Figura * figura);
+    Color renderizar(Punto c, Figura * figura, int);
+
+    /**
+     * Define un rebote especular y lo calcula con numero rebotes de profundidad.
+     */
+    Color reboteEspecular(Figura * figura, Punto origen, Vector R, int numero);
+
 
 
 

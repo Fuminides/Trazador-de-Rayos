@@ -10,5 +10,19 @@ void Figura::setColor(Color c){
 
 int Figura::figuraId() { return idFigura; }
 
+double Figura::getReflejo(){
+	return reflejo;
+}
 
+double Figura::getRefraccion(){
+	return refraccion;
+}
+
+void Figura::setReflejo(double r){
+	reflejo = r;
+}
+
+void Figura::setRefraccion(double r){
+	refraccion = r;
+}
 

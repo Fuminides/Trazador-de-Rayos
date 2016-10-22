@@ -4,6 +4,10 @@ void Color::set_values(int rojo, int verde, int azul){
 	red = rojo;
 	green = verde;
 	blue = azul;
+
+	redD = rojo * 1.0;
+	greenD = verde * 1.0;
+	blueD = azul * 1.0;
 }
 
 unsigned char Color::splashR(){
@@ -17,25 +21,38 @@ unsigned char Color::splashB(){
 }
 
 void Color::multiplicar(double k){
-	if ( red * k > 255 ) { red = 255; }
-	else { red = (unsigned char) (int) red * k; }
-	if ( green * k > 255 ) { green = 255; }
-	else { green = (unsigned char) (int) green * k; }
-	if ( blue > 255 ) { blue = 255; }
-	else { blue = (unsigned char) (int) blue * k; }
+	redD = redD * k;
+	if ( redD > 255 ) red = 255, redD = 255.0;
+	else{
+		red = redD;
+		//std::cout << "Red: " << std::to_string(red) << " y con decimales " << std::to_string(redD) << '\n';
+	} 
+	
+	greenD = greenD * k;
+	if ( greenD > 255 ) green = 255, greenD = 255.0;
+	else{
+		green = greenD;
+		//std::cout << "Green: " << std::to_string(green) << " y con decimales " << std::to_string(greenD) << '\n';
+	} 
 
+	blueD = blueD * k;
+	if ( blueD > 255 ) blue = 255, blueD = 255.0;
+	else{
+		blue = blueD;
+		//std::cout << "Blue: " << std::to_string(blue) << " y con decimales " << std::to_string(blueD) << '\n';
+	}
 }
 
 void Color::sumar(Color c){
-	if ( red + c.red > 255) { //std::cout << "Overflow rojo! "; 
-	red = 255; }
-	else {red = red + c.red; }
+	if ( redD + c.red > 255) { //std::cout << "Overflow rojo! "; 
+	red = 255; redD = 255.0; }
+	else {red += c.red; redD += c.red;}
 	if ( green +c.green > 255) { //std::cout << "Overflow verde!"; 
-	green = 255;} 
-	else { green = green + c.green; }
+	green = 255; greenD = 255.0; } 
+	else { green += c.green; greenD += c.green; }
 	if ( blue + c.blue > 255) { //std::cout << "Overflow azul! "; 
-	blue = 255; }
-	else{ blue = blue + c.blue;}
+	blue = 255; blueD = 255.0;}
+	else{ blue += c.blue; blueD += c.blue; }
 }
 
 std::string Color::to_string(){
