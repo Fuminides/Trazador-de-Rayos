@@ -6,7 +6,7 @@
 
 class Color {
 	unsigned char red, green, blue;
-	double redD, greenD, blueD;
+	
 
 	public:
 		void set_values(int,int,int);

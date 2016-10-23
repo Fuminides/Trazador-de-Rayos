@@ -26,3 +26,5 @@ void Figura::setRefraccion(double r){
 	refraccion = r;
 }
 
+void Figura::setId(int id) { idFigura = id; }
+

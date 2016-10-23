@@ -16,6 +16,7 @@ protected:
 public:
 
 	int figuraId();
+	void setId(int);
 	void setColor(Color);
 	Color getColor();
 

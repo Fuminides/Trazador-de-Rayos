@@ -47,7 +47,7 @@ void operadorEscena::dibujar(){
             puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
                 origenRayos.getZ() + direccion.getZ() * min);
             //std::cout << "Pto : " << std::to_string(puntoRender.getX()) <<", "<<std::to_string(puntoRender.getY())<<", "<<std::to_string(puntoRender.getZ()) << '\n';
-            pixels.push_back(renderizar(puntoRender, choque, 4));
+            pixels.push_back(renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion()));
             min = -1;
         }
         else{
@@ -79,25 +79,45 @@ void operadorEscena::anyadirLuz(Luz l){
     luces.push_back(l);
 }
 
-Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes){
-    double distancia; bool libre = true, debug = false;
+Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Punto origenVista){
+    double distancia; bool libre, debug = true;
     Color inicial = figura->getColor();
-    //std::cout << "Principio phong: " << inicial.to_string() << "\n";
+    
     double kd = 0.4;
     inicial.multiplicar(kd); 
     Vector dirLuz;
     
     for ( Luz luz: luces){
+        libre = true;
         //if ( debug ) { std::cout << "Vamos, luz\n"; }
         Vector dirLuz = restaPuntos(luz.getOrigen(), p);
         Rayo puntoDirLuz;
+        double dLuz = dirLuz.modulo();
+        dirLuz.normalizar();
         puntoDirLuz.set_values(p, dirLuz);
 
-        distancia = figura->intersectar(puntoDirLuz);
-        //if ( debug )std::cout << "Punto : " << std::to_string(p.getX()) << ", " << std::to_string(p.getY()) << ", " << std::to_string(p.getZ()) << 
-        //", Vector: "  << std::to_string(dirLuz.getX()) << ", " << std::to_string(dirLuz.getY()) << ", " << std::to_string(dirLuz.getZ()) << ", Distancia: " << std::to_string(distancia) << '\n';
+        int min = -1;
 
-        if ( distancia >= 0 ){
+        for ( Figura * figuraP : figuras){
+            //std::cout << "Chequeando esfera..." << '\n';
+            distancia = figuraP->intersectar(puntoDirLuz);
+
+            //if ( figuraP->figuraId() == 2 ) std::cout << "Punto : " << std::to_string(p.getX()) << ", " << std::to_string(p.getY()) << ", " << std::to_string(p.getZ()) << 
+            //", Vector: "  << std::to_string(dirLuz.getX()) << ", " << std::to_string(dirLuz.getY()) << ", " << std::to_string(dirLuz.getZ()) << 
+            //"Distancia: " << std::to_string(distancia) << '\n';
+            if ( (distancia > 0) &&  (distancia < dLuz) ){
+                if ( min == -1){
+                    min = distancia;
+                    //choque = figuraP;
+                }
+                else if (distancia < min){
+                    min = distancia;
+                    //choque = figuraP;
+                }
+            }
+        }
+
+        if ( min > -1 ){
             //if (debug ) std::cout << "Misterio..."  <<"\n";
             libre = false;
             //Luz indirecta en el mas cercano
@@ -114,12 +134,15 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes){
                 Color auxC = reboteEspecular(figura, p, R, numeroRebotes);
                 auxC.multiplicar(figura->getReflejo());
                 inicial.sumar(auxC);
+
+                auxC = refraccionEspecular(figura, p, restaPuntos(origenVista, p), 1, 0.8, numeroRebotes);
+                auxC.multiplicar (figura->getRefraccion());
+                inicial.sumar(auxC);
             }
         }
         else{
             //std::cout << "No phong: " << inicial.to_string() << "\n";
         }
-
     }
 
    
@@ -195,9 +218,56 @@ Color operadorEscena::reboteEspecular(Figura * figura, Punto origen, Vector R, i
             puntoRender.set_values(origen.getX() + direccion.getX() * min, origen.getY() + direccion.getY() * min, 
                 origen.getZ() + direccion.getZ() * min);
             //std::cout << "Pto : " << std::to_string(puntoRender.getX()) <<", "<<std::to_string(puntoRender.getY())<<", "<<std::to_string(puntoRender.getZ()) << '\n';
-            return renderizar(puntoRender, choque, numero -1);
+            return renderizar(puntoRender, choque, numero -1, origen);
         }
         else{
             return defecto;
         }
+}
+
+Color operadorEscena::refraccionEspecular(Figura * figura, Punto origen, Vector vista, double n1, double n2, int numeroRebotes){
+    Vector normal = figura->normal(origen), refraccion = valorPorVector(normal, -1);
+    double sin1 = sqrt( 1 - pow(productoEscalar(normal, vista) / (normal.modulo() * vista.modulo()),2)), sin2, cos;
+    Rayo rebote;
+    Color defecto;
+    int distancia, min = -1; 
+    Figura * choque;
+
+    defecto.set_values(0,0,0);
+
+    sin2 = n1 * sin1 / n2; 
+    cos = sqrt(1 - pow(sin2,2));
+    refraccion = valorPorVector(refraccion, 1 / cos);
+
+    rebote.set_values(origen, refraccion);
+
+    for ( Figura * figuraP : figuras){
+        //std::cout << "Chequeando esfera..." << '\n';
+        distancia = figuraP->intersectar(rebote);
+        //std::cout << "Distancia " << std::to_string(distancia) << '\n';
+        if ( distancia >= 0 ){
+            if ( min == -1){
+                min = distancia;
+                choque = figuraP;
+            }
+            else if (distancia < min){
+                min = distancia;
+                choque = figuraP;
+            }
+        }
+    }
+
+    if ( min != -1){
+        Punto puntoRender;
+        //std::cout << "Rayo : " << std::to_string(direccion.getX()) <<", "<<std::to_string(direccion.getY())<<", "<<std::to_string(direccion.getZ()) << '\n';
+        //std::cout << "Pto : " << std::to_string(origenRayos.getX()) <<", "<<std::to_string(origenRayos.getY())<<", "<<std::to_string(origenRayos.getZ()) << '\n';
+        //std::cout << "Dis: " << std::to_string(min) << '\n';
+        puntoRender.set_values(origen.getX() + refraccion.getX() * min, origen.getY() + refraccion.getY() * min, 
+            origen.getZ() + refraccion.getZ() * min);
+        //std::cout << "Pto : " << std::to_string(puntoRender.getX()) <<", "<<std::to_string(puntoRender.getY())<<", "<<std::to_string(puntoRender.getZ()) << '\n';
+        return renderizar(puntoRender, choque, numeroRebotes -1, origen);
+    }
+    else{
+        return defecto;
+    }
 }

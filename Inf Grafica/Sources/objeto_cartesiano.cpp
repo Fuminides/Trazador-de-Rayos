@@ -49,3 +49,7 @@ void ObjetoCartesiano::set_Z(double valor){
 double ObjetoCartesiano::get(int indice){
 	return valores[indice-1];
 }
+
+std::string ObjetoCartesiano::to_string(){
+	return "X: " + std::to_string(valores[0]) +  ", Y: " +  std::to_string(valores[1]) + ", Z:" + std::to_string(valores[2]);
+}

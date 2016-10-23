@@ -39,6 +39,7 @@
     double Esfera::intersectar(Rayo r){
         Punto O= r.getOrigen();
         Vector D = r.getVector();
+        //D.normalizar();
         Punto C= getOrigen();
 
         double b = puntoPorVector(O, D);
@@ -52,9 +53,13 @@
 
         double aux = b * b - 4 * c;
 
+        
+
         if ( aux < 0.0 ){
             return -1;
-        } 
+        }
+
+        //std::cout << "Raiz: " << std::to_string(aux) << '\n'; 
 
         double t1 = 0.0 - b + sqrt(aux);
         t1 = t1 / 2.0;
@@ -73,40 +78,6 @@
         else{
             return -1.0;
         }
-        
-        /*
-        double OC= puntoPorPunto(O, C);
-        double OO= puntoPorPunto(O, O);
-        double CC= puntoPorPunto(C, C);
-        double OD = puntoPorVector(O, D);
-        double CD = puntoPorVector(C, D);
-
-        double raiz=(2*OD - 2*CD) * (2*OD - 2*CD) - 4*OO*(OO+CC-2*OC-(getRadio()*getRadio()));
-
-        //std::cout << "CD: " << std::to_string(CD) << ", OD: " << std::to_string(OD) << '\n';
-        
-        if (raiz<0){
-            //std::cout << "CD: " << std::to_string(CD) << ", OD: " << std::to_string(OD) << '\n';
-            std::cout << "Raiz: " << std::to_string(raiz) << '\n';
-            return -1;
-        }
-        else{
-            raiz=sqrt(raiz);
-            double p1=-(2*puntoPorVector(O, D) -2* puntoPorVector(C, D));
-            double d1=(p1+raiz)/(2*OO);
-            double d2=(p1-raiz)/(2*OO);
-            std::cout << "Raiz, Distancias: " << std::to_string(raiz) << ", " << std::to_string(d1) << " y " << std::to_string(d2) << '\n';
-            if (d1 >= 0 && d1<=d2){
-               return d1;
-            }
-            else if(d2 >= 0 && d2<d1){
-                return d2; 
-            }
-
-            else{
-                return -1;
-            }
-        }*/
         
 }
 

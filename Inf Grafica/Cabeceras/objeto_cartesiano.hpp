@@ -1,6 +1,8 @@
 #ifndef objeto_cartesiano_h_
 #define objeto_cartesiano_h_
 
+#include <string>
+
 class ObjetoCartesiano {
  	protected:
 	 	double valores[4];
@@ -21,6 +23,8 @@ class ObjetoCartesiano {
 	 	double get(int indice);
 
 	 	virtual bool esVector() = 0; 
+
+	 	std::string to_string();
  };
 
 #endif
