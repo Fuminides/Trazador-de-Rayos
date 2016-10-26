@@ -83,7 +83,7 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
     double distancia; bool libre, debug = true;
     Color inicial = figura->getColor();
     
-    double kd = 0.4;
+    double kd = AMBIENTE;
     inicial.multiplicar(kd); 
     Vector dirLuz;
     
@@ -160,7 +160,7 @@ Color operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista, 
     fuente.atenuar(distancia);
 
     Color base, colorLuz = fuente.getColor();
-    double kd = 0.4, La = 0.2, n = 5, ks = 0.5;
+    double kd = AMBIENTE, La = 0.2, n = 5, ks = 0.5;
     base.set_values(0,0,0);
     luz.normalizar();
     vista.normalizar();
@@ -173,9 +173,12 @@ Color operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista, 
     //base.multiplicar(kd); 
 
     //std::cout << base.to_string() << "\n";
+    double coefPhong = kd/M_PI  * productoEscalar(normal, luz) + ks * (n + 2)/(2*M_PI) * pow(productoEscalar(R, vista), n);
 
-    colorLuz.multiplicar(kd/M_PI  * productoEscalar(normal, luz) + ks * (n + 2)/(2*M_PI) * pow(productoEscalar(R, vista), n));
-    //std::cout << colorLuz.to_string() << "\n";
+    if ( coefPhong < 0) colorLuz.multiplicar(-coefPhong);
+    else colorLuz.multiplicar(coefPhong);
+
+    //std::cout << std::to_string(kd/M_PI  * productoEscalar(normal, luz) + ks * (n + 2)/(2*M_PI) * pow(productoEscalar(R, vista), n)) << "\n";
 
     base.sumar(colorLuz);
 

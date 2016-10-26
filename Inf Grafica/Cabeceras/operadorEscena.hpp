@@ -19,7 +19,8 @@ class operadorEscena
 private:
 
     Camara camara;
-    int NUMERO_REBOTES  = 1;
+    const int NUMERO_REBOTES  = 4;
+    const double AMBIENTE = 0.0;
     std :: vector < Figura * > figuras;
     std :: vector < Luz > luces;
 

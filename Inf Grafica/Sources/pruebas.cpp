@@ -37,12 +37,12 @@ int main(int argc, char ** argv){
     vc3.set_values(0,0,1);
 
     esfera.setOrigen(80, 10, -20);
-    esfera.setColor(rojo);
+    esfera.setColor(negro);
     esfera.setRadio(10);
     esfera.setId(cuenta());
-    esfera.setReflejo(0);
+    esfera.setReflejo(0.5);
 
-    esfera2.setOrigen(80, -20, 20);
+    esfera2.setOrigen(80, -20, -20);
     esfera2.setColor(verde);
     esfera2.setRadio(10);
     esfera2.setId(cuenta());
@@ -57,8 +57,8 @@ int main(int argc, char ** argv){
     origenLuz.set_values(80, 0, 20);
     luz1.set_values(origenLuz, blanco, 100);
 
-    origenLuz2.set_values(0, -20, -20);
-    luz2.set_values(origenLuz2, rojo, 100);
+    origenLuz2.set_values(30, 30, -20);
+    luz2.set_values(origenLuz2, blanco, 50);
 
     camara.set_values(origenCamara, vc1, vc2, vc3, 4* 200, 4 * 200);
 
@@ -69,7 +69,7 @@ int main(int argc, char ** argv){
 
     
     escena.anyadirLuz(luz1);   
-    //escena.anyadirLuz(luz2);
+    escena.anyadirLuz(luz2);
 
     escena.setCamara(camara);
     escena.dibujar();
