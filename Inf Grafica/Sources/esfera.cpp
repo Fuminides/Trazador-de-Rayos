@@ -66,13 +66,13 @@
         double t2 = 0.0 - b - sqrt(aux);
         t2 = t2 / 2.0;
 
-        if (t1 == t2 && t1>0.0){
+        if ( (t1 == t2) && (t1>0.0) && ( t1*t1 > 0.5 )){
             return t1;
         }
-        else if (t1>=0.0 && t2<0.0){
+        else if ( (t1>=0.0) && (t2<0.0) && ( t1*t1 > 0.5 )){
             return t1;
         }
-        else if( t1>=0.0 && t2>0.0){
+        else if( (t1>=0.0) && (t2>0.0) && ( t2*t2 > 0.5 )){
             return t2;
         }
         else{

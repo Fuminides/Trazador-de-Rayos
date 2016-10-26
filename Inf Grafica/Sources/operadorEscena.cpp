@@ -135,9 +135,9 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                 auxC.multiplicar(figura->getReflejo());
                 inicial.sumar(auxC);
 
-                auxC = refraccionEspecular(figura, p, restaPuntos(origenVista, p), 1, 0.8, numeroRebotes);
-                auxC.multiplicar (figura->getRefraccion());
-                inicial.sumar(auxC);
+                //auxC = refraccionEspecular(figura, p, restaPuntos(origenVista, p), 1, 0.8, numeroRebotes);
+                //auxC.multiplicar (figura->getRefraccion());
+                //inicial.sumar(auxC);
             }
         }
         else{

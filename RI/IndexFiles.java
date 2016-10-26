@@ -21,6 +21,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.DoubleField;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Store;
 import org.apache.lucene.document.LongField;
@@ -35,7 +36,8 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
+import org.apache.lucene.search.NumericRangeQuery;
+import org.apache.lucene.search.BooleanQuery;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -97,7 +99,7 @@ public class IndexFiles {
       System.out.println("Indexing to directory '" + indexPath + "'...");
 
       Directory dir = FSDirectory.open(new File(indexPath));
-      Analyzer analyzer = new SpanishAnalyzer(Version.LUCENE_44);
+      Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_44);
       IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_44, analyzer);
 
       if (create) {
@@ -152,8 +154,8 @@ public class IndexFiles {
     	  titulo = titulo + " " + lista.item(i).getFirstChild().getNodeValue();
       }
       
-      System.out.println(titulo);
-      doc.add(new TextField("titulo", titulo, Store.YES));
+      //System.out.println(titulo);
+      doc.add(new TextField("title", titulo, Store.YES));
   }
   
   private static void indexIdentifier(org.w3c.dom.Document parseador,Document doc){
@@ -163,9 +165,55 @@ public class IndexFiles {
       for(int i = 0; i<lista.getLength(); i++){
     	  id = id + " " + lista.item(i).getFirstChild().getNodeValue();
       }
-      System.out.println(id);
+      //System.out.println(id);
       doc.add(new StringField("identifier", id, Store.YES));
   }
+  
+  private static void indexLeft(org.w3c.dom.Document parseador,Document doc){
+	  NodeList lista = parseador.getElementsByTagName("ows:LowerCorner");
+      String id = "";
+      
+      for(int i = 0; i<lista.getLength(); i++){
+    	  id = id + " " + lista.item(i).getFirstChild().getNodeValue();
+      }
+      System.out.println("Dime: " + id);
+      if (! id.equals("") ) {doc.add(new DoubleField("west", Double.parseDouble(id.split(" ")[1]), Store.YES));}
+  }
+  
+  private static void indexLower(org.w3c.dom.Document parseador,Document doc){
+	  NodeList lista = parseador.getElementsByTagName("ows:LowerCorner");
+      String id = "";
+      
+      for(int i = 0; i<lista.getLength(); i++){
+    	  id = id + " " + lista.item(i).getFirstChild().getNodeValue();
+    	 
+      }
+      System.out.println(id);
+      if (! id.equals("") )  doc.add(new DoubleField("south", Double.parseDouble(id.split(" ")[2]), Store.YES));
+  }
+  
+  private static void indexRight(org.w3c.dom.Document parseador,Document doc){
+	  NodeList lista = parseador.getElementsByTagName("ows:UpperCorner");
+      String id = "";
+      
+      for(int i = 0; i<lista.getLength(); i++){
+    	  id = id + " " + lista.item(i).getFirstChild().getNodeValue();
+      }
+      System.out.println(id);
+      if (! id.equals("") )  doc.add(new DoubleField("east", Double.parseDouble(id.split(" ")[1]), Store.YES));
+  }
+  
+  private static void indexUpper(org.w3c.dom.Document parseador,Document doc){
+	  NodeList lista = parseador.getElementsByTagName("ows:UpperCorner");
+      String id = "";
+      
+      for(int i = 0; i<lista.getLength(); i++){
+    	  id = id + " " + lista.item(i).getFirstChild().getNodeValue();
+      }
+      System.out.println(id);
+      if (! id.equals("") ){ doc.add(new DoubleField("north", Double.parseDouble(id.split(" ")[2]), Store.YES));}
+  }
+  
   private static void indexFormat(org.w3c.dom.Document parseador,Document doc){
 	  NodeList lista = parseador.getElementsByTagName("dc:format");
       String f = "";
@@ -173,7 +221,7 @@ public class IndexFiles {
       for(int i = 0; i<lista.getLength(); i++){
     	  f = f + " " + lista.item(i).getFirstChild().getNodeValue();
       }
-      System.out.println(f);
+      //System.out.println(f);
       doc.add(new StringField("format", f, Store.YES));
   }
   private static void indexType(org.w3c.dom.Document parseador,Document doc){
@@ -183,7 +231,7 @@ public class IndexFiles {
       for(int i = 0; i<lista.getLength(); i++){
     	  tipo = tipo + " " + lista.item(i).getFirstChild().getNodeValue();
       }
-      System.out.println(tipo);
+      // System.out.println(tipo);
       doc.add(new StringField("type", tipo, Store.YES));
   }
   private static void indexCreator(org.w3c.dom.Document parseador,Document doc){
@@ -193,7 +241,7 @@ public class IndexFiles {
       for(int i = 0; i<lista.getLength(); i++){
     	  cre = cre + " " + lista.item(i).getFirstChild().getNodeValue();
       }
-      System.out.println(cre);
+      //System.out.println(cre);
       doc.add(new TextField("creator", cre, Store.YES));
   }
    private static void  indexDescription(org.w3c.dom.Document parseador,Document doc){
@@ -207,7 +255,7 @@ public class IndexFiles {
         		  System.out.println("Acceso a puntero nulo");
         	  }
       }
-      System.out.println(desc);
+      // System.out.println(desc);
       doc.add(new TextField("description", desc, Store.YES));  
   }
  
@@ -218,7 +266,7 @@ public class IndexFiles {
       for(int i = 0; i<lista.getLength(); i++){
     	  pub = pub + " " + lista.item(i).getFirstChild().getNodeValue();
       }
-      System.out.println(pub);
+      // System.out.println(pub);
       doc.add(new TextField("publisher", pub, Store.YES));
   }
  
@@ -233,7 +281,7 @@ public class IndexFiles {
     		  System.out.println("Acceso a puntero nulo");
     	  }
       }
-      System.out.println(l);
+      // System.out.println(l);
       doc.add(new StringField("language", l, Store.YES));
   }
   private static void indexSubject(org.w3c.dom.Document parseador,Document doc){
@@ -248,7 +296,7 @@ public class IndexFiles {
 		   }
 	   }
 	  
-	   System.out.println("Sujeto: " + subject);
+	   // System.out.println("Sujeto: " + subject);
 	   doc.add(new TextField("subject", subject, Store.YES));
 }
   
@@ -269,7 +317,7 @@ public class IndexFiles {
  * @throws ParserConfigurationException 
  * @throws SAXException 
    */
-  static void indexDocs(IndexWriter writer, File file)
+  private static void indexDocs(IndexWriter writer, File file)
     throws IOException, ParserConfigurationException, SAXException {
     // do not try to index files that cannot be read
     if (file.canRead()) {
@@ -293,7 +341,7 @@ public class IndexFiles {
         }
 
         try {
-        	//AÃ±adido para la creacion de indices
+        	//Añadido para la creacion de indices
         	DocumentBuilderFactory xmlParserF = DocumentBuilderFactory.newInstance();
         	DocumentBuilder xmlParser = xmlParserF.newDocumentBuilder();
         	org.w3c.dom.Document parseador = xmlParser.parse(file);
@@ -321,7 +369,7 @@ public class IndexFiles {
           // If that's not the case searching for special characters will fail.
           //doc.add(new TextField("contents", new BufferedReader(new InputStreamReader(fis, "UTF-8"))));
 
-          //AÃ±adimos la creacion de los indices
+          //Añadimos la creacion de los indices
          
           indexTitle(parseador,doc);
           indexIdentifier(parseador,doc);
@@ -332,6 +380,11 @@ public class IndexFiles {
           indexLanguage(parseador,doc);
           indexDescription(parseador,doc);
           indexPublisher(parseador,doc);
+          
+          indexLeft(parseador, doc);
+          indexRight(parseador, doc);
+          indexLower(parseador, doc);
+          indexUpper(parseador, doc);
           
           
          
