@@ -19,7 +19,7 @@ void operadorEscena::dibujar(){
     defecto.set_values(0,0,0);
     std::list<Rayo> rayos = camara.trazarRayos();
     std::vector<Color> pixels;
-    pixels.reserve(camara.getResX() * camara.getResY());
+    pixels.reserve(camara.getPixels());
 
     for ( Rayo rayo : rayos){
         //std::cout << "Rayo : " << std::to_string(rayo.getVector().getX()) <<", "<<std::to_string(rayo.getVector().getY())<<", "<<std::to_string(rayo.getVector().getZ()) << '\n';
@@ -56,11 +56,17 @@ void operadorEscena::dibujar(){
     }
 
     //Habria que pintar el color de la figura
-   int fila = camara.getResX(),
-    columna = camara.getResY();
+    double areaPixel = (camara.getResX() * camara.getResY()) *1.0/ (camara.getPixels()*1.0);
+    
+    int fila = camara.getResX() / areaPixel,
+        columna = camara.getResY() / areaPixel,
+        nPixels = camara.getPixels();
+    
     std::ofstream myfile;
     myfile.open ("example.ppm");
-    myfile << "P6 " << std::to_string(fila) << " " << std::to_string(columna) << " 255\n";
+    myfile << "P6 " << std::to_string(fila) << " " << std::to_string((int) (columna)) << " 255\n";
+    std::cout << "P6 " << std::to_string(fila) << " " << std::to_string((int) (columna) ) << " 255\n";
+
     for ( Color color : pixels){
         //if ( (color.splashR() != 0) ) std::cout << "\nColor escrito: " << color.to_string();
         myfile << color.splashR();

@@ -7,6 +7,9 @@
 #include "operadorVector.hpp"
 #include "matriz.hpp"
 #include "camara.hpp"
+#include "plano.hpp"
+
+#include <math.h>
 
 using namespace std;
 
@@ -17,11 +20,12 @@ int cuenta();
 int main(int argc, char ** argv){
     operadorEscena escena;
     Camara camara;
-    Punto origenCamara, origenLuz, origenLuz2;
-    Vector vc1, vc2, vc3;
+    Plano plano;
+    Punto origenCamara, origenLuz, origenLuz2, origenLuz3, origenPlano;
+    Vector vc1, vc2, vc3, normalPlano;
     Esfera esfera, esfera2, esfera3;
     Color rojo, blanco, azul, negro, verde;
-    Luz luz1, luz2;
+    Luz luz1, luz2, luz3;
 
 
 
@@ -40,7 +44,7 @@ int main(int argc, char ** argv){
     esfera.setColor(azul);
     esfera.setRadio(10);
     esfera.setId(cuenta());
-    esfera.setReflejo(0.6);
+    esfera.setReflejo(0);
 
     esfera2.setOrigen(30, -20, -20);
     esfera2.setColor(verde);
@@ -48,11 +52,17 @@ int main(int argc, char ** argv){
     esfera2.setId(cuenta());
     esfera2.setReflejo(0.0);
 
-    esfera3.setOrigen(10, 30, 30);
+    esfera3.setOrigen(100, 0, 0);
     esfera3.setColor(azul);
-    esfera3.setRadio(10);
-    esfera3.setReflejo(0.2);
+    esfera3.setRadio(30);
+    esfera3.setReflejo(0.5);
     esfera3.setId(cuenta());
+
+    origenPlano.set_values(200, -30, -30);
+    normalPlano.set_values(-1,0,0);
+    plano.set_values(origenPlano, normalPlano, vc3, 100, vc2, 100);
+    plano.setColor(blanco);
+    plano.setReflejo(0.0);
 
     origenLuz.set_values(0, 0, 0);
     luz1.set_values(origenLuz, rojo, 200);
@@ -60,16 +70,22 @@ int main(int argc, char ** argv){
     origenLuz2.set_values(30, 30, -20);
     luz2.set_values(origenLuz2, azul, 50);
 
-    camara.set_values(origenCamara, vc1, vc2, vc3, 4* 200, 4 * 200);
+    origenLuz3.set_values(10, 50, 100);
+    luz3.set_values(origenLuz2, verde, 150);
+
+    camara.set_values(origenCamara, vc1, vc2, vc3, 10* 100, 10 * 100,  pow(10* 100,2) );
 
     
     escena.anyadirFigura(&esfera2);
     escena.anyadirFigura(&esfera);
     escena.anyadirFigura(&esfera3);
+    escena.anyadirFigura(&plano);
 
     
     escena.anyadirLuz(luz1);   
     escena.anyadirLuz(luz2);
+    escena.anyadirLuz(luz3);
+
 
     escena.setCamara(camara);
     escena.dibujar();

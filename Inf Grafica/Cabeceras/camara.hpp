@@ -11,7 +11,7 @@
 
 class Camara {
 
-	int resX, resY;
+	int resX, resY, pixels;
 	double distancia;
 	Punto posicion, plano;
 	Vector ejes[3];
@@ -21,7 +21,7 @@ class Camara {
 	
 	public:
 
-		void set_values(Punto, Vector, Vector, Vector, int, int);
+		void set_values(Punto, Vector, Vector, Vector, int, int, int);
 
 		Vector getVX();
 		Vector getVY();
@@ -31,6 +31,7 @@ class Camara {
 
 		int getResX();
 		int getResY();
+		int getPixels();
 
 		void setVX(Vector);
 		void setVY(Vector);

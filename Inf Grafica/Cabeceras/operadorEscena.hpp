@@ -20,7 +20,7 @@ private:
 
     Camara camara;
     const int NUMERO_REBOTES  = 4;
-    const double AMBIENTE = 0.0;
+    const double AMBIENTE = 0.1;
     std :: vector < Figura * > figuras;
     std :: vector < Luz > luces;
 

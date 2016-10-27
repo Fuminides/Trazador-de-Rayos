@@ -2,7 +2,7 @@
 
 
 void Camara::set_values(Punto p, Vector v1, Vector v2, Vector v3, int resolucionX,
-	int resolucionY){
+	int resolucionY, int numPixels){
 	distancia = resolucionX / (2 * 0.5773);
 	resX = resolucionX;
 	resY = resolucionY;
@@ -10,6 +10,8 @@ void Camara::set_values(Punto p, Vector v1, Vector v2, Vector v3, int resolucion
 	ejes[0] = v1;
 	ejes[1] = v2;
 	ejes[2] = v3;
+
+	pixels = numPixels;
 
 	plano = sumaPuntoVector(posicion, valorPorVector(v1, distancia));
 }
@@ -20,6 +22,7 @@ Vector Camara::getVZ() { return ejes[2]; }
 
 int Camara::getResX() { return resX; }
 int Camara::getResY() { return resY; }
+int Camara::getPixels() { return pixels; }
 
 void Camara::setVX(Vector v) { ejes[0] = v; }
 void Camara::setVY(Vector v) { ejes[1] = v; }
@@ -37,24 +40,37 @@ double Camara::getDistancia(){ return distancia; }
 
 
 std::list<Rayo> Camara::trazarRayos(){
-	int x, y;
+	int x, y, filas, columnas;
+	double areaPixel;
 	Punto inicial, arriba, aux;
 	std::list<Rayo> rayos;
 
-	arriba = sumaPuntoVector(plano, valorPorVector(ejes[1], (resY / 2)));
-	inicial = sumaPuntoVector(arriba, valorPorVector(ejes[2],  -1 * (resX / 2)));
+	areaPixel =  (resX * resY)*1.0 / (pixels*1.0);
+	//filas = pixFila;
+	//pixColumna = resY / pixFila;
+	//pixFila = pixFila / resY; 
+	
+	std::cout << "Area por pixel: " << std::to_string(areaPixel) <<'\n';
+	arriba = sumaPuntoVector( sumaPuntoVector(plano, valorPorVector(ejes[1], (resY / 2))), valorPorVector(ejes[1], -areaPixel/2));
+	inicial = sumaPuntoVector(sumaPuntoVector(arriba, valorPorVector(ejes[2],  -1 * (resX / 2))), valorPorVector(ejes[2], -areaPixel/2));
 	aux = inicial;
-	for ( x = 0; x < resY; x++ ){
-		for( y = 0; y < resX; y++ ){
-			//std::cout << "Inicio : " << std::to_string(aux.getX()) <<", "<<std::to_string(aux.getY())<<", "<<std::to_string(aux.getZ()) << '\n';
+
+	filas = resX / areaPixel;
+	columnas = resY / areaPixel;
+
+	std::cout << "Filas : " << std::to_string(filas) <<", Columnas: "<< std::to_string(columnas) << '\n';
+
+	for ( x = 0; x < filas; x++ ){
+		for( y = 0; y < columnas; y++ ){
+			
             //Añadir el rayo a la escena , si es necesario.
             Rayo r=trazarRayo(aux);
             rayos.push_back(r);
 
-			aux = sumaPuntoVector(aux, valorPorVector(ejes[2], 1));
+			aux = sumaPuntoVector(aux, valorPorVector(ejes[2], areaPixel));
 		}
 
-		inicial = sumaPuntoVector(inicial, valorPorVector(ejes[1], -1));
+		inicial = sumaPuntoVector(inicial, valorPorVector(ejes[1], -areaPixel));
 		aux = inicial;
 	}
 
