@@ -19,7 +19,7 @@ void operadorEscena::dibujar(){
     defecto.set_values(0,0,0);
     std::list<Rayo> rayos = camara.trazarRayos();
     std::vector<Color> pixels;
-    pixels.reserve(camara.getResX() * camara.getResY());
+    pixels.reserve(camara.getPixels());
 
     for ( Rayo rayo : rayos){
         //std::cout << "Rayo : " << std::to_string(rayo.getVector().getX()) <<", "<<std::to_string(rayo.getVector().getY())<<", "<<std::to_string(rayo.getVector().getZ()) << '\n';
@@ -56,11 +56,17 @@ void operadorEscena::dibujar(){
     }
 
     //Habria que pintar el color de la figura
-   int fila = camara.getResX(),
-    columna = camara.getResY();
+    double areaPixel = (camara.getResX() * camara.getResY()) *1.0/ (camara.getPixels()*1.0);
+    
+    int fila = camara.getResX() / areaPixel,
+        columna = camara.getResY() / areaPixel,
+        nPixels = camara.getPixels();
+    
     std::ofstream myfile;
     myfile.open ("example.ppm");
-    myfile << "P6 " << std::to_string(fila) << " " << std::to_string(columna) << " 255\n";
+    myfile << "P6 " << std::to_string(fila) << " " << std::to_string((int) (columna)) << " 255\n";
+    std::cout << "P6 " << std::to_string(fila) << " " << std::to_string((int) (columna) ) << " 255\n";
+
     for ( Color color : pixels){
         //if ( (color.splashR() != 0) ) std::cout << "\nColor escrito: " << color.to_string();
         myfile << color.splashR();
@@ -83,7 +89,7 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
     double distancia; bool libre, debug = true;
     Color inicial = figura->getColor();
     
-    double kd = 0.4;
+    double kd = AMBIENTE;
     inicial.multiplicar(kd); 
     Vector dirLuz;
     
@@ -135,9 +141,9 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                 auxC.multiplicar(figura->getReflejo());
                 inicial.sumar(auxC);
 
-                auxC = refraccionEspecular(figura, p, restaPuntos(origenVista, p), 1, 0.8, numeroRebotes);
-                auxC.multiplicar (figura->getRefraccion());
-                inicial.sumar(auxC);
+                //auxC = refraccionEspecular(figura, p, restaPuntos(origenVista, p), 1, 0.8, numeroRebotes);
+                //auxC.multiplicar (figura->getRefraccion());
+                //inicial.sumar(auxC);
             }
         }
         else{
@@ -160,7 +166,7 @@ Color operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista, 
     fuente.atenuar(distancia);
 
     Color base, colorLuz = fuente.getColor();
-    double kd = 0.4, La = 0.2, n = 5, ks = 0.5;
+    double kd = AMBIENTE, La = 0.2, n = 5, ks = 0.5;
     base.set_values(0,0,0);
     luz.normalizar();
     vista.normalizar();
@@ -173,9 +179,12 @@ Color operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista, 
     //base.multiplicar(kd); 
 
     //std::cout << base.to_string() << "\n";
+    double coefPhong = kd/M_PI  * productoEscalar(normal, luz) + ks * (n + 2)/(2*M_PI) * pow(productoEscalar(R, vista), n);
 
-    colorLuz.multiplicar(kd/M_PI  * productoEscalar(normal, luz) + ks * (n + 2)/(2*M_PI) * pow(productoEscalar(R, vista), n));
-    //std::cout << colorLuz.to_string() << "\n";
+    if ( coefPhong < 0) colorLuz.multiplicar(-coefPhong);
+    else colorLuz.multiplicar(coefPhong);
+
+    //std::cout << std::to_string(kd/M_PI  * productoEscalar(normal, luz) + ks * (n + 2)/(2*M_PI) * pow(productoEscalar(R, vista), n)) << "\n";
 
     base.sumar(colorLuz);
 
