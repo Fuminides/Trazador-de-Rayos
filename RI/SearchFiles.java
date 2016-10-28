@@ -122,7 +122,6 @@ public class SearchFiles {
       
       Query query;
       System.out.println("Searching for: " + line);
-<<<<<<< HEAD
       ArrayList<Integer> resultSpatial = new ArrayList<Integer>();
       ArrayList<Integer> resultNoSpatial = new ArrayList<Integer>();
       while(!line.isEmpty()){
@@ -208,44 +207,6 @@ public class SearchFiles {
 	    	  }
 	    	  line="";
 	      }    
-=======
-      
-      if ( line.contains("spatial")) { 
-	  	int cSpatial = line.lastIndexOf("spatial", 0);
-	  	int finSpatial = line.substring(cSpatial).indexOf(" ");
-	  	String spatial = line.substring(cSpatial, finSpatial);
-	  
-	    String[] coordenadas = spatial.substring(spatial.indexOf(":")+1).split(",");
-	  
-  		double west = Double.parseDouble(coordenadas[0]),
-  		east = Double.parseDouble(coordenadas[1]),
-  		south = Double.parseDouble(coordenadas[2]),
-  		north = Double.parseDouble(coordenadas[3]);
-  		
-  		BooleanQuery spatialQuery = new BooleanQuery();
-  		NumericRangeQuery<Double> wRQ = NumericRangeQuery.newDoubleRange("west", null, east, true, true);
-  		NumericRangeQuery<Double> eRQ = NumericRangeQuery.newDoubleRange("east", west, null, true, true);
-  		NumericRangeQuery<Double> sRQ = NumericRangeQuery.newDoubleRange("south", null, north, true, true);
-  		NumericRangeQuery<Double> nRQ = NumericRangeQuery.newDoubleRange("north", south, null, true, true);
-  		
-  		spatialQuery.add(wRQ, BooleanClause.Occur.MUST);
-  		spatialQuery.add(eRQ, BooleanClause.Occur.MUST);
-  		spatialQuery.add(sRQ, BooleanClause.Occur.MUST);
-  		spatialQuery.add(nRQ, BooleanClause.Occur.MUST);
-  		
-  		line = line.substring(0, cSpatial) + line.substring(finSpatial+1);
-  		
-      }     
-      query = parser.parse(line);
-      
-      if (repeat > 0) {                           // repeat & time as benchmark
-        Date start = new Date();
-        for (int i = 0; i < repeat; i++) {
-        	searcher.search(query, 100);
-        }
-        Date end = new Date();
-        System.out.println("Time: "+(end.getTime()-start.getTime())+"ms");
->>>>>>> origin/master
       }
 
       //Sacamos los resultados de la consulta obtenidos
