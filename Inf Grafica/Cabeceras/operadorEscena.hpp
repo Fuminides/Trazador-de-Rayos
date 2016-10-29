@@ -20,7 +20,7 @@ private:
 
     
     const int NUMERO_REBOTES  = 4;
-    const double AMBIENTE = 0.3;
+    const double AMBIENTE = 0.0;
     const double REFRACCION_MEDIO = 1;
 
     Camara camara;
@@ -66,12 +66,6 @@ public:
     Color reboteEspecular(Figura * figura, Punto origen, Vector R, int numero);
 
     Color refraccionEspecular(Figura * figura, Punto origen, Vector vista, double n1, double n2, int);
-
-
-
-
-
-    
 
 };
 

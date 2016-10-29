@@ -130,7 +130,10 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
         }
 
         if ( libre ){
+            Color auxC = figura->getColor();
+            auxC.multiplicar(0.05);
             inicial.sumar(phong(figura, p, dirLuz,restaPuntos(camara.getPosicion(),p), luz)); 
+            inicial.sumar(auxC);
             //std::cout << "Final: " << inicial.to_string() << "\n";
 
                  //Caminos especulares
