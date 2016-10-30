@@ -18,12 +18,20 @@ double Figura::getRefraccion(){
 	return refraccion;
 }
 
+double Figura::getCoefRefraccion(){
+	return kr;
+}
+
 void Figura::setReflejo(double r){
 	reflejo = r;
 }
 
 void Figura::setRefraccion(double r){
 	refraccion = r;
+}
+
+void Figura::setCoefRefraccion(double r){
+	kr = r;
 }
 
 void Figura::setId(int id) { idFigura = id; }

@@ -11,7 +11,7 @@ class Figura {
 protected:
 
 	int idFigura;
-	double reflejo, refraccion;
+	double reflejo, refraccion, kr = 1;
 
 public:
 
@@ -22,9 +22,11 @@ public:
 
 	double getReflejo();
 	double getRefraccion();
+	double getCoefRefraccion();
 
 	void setReflejo(double);
 	void setRefraccion(double);
+	void setCoefRefraccion(double);
 
 	virtual double intersectar(Rayo r) = 0;
 	virtual Vector normal(Punto) = 0;

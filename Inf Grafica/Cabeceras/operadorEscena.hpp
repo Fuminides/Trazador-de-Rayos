@@ -18,9 +18,12 @@ class operadorEscena
     
 private:
 
-    Camara camara;
+    
     const int NUMERO_REBOTES  = 4;
-    const double AMBIENTE = 0.1;
+    const double AMBIENTE = 0.0;
+    const double REFRACCION_MEDIO = 1;
+
+    Camara camara;
     std :: vector < Figura * > figuras;
     std :: vector < Luz > luces;
 
@@ -55,7 +58,7 @@ public:
     /**
      * Renderiza el color de un punto
      */
-    Color renderizar(Punto c, Figura * figura, int, Punto);
+    Color renderizar(Punto c, Figura * figura, int, Punto, double);
 
     /**
      * Define un rebote especular y lo calcula con numero rebotes de profundidad.
@@ -63,12 +66,6 @@ public:
     Color reboteEspecular(Figura * figura, Punto origen, Vector R, int numero);
 
     Color refraccionEspecular(Figura * figura, Punto origen, Vector vista, double n1, double n2, int);
-
-
-
-
-
-    
 
 };
 

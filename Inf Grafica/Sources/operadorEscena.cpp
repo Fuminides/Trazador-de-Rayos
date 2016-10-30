@@ -47,7 +47,7 @@ void operadorEscena::dibujar(){
             puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
                 origenRayos.getZ() + direccion.getZ() * min);
             //std::cout << "Pto : " << std::to_string(puntoRender.getX()) <<", "<<std::to_string(puntoRender.getY())<<", "<<std::to_string(puntoRender.getZ()) << '\n';
-            pixels.push_back(renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion()));
+            pixels.push_back(renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), REFRACCION_MEDIO));
             min = -1;
         }
         else{
@@ -85,7 +85,7 @@ void operadorEscena::anyadirLuz(Luz l){
     luces.push_back(l);
 }
 
-Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Punto origenVista){
+Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Punto origenVista, double refraccionMedio){
     double distancia; bool libre, debug = true;
     Color inicial = figura->getColor();
     
@@ -130,7 +130,10 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
         }
 
         if ( libre ){
+            Color auxC = figura->getColor();
+            auxC.multiplicar(0.05);
             inicial.sumar(phong(figura, p, dirLuz,restaPuntos(camara.getPosicion(),p), luz)); 
+            inicial.sumar(auxC);
             //std::cout << "Final: " << inicial.to_string() << "\n";
 
                  //Caminos especulares
@@ -141,9 +144,9 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                 auxC.multiplicar(figura->getReflejo());
                 inicial.sumar(auxC);
 
-                //auxC = refraccionEspecular(figura, p, restaPuntos(origenVista, p), 1, 0.8, numeroRebotes);
-                //auxC.multiplicar (figura->getRefraccion());
-                //inicial.sumar(auxC);
+                auxC = refraccionEspecular(figura, p, restaPuntos(origenVista, p), refraccionMedio, figura->getRefraccion(), numeroRebotes);
+                auxC.multiplicar (figura->getCoefRefraccion());
+                inicial.sumar(auxC);
             }
         }
         else{
@@ -227,7 +230,7 @@ Color operadorEscena::reboteEspecular(Figura * figura, Punto origen, Vector R, i
             puntoRender.set_values(origen.getX() + direccion.getX() * min, origen.getY() + direccion.getY() * min, 
                 origen.getZ() + direccion.getZ() * min);
             //std::cout << "Pto : " << std::to_string(puntoRender.getX()) <<", "<<std::to_string(puntoRender.getY())<<", "<<std::to_string(puntoRender.getZ()) << '\n';
-            return renderizar(puntoRender, choque, numero -1, origen);
+            return renderizar(puntoRender, choque, numero -1, origen, figura->getRefraccion());
         }
         else{
             return defecto;
@@ -274,7 +277,7 @@ Color operadorEscena::refraccionEspecular(Figura * figura, Punto origen, Vector 
         puntoRender.set_values(origen.getX() + refraccion.getX() * min, origen.getY() + refraccion.getY() * min, 
             origen.getZ() + refraccion.getZ() * min);
         //std::cout << "Pto : " << std::to_string(puntoRender.getX()) <<", "<<std::to_string(puntoRender.getY())<<", "<<std::to_string(puntoRender.getZ()) << '\n';
-        return renderizar(puntoRender, choque, numeroRebotes -1, origen);
+        return renderizar(puntoRender, choque, numeroRebotes -1, origen, n2);
     }
     else{
         return defecto;
