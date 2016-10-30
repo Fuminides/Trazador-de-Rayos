@@ -38,6 +38,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.BooleanQuery;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -299,7 +300,52 @@ public class IndexFiles {
 	   // System.out.println("Sujeto: " + subject);
 	   doc.add(new TextField("subject", subject, Store.YES));
 }
-  
+  //AÑADIDOS los indices temporales 
+  private static void  indexDatesIssued(org.w3c.dom.Document parseador,Document doc){
+	  NodeList lista = parseador.getElementsByTagName("dcterms:issued");
+	  String date = "";
+      
+      for(int i = 0; i<lista.getLength(); i++){
+    	  try{
+			    date = date + " " + lista.item(i).getFirstChild().getNodeValue();
+		   } catch (NullPointerException e){
+			   System.out.println("ERROR: acceso a puntero nulo.");
+		   }
+    	 
+      }
+      System.out.println("Fecha issued:"+date);
+      doc.add(new StringField("issued", date, Store.YES));
+  }
+  private static void  indexDatesCreated(org.w3c.dom.Document parseador,Document doc){
+	  NodeList lista = parseador.getElementsByTagName("dcterms:created");
+	  String dateC = "";
+      
+      for(int i = 0; i<lista.getLength(); i++){
+    	  try{
+			  dateC = dateC + " " + lista.item(i).getFirstChild().getNodeValue();
+		   } catch (NullPointerException e){
+			   System.out.println("ERROR: acceso a puntero nulo.");
+		   }
+    	  
+      }
+      System.out.println("Fecha creacion:"+dateC);
+      doc.add(new StringField("created", dateC, Store.YES));
+  }
+  private static void  indexTemporal(org.w3c.dom.Document parseador,Document doc){
+	  NodeList lista = parseador.getElementsByTagName("dcterms:temporal");
+	  String temp = "";
+      
+      for(int i = 0; i<lista.getLength(); i++){
+    	  try{
+			  temp = temp + " " + lista.item(i).getFirstChild().getNodeValue();
+		   } catch (NullPointerException e){
+			   System.out.println("ERROR: acceso a puntero nulo.");
+		   }
+    	  
+      }
+          
+      doc.add(new StringField("temporal", temp, Store.YES));
+  }
   /**
    * Indexes the given file using the given writer, or if a directory is given,
    * recurses over files and directories found under the given directory.
@@ -386,7 +432,9 @@ public class IndexFiles {
           indexLower(parseador, doc);
           indexUpper(parseador, doc);
           
-          
+          indexDatesIssued(parseador, doc);
+          indexDatesCreated(parseador, doc);
+          indexTemporal(parseador, doc);
          
           if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
             // New index, so we just add the document (no old document can be there):

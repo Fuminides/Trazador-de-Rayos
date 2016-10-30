@@ -154,7 +154,7 @@ public class SearchFiles {
 	  		spatialQuery.add(sRQ, BooleanClause.Occur.MUST);
 	  		spatialQuery.add(nRQ, BooleanClause.Occur.MUST);
 	  		
-	  		//******* DA UN ERROR CON EL PARSE ESTE ***** 
+	  		//******************************** DA UN ERROR CON EL PARSE ESTE ****************************//
 	  		
 	  		query = parser.parse(line);
 	  		if (repeat > 0) {                           // repeat & time as benchmark
@@ -176,6 +176,30 @@ public class SearchFiles {
 	  				line=line+dividir[j]+" ";
 	  			}
 	  		}
+	      }
+	      else if(line.contains("temporal")){
+	    	  // Para las consultas temporal 
+	    	  String[] t = line.substring(line.indexOf(":")+1).split(";");
+	          System.out.println("Tamaño:"+t.length);
+	          if(t.length>1){
+	        	  String b=t[0].split("=")[1];
+	        	  String e=t[1].split("=")[1];
+	        	  int begin=Integer.parseInt(b.split("-")[0]+b.split("-")[1]+b.split("-")[2]);
+	        	  int end=Integer.parseInt(e.split("-")[0]+e.split("-")[1]+e.split("-")[2]);
+	        	  
+	        	  System.out.println("Temporal:"+begin);
+	        	  System.out.println("Temporal:"+end);
+	        	  
+	        	  BooleanQuery temporalQuery = new BooleanQuery();
+	        	  
+	        	  //************************************ NO SE COMO INDICAR ESTA PARTE , NO LA ENTIENDO **************************//
+	  	  		  NumericRangeQuery<Double> bTQ = NumericRangeQuery.newIntRange("begin",begin, null,end,null,true);
+	  	  		  NumericRangeQuery<Double> eTQ = NumericRangeQuery.newIntRange("end",end,begin, null, true, null);
+	  	  		
+	  	  		  temporalQuery.add(bTQ, BooleanClause.Occur.MUST);
+	  	  	      temporalQuery.add(eTQ, BooleanClause.Occur.MUST);
+	          }
+	    	  
 	      }
 	      else{
 	    	 String consultas[]=line.split(" ");
