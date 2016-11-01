@@ -120,7 +120,7 @@ public class SearchFiles {
         break;
       }
       
-      Query query;
+      Query query = null;
       System.out.println("Searching for: " + line);
       ArrayList<Integer> resultSpatial = new ArrayList<Integer>();
       ArrayList<Integer> resultNoSpatial = new ArrayList<Integer>();
@@ -156,19 +156,8 @@ public class SearchFiles {
 	  		
 	  		//******************************** DA UN ERROR CON EL PARSE ESTE ****************************//
 	  		
-	  		query = parser.parse(line);
-	  		if (repeat > 0) {                           // repeat & time as benchmark
-		        Date start = new Date();
-		        for (int j = 0; j < repeat; j++) {
-		        	searcher.search(query, 100);
-		        }
-		        Date end = new Date();
-		        System.out.println("Time: "+(end.getTime()-start.getTime())+"ms");
-		   }
-  		    doPagingSearch(in, searcher, query, hitsPerPage, raw, queries == null && queryString == null,resultSpatial);
-			if (queryString != null) {
-		        break;
-		    }
+  		    doPagingSearchString(in, searcher, spatialQuery, hitsPerPage, raw, queries == null && queryString == null,resultSpatial);
+  		    
 	  		//El line sera toda la query menos la parte del spatial
 	  		line="";
 	  		for (int j=0;j<dividir.length;j++){
@@ -180,7 +169,7 @@ public class SearchFiles {
 	      else if(line.contains("temporal")){
 	    	  // Para las consultas temporal 
 	    	  String[] t = line.substring(line.indexOf(":")+1).split(";");
-	          System.out.println("Tamaño:"+t.length);
+	          System.out.println("Tamaï¿½o:"+t.length);
 	          if(t.length>1){
 	        	  String b=t[0].split("=")[1];
 	        	  String e=t[1].split("=")[1];
@@ -192,13 +181,15 @@ public class SearchFiles {
 	        	  
 	        	  BooleanQuery temporalQuery = new BooleanQuery();
 	        	  
-	        	  //************************************ NO SE COMO INDICAR ESTA PARTE , NO LA ENTIENDO **************************//
-	  	  		  NumericRangeQuery<Double> bTQ = NumericRangeQuery.newIntRange("begin",begin, null,end,null,true);
-	  	  		  NumericRangeQuery<Double> eTQ = NumericRangeQuery.newIntRange("end",end,begin, null, true, null);
+	  	  		  NumericRangeQuery<Integer> bTQ = NumericRangeQuery.newIntRange("begin", begin, null, true, false);//("begin",begin, null,end,null,true);
+	  	  		  NumericRangeQuery<Integer> eTQ = NumericRangeQuery.newIntRange("end",begin,end, null, true, true);
 	  	  		
 	  	  		  temporalQuery.add(bTQ, BooleanClause.Occur.MUST);
 	  	  	      temporalQuery.add(eTQ, BooleanClause.Occur.MUST);
-	          }
+	  	  	      
+		  		  doPagingSearchString(in, searcher, temporalQuery, hitsPerPage, raw, queries == null && queryString == null,resultSpatial);
+				
+		          }
 	    	  
 	      }
 	      else{
@@ -214,7 +205,7 @@ public class SearchFiles {
 	    		        Date end = new Date();
 	    		        System.out.println("Time: "+(end.getTime()-start.getTime())+"ms");
 	    		   }
-	    		  doPagingSearch(in, searcher, query, hitsPerPage, raw, queries == null && queryString == null,resultados);
+	    		  doPagingSearchString(in, searcher, query, hitsPerPage, raw, queries == null && queryString == null,resultados);
 	    		  if (queryString != null) {
 	    		        break;
 	    		  }
@@ -276,7 +267,7 @@ public class SearchFiles {
    * 
    */
   //DUPLICADO para que este metodo devuelva los resultados en un array en vez de por pantalla
-  public static void doPagingSearch(BufferedReader in, IndexSearcher searcher, Query query, 
+  public static void doPagingSearchString(BufferedReader in, IndexSearcher searcher, Query query, 
                                      int hitsPerPage, boolean raw, boolean interactive,ArrayList<Integer> resultados) throws IOException {
     // Collect enough docs to show 5 pages
     TopDocs results = searcher.search(query, 5 * hitsPerPage);
@@ -318,12 +309,12 @@ public class SearchFiles {
      
         String path = doc.get("path");
         if (path != null) {
-        	
         	//Solo muestra el identificador del documento en vez del path
-        	String cadena[]=path.split("-");
-        	cadena[0]=cadena[0].replace('\\','=');
-        	String nuevaCadena[]=cadena[0].split("=");
-        	int number=Integer.parseInt(nuevaCadena[1]);
+        	String cadena[]=path.split("/");
+        	
+        	int number=Integer.parseInt(cadena[cadena.length-1].split("-")[0]);
+        	System.out.println(number);
+
         	resultados.add(number);
         	
         	//System.out.println((i+1) + ". " + number);
