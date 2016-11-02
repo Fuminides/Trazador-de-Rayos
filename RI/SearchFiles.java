@@ -167,17 +167,17 @@ public class SearchFiles {
 	      }
 	      else if(line.contains("temporal")){
 	    	  // Para las consultas temporal 
-	    	  String[] t = line.substring(line.indexOf(":")+1).split(";");
+	    	  String dividir[]  = line.split(" ");
+	  		    int i;
+	  		    //Buscamos cual de ellas es la consulta del temporal
+	  	    	for (i=0;i<dividir.length;i++){
+	  	    		if(dividir[i].contains("temporal")){
+	  	    			break;
+	  	    		}
+	  	    	}
+	    	  String[] t = dividir[i].substring(line.indexOf(":")+1).split(";");
 	          System.out.println("Tama�o:"+t.length);
 	          if(t.length>1){
-	        	  String dividir[]  = line.split(" ");
-		  		    int i;
-		  		    //Buscamos cual de ellas es la consulta del temporal
-		  	    	for (i=0;i<dividir.length;i++){
-		  	    		if(dividir[i].contains("temporal")){
-		  	    			break;
-		  	    		}
-		  	    	}
 	     
 	        	  String b=t[0].split("=")[1];
 	        	  String e=t[1].split("=")[1];
