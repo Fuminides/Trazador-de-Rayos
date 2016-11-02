@@ -154,7 +154,6 @@ public class SearchFiles {
 	  		spatialQuery.add(sRQ, BooleanClause.Occur.MUST);
 	  		spatialQuery.add(nRQ, BooleanClause.Occur.MUST);
 	  		
-	  		//******************************** DA UN ERROR CON EL PARSE ESTE ****************************//
 	  		
   		    doPagingSearchString(in, searcher, spatialQuery, hitsPerPage, raw, queries == null && queryString == null,resultSpatial);
   		    
@@ -171,6 +170,15 @@ public class SearchFiles {
 	    	  String[] t = line.substring(line.indexOf(":")+1).split(";");
 	          System.out.println("Tama�o:"+t.length);
 	          if(t.length>1){
+	        	  String dividir[]  = line.split(" ");
+		  		    int i;
+		  		    //Buscamos cual de ellas es la consulta del temporal
+		  	    	for (i=0;i<dividir.length;i++){
+		  	    		if(dividir[i].contains("temporal")){
+		  	    			break;
+		  	    		}
+		  	    	}
+	     
 	        	  String b=t[0].split("=")[1];
 	        	  String e=t[1].split("=")[1];
 	        	  int begin=Integer.parseInt(b.split("-")[0]+b.split("-")[1]+b.split("-")[2]);
@@ -187,8 +195,15 @@ public class SearchFiles {
 	  	  		  temporalQuery.add(bTQ, BooleanClause.Occur.MUST);
 	  	  	      temporalQuery.add(eTQ, BooleanClause.Occur.MUST);
 	  	  	      
-		  		  doPagingSearchString(in, searcher, temporalQuery, hitsPerPage, raw, queries == null && queryString == null,resultSpatial);
+		  		  doPagingSearchString(in, searcher, temporalQuery, hitsPerPage, raw, queries == null && queryString == null,resultNoSpatial);
 				
+		  		  //Quitamos la parte del temporal de la consulta 
+			  		line="";
+			  		for (int j=0;j<dividir.length;j++){
+			  			if(j!=i){
+			  				line=line+dividir[j]+" ";
+			  			}
+			  		}
 		          }
 	    	  
 	      }

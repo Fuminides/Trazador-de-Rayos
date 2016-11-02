@@ -1,3 +1,0 @@
-Area por pixel: 1.000000
-Filas : 1000, Columnas: 1000
-P6 1000 1000 255
