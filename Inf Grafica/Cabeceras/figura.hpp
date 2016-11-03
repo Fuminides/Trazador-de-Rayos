@@ -1,3 +1,10 @@
+/**
+ * Javier Fumanal Idocin 684229
+ * Silvia Uson Fortanet 681721
+ *
+ * Clase que representa a una figura geometrica. Cada gifura posee un coeficiente de refraccion del medio,
+ * y un coefeciente para medir lo que refleja y lo que refracta.
+ */
 #ifndef FIGURA_H
 #define FIGURA_H
 
@@ -11,24 +18,36 @@ class Figura {
 protected:
 
 	int idFigura;
-	double reflejo, refraccion, kr = 1;
+	double reflejo, refraccion, kr = 1; //Kr es coeficiente de refraccion del medio de la figura. Valor por defecto = Valor en el aire.
 
 public:
 
-	int figuraId();
-	void setId(int);
-	void setColor(Color);
+	/*
+	 * Getters.
+	 */
 	Color getColor();
-
 	double getReflejo();
 	double getRefraccion();
 	double getCoefRefraccion();
+	int figuraId();
 
+	/*
+	 * Setters.
+	 */
 	void setReflejo(double);
 	void setRefraccion(double);
 	void setCoefRefraccion(double);
+	void setId(int);
+	void setColor(Color);
 
+	/*
+	 * Devuelve la distancia a la que intersecta el rayo r la figura, o devuelve un valor negativo si no lo hace.
+	 */
 	virtual double intersectar(Rayo r) = 0;
+
+	/*
+	 * Devuelve la normal de la figura en el punto dado.
+	 */
 	virtual Vector normal(Punto) = 0;
 };
 

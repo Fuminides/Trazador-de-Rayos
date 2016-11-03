@@ -39,7 +39,6 @@
     double Esfera::intersectar(Rayo r){
         Punto O= r.getOrigen();
         Vector D = r.getVector();
-        //D.normalizar();
         Punto C= getOrigen();
 
         double b = puntoPorVector(O, D);
@@ -53,13 +52,9 @@
 
         double aux = b * b - 4 * c;
 
-        
-
         if ( aux < 0.0 ){
             return -1;
         }
-
-        //std::cout << "Raiz: " << std::to_string(aux) << '\n'; 
 
         double t1 = 0.0 - b + sqrt(aux);
         t1 = t1 / 2.0;

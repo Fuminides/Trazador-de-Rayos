@@ -40,7 +40,7 @@ int main(int argc, char ** argv){
     vc2.set_values(0,1,0);
     vc3.set_values(0,0,1);
 
-    esfera.setOrigen(80, -10, 40);
+    esfera.setOrigen(90, -10, 40);
     esfera.setColor(azul);
     esfera.setRadio(10);
     esfera.setId(cuenta());
@@ -55,25 +55,26 @@ int main(int argc, char ** argv){
     esfera2.setRefraccion(0.1);
     esfera2.setCoefRefraccion(0.4);
 
-    esfera3.setOrigen(100, 0, 0);
-    esfera3.setColor(negro);
-    esfera3.setRadio(30);
-    esfera3.setReflejo(0.5);
+    esfera3.setOrigen(100, 0, -30);
+    esfera3.setColor(rojo);
+    esfera3.setRadio(20);
+    esfera3.setReflejo(0.05);
     esfera3.setId(cuenta());
     esfera3.setRefraccion(0.2);
     esfera3.setCoefRefraccion(0.6);
 
-    origenPlano.set_values(200, -30, -30);
+    origenPlano.set_values(77, -30, -30);
     normalPlano.set_values(-1,0,0);
     plano.set_values(origenPlano, normalPlano, vc3, 100, vc2, 100);
-    plano.setColor(blanco);
+    plano.setColor(negro);
     plano.setReflejo(0.0);
-    plano.setRefraccion(0);
+    plano.setRefraccion(1);
+    plano.setCoefRefraccion(1);
 
-    origenLuz.set_values(0, 0, 0);
-    luz1.set_values(origenLuz, blanco, 200);
+    origenLuz.set_values(0, 0, 10);
+    luz1.set_values(origenLuz, blanco, 50);
 
-    origenLuz2.set_values(30, 30, -20);
+    origenLuz2.set_values(65, 10, 10);
     luz2.set_values(origenLuz2, blanco, 50);
 
     origenLuz3.set_values(10, 50, 100);
@@ -82,7 +83,7 @@ int main(int argc, char ** argv){
     camara.set_values(origenCamara, vc1, vc2, vc3, 10* 100, 10 * 100,  pow(10* 100,2) );
 
     
-    escena.anyadirFigura(&esfera2);
+    //escena.anyadirFigura(&esfera2);
     escena.anyadirFigura(&esfera);
     escena.anyadirFigura(&esfera3);
     escena.anyadirFigura(&plano);
@@ -90,7 +91,7 @@ int main(int argc, char ** argv){
     
     escena.anyadirLuz(luz1);   
     escena.anyadirLuz(luz2);
-    escena.anyadirLuz(luz3);
+    //escena.anyadirLuz(luz3);
 
 
     escena.setCamara(camara);

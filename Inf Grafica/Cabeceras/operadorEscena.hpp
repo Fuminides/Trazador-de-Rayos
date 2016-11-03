@@ -1,3 +1,9 @@
+/**
+ * Javier Fumanal Idocin 684229
+ * Silvia Uson Fortanet 681721
+ *
+ * Clase que representa a una escena.
+ */
 #ifndef OPERADORESCENA_H
 #define OPERADORESCENA_H
 
@@ -20,7 +26,7 @@ private:
 
     
     const int NUMERO_REBOTES  = 4;
-    const double AMBIENTE = 0.0;
+    const double AMBIENTE = 0.1;
     const double REFRACCION_MEDIO = 1;
 
     Camara camara;
@@ -29,7 +35,7 @@ private:
 
 
     /**
-     * Calcula la BDRF de Phong
+     * Calcula la BDRF de Phong en el punto dado de la figura dada.
      */
     Color phong(Figura * figura, Punto x, Vector entrada, Vector salida, Luz);
 
@@ -61,10 +67,13 @@ public:
     Color renderizar(Punto c, Figura * figura, int, Punto, double);
 
     /**
-     * Define un rebote especular y lo calcula con numero rebotes de profundidad.
+     * Define un rebote especular y lo calcula con el numero dado de rebotes de profundidad.
      */
     Color reboteEspecular(Figura * figura, Punto origen, Vector R, int numero);
 
+    /**
+     * Calcula una refraccion especular en el punto desde el punto vista dado, con los dos coeficientes de refraccion de ambos medios.
+     */
     Color refraccionEspecular(Figura * figura, Punto origen, Vector vista, double n1, double n2, int);
 
 };

@@ -22,11 +22,9 @@ void operadorEscena::dibujar(){
     pixels.reserve(camara.getPixels());
 
     for ( Rayo rayo : rayos){
-        //std::cout << "Rayo : " << std::to_string(rayo.getVector().getX()) <<", "<<std::to_string(rayo.getVector().getY())<<", "<<std::to_string(rayo.getVector().getZ()) << '\n';
         for ( Figura * figuraP : figuras){
-            //std::cout << "Chequeando esfera..." << '\n';
             distancia = figuraP->intersectar(rayo);
-            //std::cout << "Distancia " << std::to_string(distancia) << '\n';
+            
             if ( distancia >= 0 ){
                 if ( min == -1){
                     min = distancia;
@@ -41,12 +39,8 @@ void operadorEscena::dibujar(){
         if ( min != -1){
             Punto puntoRender, origenRayos = camara.getPosicion();
             Vector direccion = rayo.getVector();
-            //std::cout << "Rayo : " << std::to_string(direccion.getX()) <<", "<<std::to_string(direccion.getY())<<", "<<std::to_string(direccion.getZ()) << '\n';
-            //std::cout << "Pto : " << std::to_string(origenRayos.getX()) <<", "<<std::to_string(origenRayos.getY())<<", "<<std::to_string(origenRayos.getZ()) << '\n';
-            //std::cout << "Dis: " << std::to_string(min) << '\n';
             puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
                 origenRayos.getZ() + direccion.getZ() * min);
-            //std::cout << "Pto : " << std::to_string(puntoRender.getX()) <<", "<<std::to_string(puntoRender.getY())<<", "<<std::to_string(puntoRender.getZ()) << '\n';
             pixels.push_back(renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), REFRACCION_MEDIO));
             min = -1;
         }
@@ -68,7 +62,6 @@ void operadorEscena::dibujar(){
     std::cout << "P6 " << std::to_string(fila) << " " << std::to_string((int) (columna) ) << " 255\n";
 
     for ( Color color : pixels){
-        //if ( (color.splashR() != 0) ) std::cout << "\nColor escrito: " << color.to_string();
         myfile << color.splashR();
         myfile << color.splashG();
         myfile << color.splashB();
@@ -89,13 +82,11 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
     double distancia; bool libre, debug = true;
     Color inicial = figura->getColor();
     
-    double kd = AMBIENTE;
-    inicial.multiplicar(kd); 
+    double kd = AMBIENTE; 
     Vector dirLuz;
     
     for ( Luz luz: luces){
         libre = true;
-        //if ( debug ) { std::cout << "Vamos, luz\n"; }
         Vector dirLuz = restaPuntos(luz.getOrigen(), p);
         Rayo puntoDirLuz;
         double dLuz = dirLuz.modulo();
@@ -105,42 +96,34 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
         int min = -1;
 
         for ( Figura * figuraP : figuras){
-            //std::cout << "Chequeando esfera..." << '\n';
             distancia = figuraP->intersectar(puntoDirLuz);
 
-            //if ( figuraP->figuraId() == 2 ) std::cout << "Punto : " << std::to_string(p.getX()) << ", " << std::to_string(p.getY()) << ", " << std::to_string(p.getZ()) << 
-            //", Vector: "  << std::to_string(dirLuz.getX()) << ", " << std::to_string(dirLuz.getY()) << ", " << std::to_string(dirLuz.getZ()) << 
-            //"Distancia: " << std::to_string(distancia) << '\n';
             if ( (distancia > 0) &&  (distancia < dLuz) ){
                 if ( min == -1){
                     min = distancia;
-                    //choque = figuraP;
                 }
                 else if (distancia < min){
                     min = distancia;
-                    //choque = figuraP;
                 }
             }
         }
 
         if ( min > -1 ){
-            //if (debug ) std::cout << "Misterio..."  <<"\n";
             libre = false;
-            //Luz indirecta en el mas cercano
         }
 
         if ( libre ){
             Color auxC = figura->getColor();
-            auxC.multiplicar(0.05);
+            auxC.multiplicar(kd);
             inicial.sumar(phong(figura, p, dirLuz,restaPuntos(camara.getPosicion(),p), luz)); 
             inicial.sumar(auxC);
-            //std::cout << "Final: " << inicial.to_string() << "\n";
 
-                 //Caminos especulares
+            //Caminos especulares
             if ( numeroRebotes > 0){
                 Vector R;
                 R = restaVectores(valorPorVector(figura->normal(p), 2 * productoEscalar(dirLuz, figura->normal(p))), dirLuz);
                 Color auxC = reboteEspecular(figura, p, R, numeroRebotes);
+                std::cout << "Color refractado: " << auxC.to_string() << '\n';
                 auxC.multiplicar(figura->getReflejo());
                 inicial.sumar(auxC);
 
@@ -149,12 +132,7 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                 inicial.sumar(auxC);
             }
         }
-        else{
-            //std::cout << "No phong: " << inicial.to_string() << "\n";
-        }
     }
-
-   
 
     //Anadimos aqui la luz indirecta
 
@@ -174,24 +152,15 @@ Color operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista, 
     luz.normalizar();
     vista.normalizar();
 
-    //std::cout << "Luz: " << colorLuz.to_string() << "\n";
-
     normal = figura->normal(x);
     R = restaVectores(valorPorVector(normal, 2 * productoEscalar(luz, normal)), luz);
 
-    //base.multiplicar(kd); 
-
-    //std::cout << base.to_string() << "\n";
     double coefPhong = kd/M_PI  * productoEscalar(normal, luz) + ks * (n + 2)/(2*M_PI) * pow(productoEscalar(R, vista), n);
 
     if ( coefPhong < 0) colorLuz.multiplicar(-coefPhong);
     else colorLuz.multiplicar(coefPhong);
 
-    //std::cout << std::to_string(kd/M_PI  * productoEscalar(normal, luz) + ks * (n + 2)/(2*M_PI) * pow(productoEscalar(R, vista), n)) << "\n";
-
     base.sumar(colorLuz);
-
-    //std::cout << base.to_string() << "\n";
 
     return base;
 }
@@ -206,9 +175,8 @@ Color operadorEscena::reboteEspecular(Figura * figura, Punto origen, Vector R, i
     defecto.set_values(0,0,0);
 
     for ( Figura * figuraP : figuras){
-        //std::cout << "Chequeando esfera..." << '\n';
         distancia = figuraP->intersectar(especular);
-        //std::cout << "Distancia " << std::to_string(distancia) << '\n';
+
         if ( distancia >= 0 ){
             if ( min == -1){
                 min = distancia;
@@ -224,17 +192,15 @@ Color operadorEscena::reboteEspecular(Figura * figura, Punto origen, Vector R, i
     if ( min != -1){
             Punto puntoRender;
             Vector direccion = especular.getVector();
-            //std::cout << "Rayo : " << std::to_string(direccion.getX()) <<", "<<std::to_string(direccion.getY())<<", "<<std::to_string(direccion.getZ()) << '\n';
-            //std::cout << "Pto : " << std::to_string(origenRayos.getX()) <<", "<<std::to_string(origenRayos.getY())<<", "<<std::to_string(origenRayos.getZ()) << '\n';
-            //std::cout << "Dis: " << std::to_string(min) << '\n';
             puntoRender.set_values(origen.getX() + direccion.getX() * min, origen.getY() + direccion.getY() * min, 
                 origen.getZ() + direccion.getZ() * min);
-            //std::cout << "Pto : " << std::to_string(puntoRender.getX()) <<", "<<std::to_string(puntoRender.getY())<<", "<<std::to_string(puntoRender.getZ()) << '\n';
+            
             return renderizar(puntoRender, choque, numero -1, origen, figura->getRefraccion());
         }
-        else{
-            return defecto;
-        }
+    else{
+        //std::cout << "No refracc" << "\n";
+        return defecto;
+    }
 }
 
 Color operadorEscena::refraccionEspecular(Figura * figura, Punto origen, Vector vista, double n1, double n2, int numeroRebotes){
@@ -252,11 +218,11 @@ Color operadorEscena::refraccionEspecular(Figura * figura, Punto origen, Vector 
     refraccion = valorPorVector(refraccion, 1 / cos);
 
     rebote.set_values(origen, refraccion);
-
+    refraccion.normalizar();
+    
     for ( Figura * figuraP : figuras){
-        //std::cout << "Chequeando esfera..." << '\n';
         distancia = figuraP->intersectar(rebote);
-        //std::cout << "Distancia " << std::to_string(distancia) << '\n';
+
         if ( distancia >= 0 ){
             if ( min == -1){
                 min = distancia;
@@ -271,13 +237,12 @@ Color operadorEscena::refraccionEspecular(Figura * figura, Punto origen, Vector 
 
     if ( min != -1){
         Punto puntoRender;
-        //std::cout << "Rayo : " << std::to_string(direccion.getX()) <<", "<<std::to_string(direccion.getY())<<", "<<std::to_string(direccion.getZ()) << '\n';
-        //std::cout << "Pto : " << std::to_string(origenRayos.getX()) <<", "<<std::to_string(origenRayos.getY())<<", "<<std::to_string(origenRayos.getZ()) << '\n';
-        //std::cout << "Dis: " << std::to_string(min) << '\n';
+    
         puntoRender.set_values(origen.getX() + refraccion.getX() * min, origen.getY() + refraccion.getY() * min, 
             origen.getZ() + refraccion.getZ() * min);
-        //std::cout << "Pto : " << std::to_string(puntoRender.getX()) <<", "<<std::to_string(puntoRender.getY())<<", "<<std::to_string(puntoRender.getZ()) << '\n';
-        return renderizar(puntoRender, choque, numeroRebotes -1, origen, n2);
+    
+        return choque->getColor();
+        //return renderizar(puntoRender, choque, numeroRebotes -1, origen, n2);
     }
     else{
         return defecto;
