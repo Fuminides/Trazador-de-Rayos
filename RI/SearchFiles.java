@@ -1,4 +1,4 @@
-package org.apache.lucene.demo;
+package trabajo;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -27,7 +27,7 @@ import java.util.Date;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+//import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
@@ -43,12 +43,22 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 
 
-/** Simple command-line based search demo. */
 public class SearchFiles {
 
   private SearchFiles() {}
 
-  /** Simple command-line based search demo. */
+  public final static String AUTOR = "autor";
+  public final static String TEMATICO = "tema";
+  public final static String FECHA = "fecha";
+  
+  public final static String TITULO = "titulo";
+  public final static String ID = "identificador";
+  public final static String DESC = "descripcion";
+  public final static String PUBLISHER = "publisher";
+  public final static String LANG = "lenguaje";
+  public final static String CREATOR = "autor";
+  public final static String DATE = "fecha";
+  
   public static void main(String[] args) throws Exception {
     String usage =
       "Usage:\tjava org.apache.lucene.demo.SearchFiles [-index dir] [-field f] [-repeat n] [-queries file] [-query string] [-raw] [-paging hitsPerPage]\n\nSee http://lucene.apache.org/core/4_1_0/demo/ for details.";
@@ -57,41 +67,15 @@ public class SearchFiles {
       System.exit(0);
     }
 
-    String index = "index";
+    String indexAutor = "autor", indexTheme = "tematico", indexDate = "fecha";
     String field = "contents";
+    
     String queries = null;
     int repeat = 0;
     boolean raw = false;
     String queryString = null;
     int hitsPerPage = 10;
     
-    for(int i = 0;i < args.length;i++) {
-      if ("-index".equals(args[i])) {
-        index = args[i+1];
-        i++;
-      } else if ("-field".equals(args[i])) {
-        field = args[i+1];
-        i++;
-      } else if ("-queries".equals(args[i])) {
-        queries = args[i+1];
-        i++;
-      } else if ("-query".equals(args[i])) {
-        queryString = args[i+1];
-        i++;
-      } else if ("-repeat".equals(args[i])) {
-        repeat = Integer.parseInt(args[i+1]);
-        i++;
-      } else if ("-raw".equals(args[i])) {
-        raw = true;
-      } else if ("-paging".equals(args[i])) {
-        hitsPerPage = Integer.parseInt(args[i+1]);
-        if (hitsPerPage <= 0) {
-          System.err.println("There must be at least 1 hit per page.");
-          System.exit(1);
-        }
-        i++;
-      }
-    }
     
     IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(index)));
     IndexSearcher searcher = new IndexSearcher(reader);
@@ -121,7 +105,7 @@ public class SearchFiles {
       }
       
       Query query = null;
-      System.out.println("Searching for: " + line);
+      //System.out.println("Searching for: " + line);
       ArrayList<Integer> resultSpatial = new ArrayList<Integer>();
       ArrayList<Integer> resultNoSpatial = new ArrayList<Integer>();
       while(!line.isEmpty()){
@@ -167,17 +151,17 @@ public class SearchFiles {
 	      }
 	      else if(line.contains("temporal")){
 	    	  // Para las consultas temporal 
-	    	  String dividir[]  = line.split(" ");
-	  		    int i;
-	  		    //Buscamos cual de ellas es la consulta del temporal
-	  	    	for (i=0;i<dividir.length;i++){
-	  	    		if(dividir[i].contains("temporal")){
-	  	    			break;
-	  	    		}
-	  	    	}
-	    	  String[] t = dividir[i].substring(line.indexOf(":")+1).split(";");
+	    	  String[] t = line.substring(line.indexOf(":")+1).split(";");
 	          System.out.println("Tama�o:"+t.length);
 	          if(t.length>1){
+	        	  String dividir[]  = line.split(" ");
+		  		    int i;
+		  		    //Buscamos cual de ellas es la consulta del temporal
+		  	    	for (i=0;i<dividir.length;i++){
+		  	    		if(dividir[i].contains("temporal")){
+		  	    			break;
+		  	    		}
+		  	    	}
 	     
 	        	  String b=t[0].split("=")[1];
 	        	  String e=t[1].split("=")[1];
@@ -212,6 +196,8 @@ public class SearchFiles {
 	    	  for(int i=0;i<consultas.length;i++){
 	    		  ArrayList<Integer> resultados = new ArrayList<Integer>();
 	    		  query = parser.parse(consultas[i]);
+	    	      System.out.println("Searching for: " + query);
+
 	    		  if (repeat > 0) {                           // repeat & time as benchmark
 	    		        Date start = new Date();
 	    		        for (int j = 0; j < repeat; j++) {

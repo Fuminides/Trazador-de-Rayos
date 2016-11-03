@@ -1,4 +1,4 @@
-package org.apache.lucene.demo;
+package trabajo;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -19,12 +19,11 @@ package org.apache.lucene.demo;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
-import org.apache.lucene.analysis.standard.StandardAnalyzer;
+//import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
-import org.apache.lucene.document.DoubleField;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Store;
-import org.apache.lucene.document.LongField;
+import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
@@ -36,16 +35,10 @@ import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import org.apache.lucene.search.NumericRangeQuery;
-import org.apache.lucene.search.BooleanQuery;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -65,287 +58,64 @@ public class IndexFiles {
  * @throws ParserConfigurationException 
  * @throws SAXException */
   public static void main(String[] args) throws ParserConfigurationException, SAXException {
-    String usage = "java org.apache.lucene.demo.IndexFiles"
-                 + " [-index INDEX_PATH] [-docs DOCS_PATH] [-update]\n\n"
-                 + "This indexes the documents in DOCS_PATH, creating a Lucene index"
-                 + "in INDEX_PATH that can be searched with SearchFiles";
-    String indexPath = "index";
-    String docsPath = null;
-    boolean create = true;
-    for(int i=0;i<args.length;i++) {
-      if ("-index".equals(args[i])) {
-        indexPath = args[i+1];
-        i++;
-      } else if ("-docs".equals(args[i])) {
-        docsPath = args[i+1];
-        i++;
-      } else if ("-update".equals(args[i])) {
-        create = false;
-      }
-    }
+    String usage = "Por favor, indicame el fichero donde estan las necesidades de informacion.";
+    String[] indexes = { SearchFiles.AUTOR, SearchFiles.TEMATICO, SearchFiles.FECHA};
+    String docsPath;
+    boolean reescribir = true;
 
-    if (docsPath == null) {
-      System.err.println("Usage: " + usage);
+    if (args.length == 0) {
+      System.err.println(usage);
       System.exit(1);
     }
-
+    
+    docsPath = args[0];
     final File docDir = new File(docsPath);
     if (!docDir.exists() || !docDir.canRead()) {
-      System.out.println("Document directory '" +docDir.getAbsolutePath()+ "' does not exist or is not readable, please check the path");
+      System.out.println("El directorio '" +docDir.getAbsolutePath()+ "' no existe o no dispone de permisos de lectura.");
       System.exit(1);
     }
     
     Date start = new Date();
     try {
-      System.out.println("Indexing to directory '" + indexPath + "'...");
-
-      Directory dir = FSDirectory.open(new File(indexPath));
-      Analyzer analyzer = new SpanishAnalyzer(Version.LUCENE_44);
-      IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_44, analyzer);
-
-      if (create) {
-        // Create a new index in the directory, removing any
-        // previously indexed documents:
-        iwc.setOpenMode(OpenMode.CREATE);
-      } else {
-        // Add new documents to an existing index:
-        iwc.setOpenMode(OpenMode.CREATE_OR_APPEND);
-      }
-
-      // Optional: for better indexing performance, if you
-      // are indexing many documents, increase the RAM
-      // buffer.  But if you do this, increase the max heap
-      // size to the JVM (eg add -Xmx512m or -Xmx1g):
-      //
-      // iwc.setRAMBufferSizeMB(256.0);
-
-      IndexWriter writer = new IndexWriter(dir, iwc);
-      indexDocs(writer, docDir);
-
-      // NOTE: if you want to maximize search performance,
-      // you can optionally call forceMerge here.  This can be
-      // a terribly costly operation, so generally it's only
-      // worth it when your index is relatively static (ie
-      // you're done adding documents to it):
-      //
-      // writer.forceMerge(1);
-
-      writer.close();
-
-      Date end = new Date();
-      System.out.println(end.getTime() - start.getTime() + " total milliseconds");
-
+    	for (String indexPath: indexes){
+	      System.out.println("Indexando en el directorio '" + indexPath + "'...");
+	
+	      Directory dir = FSDirectory.open(new File(indexPath));
+	      Analyzer analyzer = new SpanishAnalyzer(Version.LUCENE_44);
+	      IndexWriterConfig iwc = new IndexWriterConfig(Version.LUCENE_44, analyzer);
+	
+	      if (reescribir) {
+	        iwc.setOpenMode(OpenMode.CREATE);
+	      } else {
+	        iwc.setOpenMode(OpenMode.CREATE_OR_APPEND);
+	      }
+	
+	      IndexWriter writer = new IndexWriter(dir, iwc);
+	      
+	      switch(indexPath){
+	      	case SearchFiles.AUTOR:
+	      		indexDocsAutor(writer, docDir);
+	      		break;
+	      	case SearchFiles.TEMATICO:
+	      		indexDocsTematico(writer, docDir);
+	      		break;
+	      	case SearchFiles.FECHA:
+	      		indexDocsFecha(writer, docDir);
+	      		break;
+	      }
+	
+	      writer.close();
+	
+	      Date end = new Date();
+	      System.out.println("Indexado en " + (end.getTime() - start.getTime()) + " milisegundos");
+	      
+    	}
     } catch (IOException e) {
       System.out.println(" caught a " + e.getClass() +
        "\n with message: " + e.getMessage());
     }
   }
 
-  
-  
-  
-  
-  
-  
-  private static void indexTitle(org.w3c.dom.Document parseador,Document doc){
-      NodeList lista = parseador.getElementsByTagName("dc:title");
-      String titulo = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  titulo = titulo + " " + lista.item(i).getFirstChild().getNodeValue();
-      }
-      
-      //System.out.println(titulo);
-      doc.add(new TextField("title", titulo, Store.YES));
-  }
-  
-  private static void indexIdentifier(org.w3c.dom.Document parseador,Document doc){
-	  NodeList lista = parseador.getElementsByTagName("dc:identifier");
-      String id = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  id = id + " " + lista.item(i).getFirstChild().getNodeValue();
-      }
-      //System.out.println(id);
-      doc.add(new StringField("identifier", id, Store.YES));
-  }
-  
-  private static void indexLeft(org.w3c.dom.Document parseador,Document doc){
-	  NodeList lista = parseador.getElementsByTagName("ows:LowerCorner");
-      String id = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  id = id + " " + lista.item(i).getFirstChild().getNodeValue();
-      }
-      System.out.println("Dime: " + id);
-      if (! id.equals("") ) {doc.add(new DoubleField("west", Double.parseDouble(id.split(" ")[1]), Store.YES));}
-  }
-  
-  private static void indexLower(org.w3c.dom.Document parseador,Document doc){
-	  NodeList lista = parseador.getElementsByTagName("ows:LowerCorner");
-      String id = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  id = id + " " + lista.item(i).getFirstChild().getNodeValue();
-    	 
-      }
-      System.out.println(id);
-      if (! id.equals("") )  doc.add(new DoubleField("south", Double.parseDouble(id.split(" ")[2]), Store.YES));
-  }
-  
-  private static void indexRight(org.w3c.dom.Document parseador,Document doc){
-	  NodeList lista = parseador.getElementsByTagName("ows:UpperCorner");
-      String id = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  id = id + " " + lista.item(i).getFirstChild().getNodeValue();
-      }
-      System.out.println(id);
-      if (! id.equals("") )  doc.add(new DoubleField("east", Double.parseDouble(id.split(" ")[1]), Store.YES));
-  }
-  
-  private static void indexUpper(org.w3c.dom.Document parseador,Document doc){
-	  NodeList lista = parseador.getElementsByTagName("ows:UpperCorner");
-      String id = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  id = id + " " + lista.item(i).getFirstChild().getNodeValue();
-      }
-      System.out.println(id);
-      if (! id.equals("") ){ doc.add(new DoubleField("north", Double.parseDouble(id.split(" ")[2]), Store.YES));}
-  }
-  
-  private static void indexFormat(org.w3c.dom.Document parseador,Document doc){
-	  NodeList lista = parseador.getElementsByTagName("dc:format");
-      String f = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  f = f + " " + lista.item(i).getFirstChild().getNodeValue();
-      }
-      //System.out.println(f);
-      doc.add(new StringField("format", f, Store.YES));
-  }
-  private static void indexType(org.w3c.dom.Document parseador,Document doc){
-	  NodeList lista = parseador.getElementsByTagName("dc:type");
-      String tipo = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  tipo = tipo + " " + lista.item(i).getFirstChild().getNodeValue();
-      }
-      // System.out.println(tipo);
-      doc.add(new StringField("type", tipo, Store.YES));
-  }
-  private static void indexCreator(org.w3c.dom.Document parseador,Document doc){
-	  NodeList lista = parseador.getElementsByTagName("dc:creator");
-      String cre = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  cre = cre + " " + lista.item(i).getFirstChild().getNodeValue();
-      }
-      //System.out.println(cre);
-      doc.add(new TextField("creator", cre, Store.YES));
-  }
-   private static void  indexDescription(org.w3c.dom.Document parseador,Document doc){
-	  NodeList lista = parseador.getElementsByTagName("dc:description");
-      String desc = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  try{
-        	  desc = desc + " " + lista.item(i).getFirstChild().getNodeValue();
-        	  } catch (NullPointerException e){
-        		  System.out.println("Acceso a puntero nulo");
-        	  }
-      }
-      // System.out.println(desc);
-      doc.add(new TextField("description", desc, Store.YES));  
-  }
- 
-  private static void indexPublisher(org.w3c.dom.Document parseador,Document doc){
-	  NodeList lista = parseador.getElementsByTagName("dc:publisher");
-      String pub = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  pub = pub + " " + lista.item(i).getFirstChild().getNodeValue();
-      }
-      // System.out.println(pub);
-      doc.add(new TextField("publisher", pub, Store.YES));
-  }
- 
-  private static void  indexLanguage(org.w3c.dom.Document parseador,Document doc){
-	  NodeList lista = parseador.getElementsByTagName("dc:language");
-      String l = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  try{
-    	  l = l + " " + lista.item(i).getFirstChild().getNodeValue();
-    	  } catch (NullPointerException e){
-    		  System.out.println("Acceso a puntero nulo");
-    	  }
-      }
-      // System.out.println(l);
-      doc.add(new StringField("language", l, Store.YES));
-  }
-  private static void indexSubject(org.w3c.dom.Document parseador,Document doc){
-	   NodeList lista = parseador.getElementsByTagName("dc:subject");
-	   String subject = "";
-	   
-	   for(int i = 0; i<lista.getLength(); i++){
-		   try{
-			   subject = subject + " " + lista.item(i).getFirstChild().getNodeValue();
-		   } catch (NullPointerException e){
-			   System.out.println("ERROR: acceso a puntero nulo.");
-		   }
-	   }
-	  
-	   // System.out.println("Sujeto: " + subject);
-	   doc.add(new TextField("subject", subject, Store.YES));
-}
-  //AÑADIDOS los indices temporales 
-  private static void  indexDatesIssued(org.w3c.dom.Document parseador,Document doc){
-	  NodeList lista = parseador.getElementsByTagName("dcterms:issued");
-	  String date = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  try{
-			    date = date + " " + lista.item(i).getFirstChild().getNodeValue();
-		   } catch (NullPointerException e){
-			   System.out.println("ERROR: acceso a puntero nulo.");
-		   }
-    	 
-      }
-      System.out.println("Fecha issued:"+date);
-      doc.add(new StringField("issued", date, Store.YES));
-  }
-  private static void  indexDatesCreated(org.w3c.dom.Document parseador,Document doc){
-	  NodeList lista = parseador.getElementsByTagName("dcterms:created");
-	  String dateC = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  try{
-			  dateC = dateC + " " + lista.item(i).getFirstChild().getNodeValue();
-		   } catch (NullPointerException e){
-			   System.out.println("ERROR: acceso a puntero nulo.");
-		   }
-    	  
-      }
-      System.out.println("Fecha creacion:"+dateC);
-      doc.add(new StringField("created", dateC, Store.YES));
-  }
-  private static void  indexTemporal(org.w3c.dom.Document parseador,Document doc){
-	  NodeList lista = parseador.getElementsByTagName("dcterms:temporal");
-	  String temp = "";
-      
-      for(int i = 0; i<lista.getLength(); i++){
-    	  try{
-			  temp = temp + " " + lista.item(i).getFirstChild().getNodeValue();
-		   } catch (NullPointerException e){
-			   System.out.println("ERROR: acceso a puntero nulo.");
-		   }
-    	  
-      }
-          
-      doc.add(new StringField("temporal", temp, Store.YES));
-  }
   /**
    * Indexes the given file using the given writer, or if a directory is given,
    * recurses over files and directories found under the given directory.
@@ -363,16 +133,14 @@ public class IndexFiles {
  * @throws ParserConfigurationException 
  * @throws SAXException 
    */
-  private static void indexDocs(IndexWriter writer, File file)
+  private static void indexDocsFecha(IndexWriter writer, File file)
     throws IOException, ParserConfigurationException, SAXException {
-    // do not try to index files that cannot be read
     if (file.canRead()) {
       if (file.isDirectory()) {
         String[] files = file.list();
-        // an IO error could occur
         if (files != null) {
           for (int i = 0; i < files.length; i++) {
-            indexDocs(writer, new File(file, files[i]));
+            indexDocsFecha(writer, new File(file, files[i]));
           }
         }
       } else {
@@ -381,70 +149,30 @@ public class IndexFiles {
         try {
           fis = new FileInputStream(file);
         } catch (FileNotFoundException fnfe) {
-          // at least on windows, some temporary files raise this exception with an "access denied" message
-          // checking if the file can be read doesn't help
           return;
         }
 
         try {
-        	//Añadido para la creacion de indices
+        	//Aï¿½adido para la creacion de indices
         	DocumentBuilderFactory xmlParserF = DocumentBuilderFactory.newInstance();
         	DocumentBuilder xmlParser = xmlParserF.newDocumentBuilder();
         	org.w3c.dom.Document parseador = xmlParser.parse(file);
           // make a new, empty document
           Document doc = new Document();
-          // Add the path of the file as a field named "path".  Use a
-          // field that is indexed (i.e. searchable), but don't tokenize 
-          // the field into separate words and don't index term frequency
-          // or positional information:
-          Field pathField = new StringField("path", file.getPath(), Field.Store.YES);
+ 
+          Field pathField = new StringField("ruta", file.getPath(), Field.Store.YES);
           doc.add(pathField);
 
-          // Add the last modified date of the file a field named "modified".
-          // Use a LongField that is indexed (i.e. efficiently filterable with
-          // NumericRangeFilter).  This indexes to milli-second resolution, which
-          // is often too fine.  You could instead create a number based on
-          // year/month/day/hour/minutes/seconds, down the resolution you require.
-          // For example the long value 2011021714 would mean
-          // February 17, 2011, 2-3 PM.
-          doc.add(new LongField("modified", file.lastModified(), Field.Store.YES));
-
-          // Add the contents of the file to a field named "contents".  Specify a Reader,
-          // so that the text of the file is tokenized and indexed, but not stored.
-          // Note that FileReader expects the file to be in UTF-8 encoding.
-          // If that's not the case searching for special characters will fail.
-          //doc.add(new TextField("contents", new BufferedReader(new InputStreamReader(fis, "UTF-8"))));
-
-          //Añadimos la creacion de los indices
+          //Aï¿½adimos la creacion de los indices
          
-          indexTitle(parseador,doc);
-          indexIdentifier(parseador,doc);
-          indexType(parseador,doc);
-          indexCreator(parseador,doc);
-          indexFormat(parseador,doc);
-          indexSubject(parseador,doc);
           indexLanguage(parseador,doc);
-          indexDescription(parseador,doc);
-          indexPublisher(parseador,doc);
-          
-          indexLeft(parseador, doc);
-          indexRight(parseador, doc);
-          indexLower(parseador, doc);
-          indexUpper(parseador, doc);
-          
-          indexDatesIssued(parseador, doc);
-          indexDatesCreated(parseador, doc);
-          indexTemporal(parseador, doc);
+          indexDate(parseador, doc);
          
           if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
-            // New index, so we just add the document (no old document can be there):
-            System.out.println("adding " + file);
+            System.out.println("AÃ±adiendo: " + file);
             writer.addDocument(doc);
-          } else {
-            // Existing index (an old copy of this document may have been indexed) so 
-            // we use updateDocument instead to replace the old one matching the exact 
-            // path, if present:
-            System.out.println("updating " + file);
+          } else {         
+            System.out.println("Actualizando: " + file);
             writer.updateDocument(new Term("path", file.getPath()), doc);
           }
           
@@ -454,4 +182,216 @@ public class IndexFiles {
       }
     }
   }
+  
+  /**
+   * Indexes the given file using the given writer, or if a directory is given,
+   * recurses over files and directories found under the given directory.
+   * 
+   * NOTE: This method indexes one document per input file.  This is slow.  For good
+   * throughput, put multiple documents into your input file(s).  An example of this is
+   * in the benchmark module, which can create "line doc" files, one document per line,
+   * using the
+   * <a href="../../../../../contrib-benchmark/org/apache/lucene/benchmark/byTask/tasks/WriteLineDocTask.html"
+   * >WriteLineDocTask</a>.
+   *  
+   * @param writer Writer to the index where the given file/dir info will be stored
+   * @param file The file to index, or the directory to recurse into to find files to index
+   * @throws IOException If there is a low-level I/O error
+ * @throws ParserConfigurationException 
+ * @throws SAXException 
+   */
+  private static void indexDocsAutor(IndexWriter writer, File file)
+    throws IOException, ParserConfigurationException, SAXException {
+    if (file.canRead()) {
+      if (file.isDirectory()) {
+        String[] files = file.list();
+        if (files != null) {
+          for (int i = 0; i < files.length; i++) {
+            indexDocsAutor(writer, new File(file, files[i]));
+          }
+        }
+      } else {
+
+        FileInputStream fis;
+        try {
+          fis = new FileInputStream(file);
+        } catch (FileNotFoundException fnfe) {
+          return;
+        }
+
+        try {
+        	//Aï¿½adido para la creacion de indices
+        	DocumentBuilderFactory xmlParserF = DocumentBuilderFactory.newInstance();
+        	DocumentBuilder xmlParser = xmlParserF.newDocumentBuilder();
+        	org.w3c.dom.Document parseador = xmlParser.parse(file);
+          // make a new, empty document
+          Document doc = new Document();
+ 
+          Field pathField = new StringField("ruta", file.getPath(), Field.Store.YES);
+          doc.add(pathField);
+
+          //Aï¿½adimos la creacion de los indices
+         
+          indexPublisher(parseador,doc);
+          indexCreator(parseador, doc);
+         
+          if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
+            System.out.println("AÃ±adiendo: " + file);
+            writer.addDocument(doc);
+          } else {         
+            System.out.println("Actualizando: " + file);
+            writer.updateDocument(new Term("path", file.getPath()), doc);
+          }
+          
+        } finally {
+          fis.close();
+        }
+        }
+      }
+    }
+    
+    
+    private static void indexDocsTematico(IndexWriter writer, File file)
+      throws IOException, ParserConfigurationException, SAXException {
+      if (file.canRead()) {
+        if (file.isDirectory()) {
+          String[] files = file.list();
+          if (files != null) {
+            for (int i = 0; i < files.length; i++) {
+              indexDocsTematico(writer, new File(file, files[i]));
+            }
+          }
+        } else {
+
+          FileInputStream fis;
+          try {
+            fis = new FileInputStream(file);
+          } catch (FileNotFoundException fnfe) {
+            return;
+          }
+
+          try {
+          	//Aï¿½adido para la creacion de indices
+          	DocumentBuilderFactory xmlParserF = DocumentBuilderFactory.newInstance();
+          	DocumentBuilder xmlParser = xmlParserF.newDocumentBuilder();
+          	org.w3c.dom.Document parseador = xmlParser.parse(file);
+            // make a new, empty document
+            Document doc = new Document();
+   
+            Field pathField = new StringField("ruta", file.getPath(), Field.Store.YES);
+            doc.add(pathField);
+
+            //Aï¿½adimos la creacion de los indices
+           
+            indexTitle(parseador,doc);
+            indexIdentifier(parseador, doc);
+            indexDescription(parseador, doc);
+           
+            if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
+              System.out.println("AÃ±adiendo: " + file);
+              writer.addDocument(doc);
+            } else {         
+              System.out.println("Actualizando: " + file);
+              writer.updateDocument(new Term("path", file.getPath()), doc);
+            }
+            
+          } finally {
+            fis.close();
+          }
+        }
+      }
+  }
+    
+    private static void indexTitle(org.w3c.dom.Document parseador,Document doc){
+        NodeList lista = parseador.getElementsByTagName("dc:title");
+        String titulo = "";
+        
+        for(int i = 0; i<lista.getLength(); i++){
+      	  titulo = titulo + " " + lista.item(i).getFirstChild().getNodeValue();
+        }
+        
+        //System.out.println(titulo);
+        doc.add(new TextField(SearchFiles.TITULO, titulo, Store.YES));
+    }
+    
+    private static void indexIdentifier(org.w3c.dom.Document parseador,Document doc){
+  	  NodeList lista = parseador.getElementsByTagName("dc:identifier");
+        String id = "";
+        
+        for(int i = 0; i<lista.getLength(); i++){
+      	  id = id + " " + lista.item(i).getFirstChild().getNodeValue();
+        }
+        //System.out.println(id);
+        doc.add(new StringField(SearchFiles.ID, id, Store.YES));
+    }
+    
+     private static void  indexDescription(org.w3c.dom.Document parseador,Document doc){
+  	  NodeList lista = parseador.getElementsByTagName("dc:description");
+        String desc = "";
+        
+        for(int i = 0; i<lista.getLength(); i++){
+      	  try{
+          	  desc = desc + " " + lista.item(i).getFirstChild().getNodeValue();
+          	  } catch (NullPointerException e){
+          		  System.out.println("Acceso a puntero nulo");
+          	  }
+        }
+        // System.out.println(desc);
+        doc.add(new TextField(SearchFiles.DESC, desc, Store.YES));  
+    }
+   
+    private static void indexPublisher(org.w3c.dom.Document parseador,Document doc){
+  	  NodeList lista = parseador.getElementsByTagName("dc:publisher");
+        String pub = "";
+        
+        for(int i = 0; i<lista.getLength(); i++){
+      	  pub = pub + " " + lista.item(i).getFirstChild().getNodeValue();
+        }
+        doc.add(new TextField(SearchFiles.PUBLISHER, pub, Store.YES));
+    }
+   
+    private static void  indexLanguage(org.w3c.dom.Document parseador,Document doc){
+  	  NodeList lista = parseador.getElementsByTagName("dc:language");
+        String l = "";
+        
+        for(int i = 0; i<lista.getLength(); i++){
+      	  try{
+      	  l = l + " " + lista.item(i).getFirstChild().getNodeValue();
+      	  } catch (NullPointerException e){
+      		  System.out.println("Acceso a puntero nulo");
+      	  }
+        }
+        doc.add(new StringField(SearchFiles.LANG, l, Store.YES));
+    }
+    
+    private static void indexCreator(org.w3c.dom.Document parseador,Document doc){
+  	   NodeList lista = parseador.getElementsByTagName("dc:creator");
+  	   String subject = "";
+  	   
+  	   for(int i = 0; i<lista.getLength(); i++){
+  		   try{
+  			   subject = subject + " " + lista.item(i).getFirstChild().getNodeValue();
+  		   } catch (NullPointerException e){
+  			   System.out.println("ERROR: acceso a puntero nulo.");
+  		   }
+  	   }
+  	  
+  	   doc.add(new TextField(SearchFiles.CREATOR, subject, Store.YES));
+  }
+    
+   private static void  indexDate(org.w3c.dom.Document parseador,Document doc){
+  	  NodeList lista = parseador.getElementsByTagName("dc:date");
+  	  int date = 0;
+        
+        for(int i = 0; i<lista.getLength(); i++){
+      	  try{
+  			    date = Integer.parseInt(lista.item(i).getFirstChild().getNodeValue().trim());
+  		   } catch (NullPointerException e){
+  			   System.out.println("ERROR: acceso a puntero nulo.");
+  		   }
+      	 
+        }
+        doc.add(new IntField(SearchFiles.DATE, date, Store.YES));
+    }
+
 }
