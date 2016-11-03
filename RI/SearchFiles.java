@@ -53,14 +53,6 @@ public class SearchFiles {
   public final static String TEMATICO = "tema";
   public final static String FECHA = "fecha";
   
-  public final static String TITULO = "titulo";
-  public final static String ID = "identificador";
-  public final static String DESC = "descripcion";
-  public final static String PUBLISHER = "publisher";
-  public final static String LANG = "lenguaje";
-  public final static String CREATOR = "autor";
-  public final static String DATE = "fecha";
-  
   public static void main(String[] args) throws Exception {
     String usage ="No se han introducido los archivos correctos";
     if (args.length > 0 && ("-h".equals(args[0]) || "-help".equals(args[0]))) {
@@ -217,14 +209,6 @@ public class SearchFiles {
 	    		  query = parser.parse(consultas[i]);
 	    	      System.out.println("Searching for: " + query);
 
-	    		  if (repeat > 0) {                           // repeat & time as benchmark
-	    		        Date start = new Date();
-	    		        for (int j = 0; j < repeat; j++) {
-	    		        	searcher.search(query, 100);
-	    		        }
-	    		        Date end = new Date();
-	    		        System.out.println("Time: "+(end.getTime()-start.getTime())+"ms");
-	    		   }
 	    		  doPagingSearchString(in, searcher, query, queries == null && queryString == null,resultados);
 	    		  if (queryString != null) {
 	    		        break;
@@ -302,9 +286,9 @@ public class SearchFiles {
       for (int i = 0; i < results.totalHits; i++){
         
     	Document doc = searcher.doc(hits[i].doc);
-    	long tiempo = Long.parseLong(doc.getField("modified").stringValue());
+    	/*long tiempo = Long.parseLong(doc.getField("modified").stringValue());
     	Date fecha = new Date(tiempo);
-    	//System.out.println("modified: " + fecha);
+    	//System.out.println("modified: " + fecha);*/
         
         String path = doc.get("path");
         if (path != null) {
