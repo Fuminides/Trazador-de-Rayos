@@ -20,8 +20,10 @@ package trabajo;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -60,8 +62,7 @@ public class SearchFiles {
   public final static String DATE = "fecha";
   
   public static void main(String[] args) throws Exception {
-    String usage =
-      "Usage:\tjava org.apache.lucene.demo.SearchFiles [-index dir] [-field f] [-repeat n] [-queries file] [-query string] [-raw] [-paging hitsPerPage]\n\nSee http://lucene.apache.org/core/4_1_0/demo/ for details.";
+    String usage ="No se han introducido los archivos correctos";
     if (args.length > 0 && ("-h".equals(args[0]) || "-help".equals(args[0]))) {
       System.out.println(usage);
       System.exit(0);
@@ -69,12 +70,30 @@ public class SearchFiles {
 
     String indexAutor = "autor", indexTheme = "tematico", indexDate = "fecha";
     String field = "contents";
-    
+    String index = "index";
+    String infoNeeds=null;
+    String resultFile=null;
     String queries = null;
-    int repeat = 0;
-    boolean raw = false;
     String queryString = null;
-    int hitsPerPage = 10;
+    
+    for(int i = 0;i < args.length;i++) {
+        if ("-index".equals(args[i])) {
+          index = args[i+1];
+          i++;
+        } 
+        else if("-infoNeeds".equals(args[i])){
+      	  infoNeeds=args[i+1];
+      	  i++;
+        }
+        else if("-output".equals(args[i])){
+      	  resultFile=args[i+1];
+      	  i++;
+        }
+    }
+    if (infoNeeds == null || resultFile == null || index == null) {
+        System.err.println("Usage: " + usage);
+        System.exit(1);
+      }
     
     
     IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(index)));
@@ -139,7 +158,7 @@ public class SearchFiles {
 	  		spatialQuery.add(nRQ, BooleanClause.Occur.MUST);
 	  		
 	  		
-  		    doPagingSearchString(in, searcher, spatialQuery, hitsPerPage, raw, queries == null && queryString == null,resultSpatial);
+  		    doPagingSearchString(in, searcher, spatialQuery, queries == null && queryString == null,resultSpatial);
   		    
 	  		//El line sera toda la query menos la parte del spatial
 	  		line="";
@@ -179,7 +198,7 @@ public class SearchFiles {
 	  	  		  temporalQuery.add(bTQ, BooleanClause.Occur.MUST);
 	  	  	      temporalQuery.add(eTQ, BooleanClause.Occur.MUST);
 	  	  	      
-		  		  doPagingSearchString(in, searcher, temporalQuery, hitsPerPage, raw, queries == null && queryString == null,resultNoSpatial);
+		  		  doPagingSearchString(in, searcher, temporalQuery, queries == null && queryString == null,resultNoSpatial);
 				
 		  		  //Quitamos la parte del temporal de la consulta 
 			  		line="";
@@ -206,7 +225,7 @@ public class SearchFiles {
 	    		        Date end = new Date();
 	    		        System.out.println("Time: "+(end.getTime()-start.getTime())+"ms");
 	    		   }
-	    		  doPagingSearchString(in, searcher, query, hitsPerPage, raw, queries == null && queryString == null,resultados);
+	    		  doPagingSearchString(in, searcher, query, queries == null && queryString == null,resultados);
 	    		  if (queryString != null) {
 	    		        break;
 	    		  }
@@ -225,33 +244,37 @@ public class SearchFiles {
 	      }    
       }
 
-      //Sacamos los resultados de la consulta obtenidos
+      //*********ESTA PARTE SE MODIFICARA EN BASE A LAS CONSULTAS DEL TRABAJO  
+      //Concateno los resultados obtenidos 
       int total=0;
-      String doc="";
-      if(!resultSpatial.isEmpty() && !resultNoSpatial.isEmpty()){
-    	  total=resultSpatial.size() + resultNoSpatial.size();
+      ArrayList<Integer> resultadosFinales = new ArrayList<Integer>();
+      if(!resultSpatial.isEmpty()){
+    	  total+=resultSpatial.size();
     	  for(int i=0;i<resultSpatial.size();i++){
-    		  doc=doc+resultSpatial.get(i)+ ",";
-    	  }
-    	  for(int i=0;i<resultNoSpatial.size();i++){
-    		  doc=doc+resultNoSpatial.get(i)+ ",";
-    	  } 
-      }else if(!resultSpatial.isEmpty()){
-    	  total=resultSpatial.size();
-    	  
-    	  for(int i=0;i<resultSpatial.size();i++){
-    		  doc=doc+resultSpatial.get(i)+ ",";
+    		  resultadosFinales.add(resultSpatial.get(i));
     	  }
       }
-      else if(!resultNoSpatial.isEmpty()){
-    	  total=resultNoSpatial.size();
+      if(!resultNoSpatial.isEmpty()){
+    	  total+=resultNoSpatial.size();
     	  for(int i=0;i<resultNoSpatial.size();i++){
-    		  doc=doc+resultNoSpatial.get(i)+ ",";
+    		  resultadosFinales.add(resultNoSpatial.get(i));
     	  } 
+      }
+      //Escribimos los resultados de la consulta obtenidos, en el fichero resultFile
+      FileWriter fichero = null;
+      PrintWriter pw = null;
+      try{
+          fichero = new FileWriter(resultFile);
+          pw = new PrintWriter(fichero);
+          pw.println("Total de documentos encontrados: "+total);
+          for (int i = 0; i < resultadosFinales.size(); i++)
+              pw.println(resultadosFinales.get(i));
 
+      } 
+      catch (Exception e) {
+          e.printStackTrace();
       }
-      System.out.println(total +" total matching documents"); 
-      System.out.println(doc);
+      fichero.close();
     }
     reader.close();
   }
@@ -269,106 +292,46 @@ public class SearchFiles {
    */
   //DUPLICADO para que este metodo devuelva los resultados en un array en vez de por pantalla
   public static void doPagingSearchString(BufferedReader in, IndexSearcher searcher, Query query, 
-                                     int hitsPerPage, boolean raw, boolean interactive,ArrayList<Integer> resultados) throws IOException {
-    // Collect enough docs to show 5 pages
-    TopDocs results = searcher.search(query, 5 * hitsPerPage);
+                                       boolean interactive,ArrayList<Integer> resultados) throws IOException {
+	  
+    //********************* no estoy muy segura de que hay que poner en el segundo parametro del searcher.search****//
+	TopDocs results = searcher.search(query, 0);
     ScoreDoc[] hits = results.scoreDocs;
     
-    int numTotalHits = results.totalHits;
-    //System.out.println(numTotalHits + " total matching documents");
-
-    int start = 0;
-    int end = Math.min(numTotalHits, hitsPerPage);
-        
     while (true) {
-      if (end > hits.length) {
-        System.out.println("Only results 1 - " + hits.length +" of " + numTotalHits + " total matching documents collected.");
-        System.out.println("Collect more (y/n) ?");
-        String line = in.readLine();
-        if (line.length() == 0 || line.charAt(0) == 'n') {
-          break;
-        }
-
-        hits = searcher.search(query, numTotalHits).scoreDocs;
-      }
-      
-      end = Math.min(hits.length, start + hitsPerPage);
-      
-      for (int i = start; i < end; i++) {
-        if (raw) {                              // output raw format
-          System.out.println("doc="+hits[i].doc+" score="+hits[i].score);
-          continue;
-        }
-        else{
-        	Document doc = searcher.doc(hits[i].doc);
-        	long tiempo = Long.parseLong(doc.getField("modified").stringValue());
-        	Date fecha = new Date(tiempo);
-        	//System.out.println("modified: " + fecha);
-        }
-
-        Document doc = searcher.doc(hits[i].doc);
-     
+      for (int i = 0; i < results.totalHits; i++){
+        
+    	Document doc = searcher.doc(hits[i].doc);
+    	long tiempo = Long.parseLong(doc.getField("modified").stringValue());
+    	Date fecha = new Date(tiempo);
+    	//System.out.println("modified: " + fecha);
+        
         String path = doc.get("path");
         if (path != null) {
         	//Solo muestra el identificador del documento en vez del path
         	String cadena[]=path.split("/");
-        	
         	int number=Integer.parseInt(cadena[cadena.length-1].split("-")[0]);
-        	System.out.println(number);
-
         	resultados.add(number);
-        	
-        	//System.out.println((i+1) + ". " + number);
         	
         } else {
           System.out.println((i+1) + ". " + "No path for this document");
         }
                   
       }
-
-      if (!interactive || end == 0) {
+      if (!interactive ||  results.totalHits== 0) {
         break;
       }
-
-      if (numTotalHits >= end) {
-        boolean quit = false;
-        while (true) {
-          System.out.print("Press ");
-          if (start - hitsPerPage >= 0) {
-            System.out.print("(p)revious page, ");  
-          }
-          if (start + hitsPerPage < numTotalHits) {
-            System.out.print("(n)ext page, ");
-          }
-          System.out.println("(q)uit or enter number to jump to a page.");
-          
-          String line = in.readLine();
-          if (line.length() == 0 || line.charAt(0)=='q') {
-            quit = true;
-            break;
-          }
-          if (line.charAt(0) == 'p') {
-            start = Math.max(0, start - hitsPerPage);
-            break;
-          } else if (line.charAt(0) == 'n') {
-            if (start + hitsPerPage < numTotalHits) {
-              start+=hitsPerPage;
-            }
-            break;
-          } else {
-            int page = Integer.parseInt(line);
-            if ((page - 1) * hitsPerPage < numTotalHits) {
-              start = (page - 1) * hitsPerPage;
-              break;
-            } else {
-              System.out.println("No such page");
-            }
-          }
-        }
-        if (quit) break;
-        end = Math.min(numTotalHits, start + hitsPerPage);
+      boolean quit = false;
+      while (true) {
+    	  System.out.print("Press(q)uit");
+    	  String line = in.readLine();
+    	  if (line.length() == 0 || line.charAt(0)=='q') {
+    		  quit = true;
+    		  break;
+    	  }
       }
-    }
+      if (quit) break;
+     }
   }
   /**
    * This demonstrates a typical paging search scenario, where the search engine presents 

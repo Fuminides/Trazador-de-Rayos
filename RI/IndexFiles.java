@@ -58,17 +58,32 @@ public class IndexFiles {
  * @throws ParserConfigurationException 
  * @throws SAXException */
   public static void main(String[] args) throws ParserConfigurationException, SAXException {
-    String usage = "Por favor, indicame el fichero donde estan las necesidades de informacion.";
+    String usage = "Por favor, indicame la ruta de la coleccion de documentos a indexar.";
+    String error = "Por favor, indicame la ruta del directorio donde generar los indices y la ruta de la coleccion de documentos a indexar.";
     String[] indexes = { SearchFiles.AUTOR, SearchFiles.TEMATICO, SearchFiles.FECHA};
-    String docsPath;
+    String docsPath= null;
     boolean reescribir = true;
+    String indexPath = "index";
 
     if (args.length == 0) {
-      System.err.println(usage);
+      System.err.println(error);
+      System.exit(1);
+    }else {
+    	for(int i=0;i<args.length;i++) {
+	      if ("-index".equals(args[i])) {
+	        indexPath = args[i+1];
+	        i++;
+	      } else if ("-docs".equals(args[i])) {
+	        docsPath = args[i+1];
+	        i++;
+	      } 
+    	}
+    }
+    if (docsPath == null) {
+      System.err.println("Usage: " + usage);
       System.exit(1);
     }
-    
-    docsPath = args[0];
+
     final File docDir = new File(docsPath);
     if (!docDir.exists() || !docDir.canRead()) {
       System.out.println("El directorio '" +docDir.getAbsolutePath()+ "' no existe o no dispone de permisos de lectura.");
