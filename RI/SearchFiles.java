@@ -65,7 +65,6 @@ public class SearchFiles {
     String index = "index";
     String infoNeeds=null;
     String resultFile=null;
-    String queries = null;
     String queryString = null;
     
     for(int i = 0;i < args.length;i++) {
@@ -91,179 +90,45 @@ public class SearchFiles {
     IndexReader reader = DirectoryReader.open(FSDirectory.open(new File(index)));
     IndexSearcher searcher = new IndexSearcher(reader);
     Analyzer analyzer = new SpanishAnalyzer(Version.LUCENE_44);
-
+    
+    /***Parsear el xml  aqui **/
+    
+    
+    
+    //Antes de esto tengo que leer el fichero xml y meter cada necesidad en una posicion del array
+    String [] necesidades = null;
+    Query q=null;
     BufferedReader in = null;
-    if (queries != null) {
-      in = new BufferedReader(new InputStreamReader(new FileInputStream(queries), "UTF-8"));
-    } else {
-      in = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
+    ArrayList<Integer> result = new ArrayList<Integer>();
+    
+    FileWriter fichero = null;
+    PrintWriter pw = null;
+    try{
+        fichero = new FileWriter(resultFile);
+        pw = new PrintWriter(fichero);
+	    
+	    for(int i=0;i<necesidades.length;i++){
+	    	in = new BufferedReader(new InputStreamReader(new FileInputStream(necesidades[i]), "UTF-8"));
+	    	Parser pars = new Parser(necesidades[i]);
+	    	q= pars.execute();
+	    	result = doPagingSearchString(in, searcher, q, necesidades[i] == null && queryString == null,result);
+	    	
+	    	//Escribimos los resultados de la consulta obtenidos, en el fichero resultFile
+	        pw.println("Consulta: "+necesidades[i]);
+            pw.println("Total de documentos encontrados: "+result.size());
+            for (int j = 0; j < result.size(); j++){
+                pw.println(result.get(j));
+            }     
+	    }
+	    fichero.close();
+	    reader.close();
     }
-    QueryParser parser = new QueryParser(Version.LUCENE_44, field, analyzer);
-    while (true) {
-      if (queries == null && queryString == null) {                        // prompt the user
-        System.out.println("Enter query: ");
-      }
-
-      String line = queryString != null ? queryString : in.readLine();
-
-      if (line == null || line.length() == -1) {
-        break;
-      }
-
-      line = line.trim();
-      if (line.length() == 0) {
-        break;
-      }
-      
-      Query query = null;
-      //System.out.println("Searching for: " + line);
-      ArrayList<Integer> resultSpatial = new ArrayList<Integer>();
-      ArrayList<Integer> resultNoSpatial = new ArrayList<Integer>();
-      while(!line.isEmpty()){
-	      if ( line.contains("spatial")) { 
-	    	  	    	
-	    	//Dividimos todo el string en las diferentes consultas y guardamos cada una en una posicion del array
-	    	String dividir[]  = line.split(" ");
-		    int i;
-		    //Buscamos cual de ellas es la consulta del spatial
-	    	for (i=0;i<dividir.length;i++){
-	    		if(dividir[i].contains("spatial")){
-	    			line=dividir[i];
-	    			break;
-	    		}
-	    	}
-	  	    String[] coordenadas = line.substring(line.indexOf(":")+1).split(",");
-		    
-	  		double west = Double.parseDouble(coordenadas[0]),
-	  		east = Double.parseDouble(coordenadas[1]),
-	  		south = Double.parseDouble(coordenadas[2]),
-	  		north = Double.parseDouble(coordenadas[3]);
-	  		BooleanQuery spatialQuery = new BooleanQuery();
-	  		NumericRangeQuery<Double> wRQ = NumericRangeQuery.newDoubleRange("west", null, east, true, true);
-	  		NumericRangeQuery<Double> eRQ = NumericRangeQuery.newDoubleRange("east", west, null, true, true);
-	  		NumericRangeQuery<Double> sRQ = NumericRangeQuery.newDoubleRange("south", null, north, true, true);
-	  		NumericRangeQuery<Double> nRQ = NumericRangeQuery.newDoubleRange("north", south, null, true, true);
-	  		
-	  		spatialQuery.add(wRQ, BooleanClause.Occur.MUST);
-	  		spatialQuery.add(eRQ, BooleanClause.Occur.MUST);
-	  		spatialQuery.add(sRQ, BooleanClause.Occur.MUST);
-	  		spatialQuery.add(nRQ, BooleanClause.Occur.MUST);
-	  		
-	  		
-  		    doPagingSearchString(in, searcher, spatialQuery, queries == null && queryString == null,resultSpatial);
-  		    
-	  		//El line sera toda la query menos la parte del spatial
-	  		line="";
-	  		for (int j=0;j<dividir.length;j++){
-	  			if(j!=i){
-	  				line=line+dividir[j]+" ";
-	  			}
-	  		}
-	      }
-	      else if(line.contains("temporal")){
-	    	  // Para las consultas temporal 
-	    	  String[] t = line.substring(line.indexOf(":")+1).split(";");
-	          System.out.println("Tama�o:"+t.length);
-	          if(t.length>1){
-	        	  String dividir[]  = line.split(" ");
-		  		    int i;
-		  		    //Buscamos cual de ellas es la consulta del temporal
-		  	    	for (i=0;i<dividir.length;i++){
-		  	    		if(dividir[i].contains("temporal")){
-		  	    			break;
-		  	    		}
-		  	    	}
-	     
-	        	  String b=t[0].split("=")[1];
-	        	  String e=t[1].split("=")[1];
-	        	  int begin=Integer.parseInt(b.split("-")[0]+b.split("-")[1]+b.split("-")[2]);
-	        	  int end=Integer.parseInt(e.split("-")[0]+e.split("-")[1]+e.split("-")[2]);
-	        	  
-	        	  System.out.println("Temporal:"+begin);
-	        	  System.out.println("Temporal:"+end);
-	        	  
-	        	  BooleanQuery temporalQuery = new BooleanQuery();
-	        	  
-	  	  		  NumericRangeQuery<Integer> bTQ = NumericRangeQuery.newIntRange("begin", begin, null, true, false);//("begin",begin, null,end,null,true);
-	  	  		  NumericRangeQuery<Integer> eTQ = NumericRangeQuery.newIntRange("end",begin,end, null, true, true);
-	  	  		
-	  	  		  temporalQuery.add(bTQ, BooleanClause.Occur.MUST);
-	  	  	      temporalQuery.add(eTQ, BooleanClause.Occur.MUST);
-	  	  	      
-		  		  doPagingSearchString(in, searcher, temporalQuery, queries == null && queryString == null,resultNoSpatial);
-				
-		  		  //Quitamos la parte del temporal de la consulta 
-			  		line="";
-			  		for (int j=0;j<dividir.length;j++){
-			  			if(j!=i){
-			  				line=line+dividir[j]+" ";
-			  			}
-			  		}
-		          }
-	    	  
-	      }
-	      else{
-	    	 String consultas[]=line.split(" ");
-	    	  for(int i=0;i<consultas.length;i++){
-	    		  ArrayList<Integer> resultados = new ArrayList<Integer>();
-	    		  query = parser.parse(consultas[i]);
-	    	      System.out.println("Searching for: " + query);
-
-	    		  doPagingSearchString(in, searcher, query, queries == null && queryString == null,resultados);
-	    		  if (queryString != null) {
-	    		        break;
-	    		  }
-	    		  if(resultNoSpatial.isEmpty()){
-	    			  resultNoSpatial=(ArrayList<Integer>) resultados.clone();
-	    		  }
-	    		  else{
-	    			  for(int j=0;j<resultNoSpatial.size();j++){
-	    				  if(!resultados.contains(resultNoSpatial.get(j))){
-	    					  resultNoSpatial.remove(j);
-	    				  }
-	    			  }
-	    		  }
-	    	  }
-	    	  line="";
-	      }    
-      }
-
-      //*********ESTA PARTE SE MODIFICARA EN BASE A LAS CONSULTAS DEL TRABAJO  
-      //Concateno los resultados obtenidos 
-      int total=0;
-      ArrayList<Integer> resultadosFinales = new ArrayList<Integer>();
-      if(!resultSpatial.isEmpty()){
-    	  total+=resultSpatial.size();
-    	  for(int i=0;i<resultSpatial.size();i++){
-    		  resultadosFinales.add(resultSpatial.get(i));
-    	  }
-      }
-      if(!resultNoSpatial.isEmpty()){
-    	  total+=resultNoSpatial.size();
-    	  for(int i=0;i<resultNoSpatial.size();i++){
-    		  resultadosFinales.add(resultNoSpatial.get(i));
-    	  } 
-      }
-      //Escribimos los resultados de la consulta obtenidos, en el fichero resultFile
-      FileWriter fichero = null;
-      PrintWriter pw = null;
-      try{
-          fichero = new FileWriter(resultFile);
-          pw = new PrintWriter(fichero);
-          pw.println("Total de documentos encontrados: "+total);
-          for (int i = 0; i < resultadosFinales.size(); i++)
-              pw.println(resultadosFinales.get(i));
-
-      } 
-      catch (Exception e) {
-          e.printStackTrace();
-      }
-      fichero.close();
+    catch (Exception e) {
+    	e.printStackTrace();
     }
-    reader.close();
-  }
-
-  
+ }
+    
+ 
   /**
    * This demonstrates a typical paging search scenario, where the search engine presents 
    * pages of size n to the user. The user can then go to the next page if interested in
@@ -274,48 +139,42 @@ public class SearchFiles {
    * is executed another time and all hits are collected.
    * 
    */
-  //DUPLICADO para que este metodo devuelva los resultados en un array en vez de por pantalla
-  public static void doPagingSearchString(BufferedReader in, IndexSearcher searcher, Query query, 
+  
+  public static ArrayList<Integer> doPagingSearchString(BufferedReader in, IndexSearcher searcher, Query query, 
                                        boolean interactive,ArrayList<Integer> resultados) throws IOException {
 	  
-    //********************* no estoy muy segura de que hay que poner en el segundo parametro del searcher.search****//
-	TopDocs results = searcher.search(query, 0);
+    /*** REVISAR que poner en el segundo parametro del searcher.search****/
+	TopDocs results = searcher.search(query,100);
     ScoreDoc[] hits = results.scoreDocs;
+    ArrayList<Integer> resultadosFinales= new ArrayList<Integer>();
     
-    while (true) {
-      for (int i = 0; i < results.totalHits; i++){
+    for (int i = 0; i < results.totalHits; i++){
         
-    	Document doc = searcher.doc(hits[i].doc);
-    	/*long tiempo = Long.parseLong(doc.getField("modified").stringValue());
-    	Date fecha = new Date(tiempo);
-    	//System.out.println("modified: " + fecha);*/
-        
+    	Document doc = searcher.doc(hits[i].doc);        
         String path = doc.get("path");
+        
         if (path != null) {
-        	//Solo muestra el identificador del documento en vez del path
+        	
+        	/***HABRIA QUE VER COMO DEVUELVE EL FICHERO PARA PARSEARLO DE UNA FORMA Y OTRA PARA QUE SOLO GUARDE EL ID DEL DOC***/
         	String cadena[]=path.split("/");
         	int number=Integer.parseInt(cadena[cadena.length-1].split("-")[0]);
-        	resultados.add(number);
         	
-        } else {
+        	if(resultados.size() + (results.totalHits - i) <  results.totalHits){
+        		resultados.add(number);
+        	}
+        	else{
+        		if(resultados.contains(number)){
+        			resultadosFinales.add(number);
+        		}
+        	}
+        	
+        }
+        else {
           System.out.println((i+1) + ". " + "No path for this document");
         }
                   
-      }
-      if (!interactive ||  results.totalHits== 0) {
-        break;
-      }
-      boolean quit = false;
-      while (true) {
-    	  System.out.print("Press(q)uit");
-    	  String line = in.readLine();
-    	  if (line.length() == 0 || line.charAt(0)=='q') {
-    		  quit = true;
-    		  break;
-    	  }
-      }
-      if (quit) break;
-     }
+    }
+    return resultadosFinales;
   }
   /**
    * This demonstrates a typical paging search scenario, where the search engine presents 
