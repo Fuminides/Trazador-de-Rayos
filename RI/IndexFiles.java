@@ -23,6 +23,7 @@ import org.apache.lucene.analysis.es.SpanishAnalyzer;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.document.Field.Store;
+import org.apache.lucene.document.FieldType;
 import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.StringField;
 import org.apache.lucene.document.TextField;
@@ -54,6 +55,10 @@ public class IndexFiles {
   
   private IndexFiles() {}
 
+  private final static float BOOST_AUTOR = 1.0f;
+  private final static float BOOST_FECHA = 0.5f;
+  private final static float BOOST_TEMA = 1.5f;
+  
   /** Index all text files under a directory. 
  * @throws ParserConfigurationException 
  * @throws SAXException */
@@ -172,7 +177,7 @@ public class IndexFiles {
           indexTematico(parseador, doc);
          
           if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
-            System.out.println("Añadiendo: " + file);
+            //System.out.println("Añadiendo: " + file);
             writer.addDocument(doc);
           } else {         
             System.out.println("Actualizando: " + file);
@@ -207,8 +212,9 @@ public class IndexFiles {
           	  }
         }
         
-        //System.out.println(titulo);
-        doc.add(new TextField(SearchFiles.TEMATICO, titulo + " " + desc, Store.YES));
+        Field tema = new TextField(SearchFiles.TEMATICO, titulo + " " + desc, Store.YES);
+        tema.setBoost(BOOST_TEMA);
+        doc.add(tema);
     }
     
     private static void indexAutor(org.w3c.dom.Document parseador,Document doc){
@@ -237,8 +243,9 @@ public class IndexFiles {
    		   }
    	   }
         
-        
-        doc.add(new StringField(SearchFiles.AUTOR, id + " " + pub + " " + subject, Store.YES));
+        Field autor = new StringField(SearchFiles.AUTOR, id + " " + pub + " " + subject, Store.YES);
+        autor.setBoost(BOOST_AUTOR);
+        doc.add(autor);
     }   
     
    
@@ -255,7 +262,12 @@ public class IndexFiles {
   		   }
       	 
         }
-        doc.add(new IntField(SearchFiles.FECHA, date, Store.YES));
+        
+        FieldType myIntType = new FieldType(IntField.TYPE_STORED);
+        myIntType.setOmitNorms(false);
+        Field dateF = new IntField("score", date, myIntType);
+        dateF.setBoost(BOOST_FECHA);
+        doc.add(dateF);
     }
 
 }

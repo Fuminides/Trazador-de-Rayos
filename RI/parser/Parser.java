@@ -119,9 +119,9 @@ public class Parser {
 			 m.find();
 			 String anyo1 = m.group(0);
 			 m.find();
-			 String anyo2 = m.group(0); 
-			 frase = frase.replace("anyo1", "");
-			 frase = frase.replace("anyo2", "");
+			 String anyo2 = m.group(0);
+			 frase = frase.replace(anyo1, "");
+			 frase = frase.replace(anyo2, "");
 			 return anyo1 + "," + anyo2;
 		 }
 		 
@@ -170,7 +170,7 @@ public class Parser {
 		if ( buscarAutor != ""){
 			if (autor.charAt(autor.length()-1) == ':' ) autor += buscarAutor;
 			else autor += "," + buscarAutor;
-			 frase = frase.replaceAll(autor, "");
+			 frase = frase.toLowerCase().replaceAll(buscarAutor.toLowerCase(), "");
 		}
 		
 		if ( buscarFecha != ""){
