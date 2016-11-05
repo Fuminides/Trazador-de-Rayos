@@ -17,17 +17,11 @@ package trabajo;
  * limitations under the License.
  */
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -136,14 +130,34 @@ public class SearchFiles {
 	    	
 	    	Parser pars = new Parser(necesidades[i]);
 	    	q= pars.execute();
-	    	result = doPagingSearchString(searcher, q, necesidades[i] == null && queryString == null,result);
+	    	
+	    	//Se añade la consulta booleana para la fecha 
+	    	String fecha=pars.buscarFecha();
+	    	BooleanQuery dateQuery = new BooleanQuery();
+	    	if(!fecha.equals("null")){
+	    		String [] anyos = fecha.split(",");
+	    		int anno1 = Integer.parseInt(anyos[0]);
+	    		if(anyos.length>1){
+	    			int anno2 = Integer.parseInt(anyos[1]);
+			  		NumericRangeQuery<Integer> entre = NumericRangeQuery.newIntRange("entre", anno1, anno2, true, true);
+			  		dateQuery.add(entre, BooleanClause.Occur.MUST);
+	    		}
+	    		else{
+	    			NumericRangeQuery<Integer> apartir = NumericRangeQuery.newIntRange("apartir", anno1, null, true, true);
+	    			dateQuery.add(apartir, BooleanClause.Occur.MUST);
+	    		}
+		  		result = doPagingSearchString(searcher, dateQuery, necesidades[i] == null && queryString == null,result); 		
+	    	}
+	    	/**No se si esta segunda llamada se ejecuta siempre o solo en el caso de que no haya fecha**/
+	    	else{
+	    		result = doPagingSearchString(searcher, q, necesidades[i] == null && queryString == null,result);
+	    	}
 	    	
 	    	//ordenamos los resultados de forma creciente como exige en el guion
 	    	//Collections.sort(result);
 	    	
 	    	//Escribimos los resultados de la consulta obtenidos, en el fichero resultFile
 	    	
-	    	//Comento estas dos lineas xq pone que no escribamos ningun tipo de cabecera para separar resultados de consultas
 	        //System.out.println("Consulta: "+necesidades[i]);
 	        //System.out.println("Total de documentos encontrados: "+result.size());
 	    	
@@ -185,9 +199,8 @@ public class SearchFiles {
         String path = doc.get("ruta");
         
         if (path != null) {
-        	/***HABRIA QUE VER COMO DEVUELVE EL FICHERO PARA PARSEARLO DE UNA FORMA Y OTRA PARA QUE SOLO GUARDE EL ID DEL DOC***/
+      
         	String cadena[]=path.split("/");
-        	//int number=Integer.parseInt(cadena[cadena.length-1].split("-")[0]);
         	String id=cadena[cadena.length-1];
         	if(resultados.size() == 0){
         		resultadosFinales.add(path);
