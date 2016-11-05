@@ -25,12 +25,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.es.SpanishAnalyzer;
 //import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.document.Document;
+import org.apache.lucene.document.Field;
+import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -43,6 +49,7 @@ import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
+import org.w3c.dom.NodeList;
 
 
 public class SearchFiles {
@@ -91,15 +98,38 @@ public class SearchFiles {
     IndexSearcher searcher = new IndexSearcher(reader);
     Analyzer analyzer = new SpanishAnalyzer(Version.LUCENE_44);
     
-    /***Parsear el xml  aqui **/
+    //Parseamos el xml para quedarnos con las 5 consultas y sus identificadores
+	File file= new File(infoNeeds);
+	DocumentBuilderFactory xmlParserF = DocumentBuilderFactory.newInstance();
+	DocumentBuilder xmlParser = xmlParserF.newDocumentBuilder();
+	org.w3c.dom.Document parseador = xmlParser.parse(file);
+	Document doc = new Document();
+
+	Field pathField = new StringField("ruta", file.getPath(), Field.Store.YES);
+	doc.add(pathField);
+  
+	NodeList lista = parseador.getElementsByTagName("text");
+	NodeList identificadores=parseador.getElementsByTagName("identifier");
+    String consulta = "";
+    String iden="";
+	//Cogemos el campo texto e id de cada una de las consultas
+    for(int i = 0; i<lista.getLength(); i++){
+  	  consulta = consulta + "-" + lista.item(i).getFirstChild().getNodeValue();
+    }
+    for(int i = 0; i<identificadores.getLength(); i++){
+  	  iden = iden + "=" + identificadores.item(i).getFirstChild().getNodeValue();
+    }
+    
+    String [] necesidades=consulta.split("-");
+    String [] id= iden.split("=");
+    for (int i=1;i<necesidades.length;i++){
+  	  System.out.println("La consulta "+id[i]+" es:" +necesidades[i]);
+    }
     
     
-    
-    //Antes de esto tengo que leer el fichero xml y meter cada necesidad en una posicion del array
-    String [] necesidades = null;
     Query q=null;
     BufferedReader in = null;
-    ArrayList<Integer> result = new ArrayList<Integer>();
+    ArrayList<String> result = new ArrayList<String>();
     
     FileWriter fichero = null;
     PrintWriter pw = null;
@@ -113,11 +143,17 @@ public class SearchFiles {
 	    	q= pars.execute();
 	    	result = doPagingSearchString(in, searcher, q, necesidades[i] == null && queryString == null,result);
 	    	
+	    	//ordenamos los resultados de forma creciente como exige en el guion
+	    	Collections.sort(result);
+	    	
 	    	//Escribimos los resultados de la consulta obtenidos, en el fichero resultFile
-	        pw.println("Consulta: "+necesidades[i]);
-            pw.println("Total de documentos encontrados: "+result.size());
+	    	
+	    	//Comento estas dos lineas xq pone que no escribamos ningun tipo de cabecera para separar resultados de consultas
+	        //pw.println("Consulta: "+necesidades[i]);
+            //pw.println("Total de documentos encontrados: "+result.size());
+	    	
             for (int j = 0; j < result.size(); j++){
-                pw.println(result.get(j));
+            	pw.println(id[i]+'	'+result.get(j));
             }     
 	    }
 	    fichero.close();
@@ -140,13 +176,13 @@ public class SearchFiles {
    * 
    */
   
-  public static ArrayList<Integer> doPagingSearchString(BufferedReader in, IndexSearcher searcher, Query query, 
-                                       boolean interactive,ArrayList<Integer> resultados) throws IOException {
+  public static ArrayList<String> doPagingSearchString(BufferedReader in, IndexSearcher searcher, Query query, 
+                                       boolean interactive,ArrayList<String> resultados) throws IOException {
 	  
-    /*** REVISAR que poner en el segundo parametro del searcher.search****/
+    /********** REVISAR que poner en el segundo parametro del searcher.search****/
 	TopDocs results = searcher.search(query,100);
     ScoreDoc[] hits = results.scoreDocs;
-    ArrayList<Integer> resultadosFinales= new ArrayList<Integer>();
+    ArrayList<String> resultadosFinales= new ArrayList<String>();
     
     for (int i = 0; i < results.totalHits; i++){
         
@@ -157,14 +193,14 @@ public class SearchFiles {
         	
         	/***HABRIA QUE VER COMO DEVUELVE EL FICHERO PARA PARSEARLO DE UNA FORMA Y OTRA PARA QUE SOLO GUARDE EL ID DEL DOC***/
         	String cadena[]=path.split("/");
-        	int number=Integer.parseInt(cadena[cadena.length-1].split("-")[0]);
-        	
+        	//int number=Integer.parseInt(cadena[cadena.length-1].split("-")[0]);
+        	String id=cadena[cadena.length-1];
         	if(resultados.size() + (results.totalHits - i) <  results.totalHits){
-        		resultados.add(number);
+        		resultados.add(id);
         	}
         	else{
-        		if(resultados.contains(number)){
-        			resultadosFinales.add(number);
+        		if(resultados.contains(id)){
+        			resultadosFinales.add(id);
         		}
         	}
         	
