@@ -195,8 +195,8 @@ public class SearchFiles {
         	String cadena[]=path.split("/");
         	//int number=Integer.parseInt(cadena[cadena.length-1].split("-")[0]);
         	String id=cadena[cadena.length-1];
-        	if(resultados.size() + (results.totalHits - i) <  results.totalHits){
-        		resultados.add(id);
+        	if(resultados.size() == 0){
+        		resultadosFinales.add(id);
         	}
         	else{
         		if(resultados.contains(id)){
