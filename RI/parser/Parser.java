@@ -11,6 +11,7 @@ import org.apache.lucene.util.Version;
 
 import recuperaciÃ³n.SearchFiles;
 
+
 public class Parser {
 
 	int anyoActual = 2016;
@@ -37,6 +38,10 @@ public class Parser {
 	
 	public String getFecha(){ return anyos; }
 	
+	/**
+	 * Devuelve el id buscado en la consulta que siga el siguiente esquema Tesis-<id>-<id> o bien "oai:zaguan.unizar.es:<id>” 
+	 * si no lo hay devuelve ""
+	 */
 	public String buscarID(){
 		String resultado = "";
 		String pattern1 = "oai:zaguan.unizar.es:([0-9])+",
@@ -60,7 +65,9 @@ public class Parser {
 		
 		return resultado;
 	}
-	
+	/**
+	 * Devuelve el publisher buscado en la consulta realizada por el usuario  si no lo hay devuelve ""
+	 */
 	public String buscarPublisher(){
 		String resultado = "";
 		for ( String publisher: diccionarioPublishers){
@@ -75,7 +82,9 @@ public class Parser {
 			 
 		return resultado;
 	}
-	
+	/**
+	 * Devuelve el lenguaje buscado en la consulta realizada por el usuario si no lo hay deveulve ""
+	 */
 	public String buscarLenguaje(){
 		String resultado = ""; String[] palabras = frase.split(" ");
 		for(String lenguaje: diccionarioLenguajes){
@@ -87,7 +96,9 @@ public class Parser {
 		}
 		return resultado;
 	}
-	
+	/**
+	 * Devuelve el autor buscado en la consulta realizada por el usuario si no lo hay devuelve ""
+	 */
 	public String buscarAutor(){
 		String resultado = "";
 		String[] palabras = frase.split(" ");
@@ -105,12 +116,14 @@ public class Parser {
 	
 		return resultado;
 	}
-	
+	/**
+	 * Devuelve la fecha buscada en la consulta realizada por el usuario si no la hay devuelve "" 
+	 */
 	public String buscarFecha(){
 		String resultado = "",
 				pattern = "entre ([0-9])+ y ([0-9])+",
-				pattern2 = "aÃ±o ([0-9])+",
-				pattern3 = "ultimos ([0-9])+ aÃ±os",
+				pattern2 = "año ([0-9])+",
+				pattern3 = "ultimos ([0-9])+ años",
 				patternNumber = "([0-9])+";
 		
 		Pattern p = Pattern.compile(pattern);
@@ -139,7 +152,7 @@ public class Parser {
 			 m = p.matcher(frase);
 			 m.find();
 			 anyos = m.group(0);
-			 frase = frase.replace("aÃ±o " + anyos, "");
+			 frase = frase.replace("año " + anyos, "");
 			 return anyos;
 		 }
 		 
@@ -151,7 +164,7 @@ public class Parser {
 			 p = Pattern.compile(patternNumber);
 			 m = p.matcher(frase);
 			 m.find();
-			 frase = frase.replace("ultimos " + m.group(0) + " aÃ±os", "");
+			 frase = frase.replace("ultimos " + m.group(0) + " años", "");
 			 anyos = (anyoActual - Integer.parseInt(m.group(0))) + "," + anyoActual;
 			 return anyos;
 		 }
@@ -159,7 +172,10 @@ public class Parser {
 		anyos = resultado;
 		return resultado;
 	}
-	
+	/**
+	 * Devuelve la query que se ha formado despues de procesar la consulta hecha en lenguaje natural 
+	 * por el usuario y separar sus términos en los distintos campos 
+	 */
 	public Query execute() throws ParseException{
 		String id = buscarID(), publisher = buscarPublisher(),
 				buscarAutor = buscarAutor(), buscarFecha = buscarFecha(), fecha = SearchFiles.FECHA +":", 

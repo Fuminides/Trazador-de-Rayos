@@ -1,4 +1,4 @@
-package recuperaciÃ³n;
+package recuperación;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -55,6 +55,7 @@ public class SearchFiles {
   
   public static void main(String[] args) throws Exception {
     String usage ="No se han introducido los archivos correctos";
+    String error = "Por favor, indicame la ruta del directorio donde generar los indices y la ruta del fichero de las necesidades de informacion y la ruta del fichero de resultados";
     if (args.length > 0 && ("-h".equals(args[0]) || "-help".equals(args[0]))) {
       System.out.println(usage);
       System.exit(0);
@@ -64,21 +65,27 @@ public class SearchFiles {
     String infoNeeds=null;
     String resultFile=null;
     String queryString = null;
-    
-    for(int i = 0;i < args.length;i++) {
-        if ("-index".equals(args[i])) {
-          index = args[i+1];
-          i++;
-        } 
-        else if("-infoNeeds".equals(args[i])){
-      	  infoNeeds=args[i+1];
-      	  i++;
-        }
-        else if("-output".equals(args[i])){
-      	  resultFile=args[i+1];
-      	  i++;
-        }
-    }    
+    /*if (args.length == 0) {
+        System.err.println(error);
+        System.exit(1);
+      }else {
+	    for(int i = 0;i < args.length;i++) {
+	        if ("-index".equals(args[i])) {
+	          index = args[i+1];
+	          i++;
+	        } 
+	        else if("-infoNeeds".equals(args[i])){
+	      	  infoNeeds=args[i+1];
+	      	  i++;
+	        }
+	        else if("-output".equals(args[i])){
+	      	  resultFile=args[i+1];
+	      	  i++;
+	        }
+	    }
+      }*/
+    resultFile="ficheroFinal1.txt";
+    infoNeeds="necesidadesInformacionElegidas.xml";
     if (infoNeeds == null || resultFile == null || index == null) {
         System.err.println("Usage: " + usage);
         System.exit(1);
@@ -131,7 +138,7 @@ public class SearchFiles {
 	    	Parser pars = new Parser(necesidades[i]);
 	    	q= pars.execute();
 	    	
-	    	//Se aï¿½ade la consulta booleana para la fecha 
+	    	//Se añade la consulta booleana para la fecha 
 	    	String fecha=pars.getFecha();
 	  
 	    	BooleanQuery globalQuery = new BooleanQuery();
@@ -156,8 +163,8 @@ public class SearchFiles {
 	    			e.printStackTrace();
 	    		}
 	    	}
-	    	result = doPagingSearchString(searcher, q, new ArrayList<String>());
-	  
+	    	//result = doPagingSearchString(searcher, q, new ArrayList<String>());
+	    	result = doPagingSearchString(searcher, q);
 	        System.out.println("Total de documentos encontrados: "+result.size());
 	    	
             for (int j = 0; j < result.size(); j++){
@@ -174,18 +181,12 @@ public class SearchFiles {
     
  
   /**
-   * This demonstrates a typical paging search scenario, where the search engine presents 
-   * pages of size n to the user. The user can then go to the next page if interested in
-   * the next hits.
-   * 
-   * When the query is executed for the first time, then only enough results are collected
-   * to fill 5 result pages. If the user wants to page beyond this limit, then the query
-   * is executed another time and all hits are collected.
+   * Devuelve en un arrayList la lista de ficheros como resultados a la consulta <query> . 
+   * Como parametros recibe un buscador con la lista de los indices previamente indexados y 
+   * una query , consulta que se desea realizar 
    * 
    */
-  
-  public static ArrayList<String> doPagingSearchString(IndexSearcher searcher, Query query, 
-                                       ArrayList<String> resultados) throws IOException {
+  public static ArrayList<String> doPagingSearchString(IndexSearcher searcher, Query query) throws IOException {
 	  
 	//System.out.println("Query: " + query);
 	TopDocs results = searcher.search(query,100);
@@ -199,9 +200,10 @@ public class SearchFiles {
         
         if (path != null) {
       
-        	String cadena[]=path.split("/");
-        	String id=cadena[cadena.length-1];
-        	if(resultados.size() == 0){
+        	//String cadena[]=path.split("/");
+        	//String id=cadena[cadena.length-1];
+        	resultadosFinales.add(path);
+        	/*if(resultados.size() == 0){
         		resultadosFinales.add(path);
         	}
         	else{
@@ -211,7 +213,7 @@ public class SearchFiles {
         		else {
         			
         		}
-        	}
+        	}*/
         	
         }
         else {

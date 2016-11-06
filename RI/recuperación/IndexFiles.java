@@ -69,7 +69,7 @@ public class IndexFiles {
     boolean reescribir = true;
     String indexPath = "index";
 
-    if (args.length == 0) {
+    /*if (args.length == 0) {
       System.err.println(error);
       System.exit(1);
     }else {
@@ -82,8 +82,8 @@ public class IndexFiles {
 	        i++;
 	      } 
     	}
-    }
-    
+    }*/
+    docsPath="recordsdc";
     if (docsPath == null) {
       System.err.println("Usage: " + usage);
       System.exit(1);
