@@ -1,4 +1,4 @@
-package trabajo;
+package recuperación;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -266,7 +266,7 @@ public class IndexFiles {
         
         FieldType myIntType = new FieldType(IntField.TYPE_STORED);
         myIntType.setOmitNorms(false);
-        Field dateF = new IntField("score", date, myIntType);
+        Field dateF = new IntField(SearchFiles.FECHA, date, myIntType);
         dateF.setBoost(BOOST_FECHA);
         doc.add(dateF);
     }

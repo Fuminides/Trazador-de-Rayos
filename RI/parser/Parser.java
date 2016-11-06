@@ -9,11 +9,12 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.util.Version;
 
-import trabajo.SearchFiles;
+import recuperación.SearchFiles;
 
 public class Parser {
 
 	int anyoActual = 2016;
+	
 	//Hardcodeado por simpleza.
 	private String[] diccionarioLenguajes = 
 		{ "frances", "español", "ingles", "portugues",
@@ -28,11 +29,13 @@ public class Parser {
 		{ "Universidad de Zaragoza" };
 	
 	private String frase;
-	
+	private String anyos = "";
 	
 	public Parser(String f) {
 		frase = f;
 	}
+	
+	public String getFecha(){ return anyos; }
 	
 	public String buscarID(){
 		String resultado = "";
@@ -119,16 +122,12 @@ public class Parser {
 			 m.find();
 			 String anyo1 = m.group(0);
 			 String fecha=m.group(0);
-			 System.out.println("fecha antes es: "+fecha);
 			 m.find();
 			 String anyo2 = m.group(0);
 			 fecha=fecha+","+m.group(0);
-			 System.out.println("fecha despues es: "+fecha);
-			 frase = frase.replace(anyo1, "");
-			 frase = frase.replace(anyo2, "");
-			 /**El problema esta aqui en este return **/
+			 frase = frase.replace(anyo1 + " y " + anyo2, "");
+			 anyos = fecha;
 			 return fecha;
-			 //return (anyo1 + "," + anyo2);
 		 }
 		 
 		 p = Pattern.compile(pattern2);
@@ -139,8 +138,9 @@ public class Parser {
 			 p = Pattern.compile(patternNumber);
 			 m = p.matcher(frase);
 			 m.find();
-			 frase = frase.replace("año " + m.group(0), "");
-			 return m.group(0);
+			 anyos = m.group(0);
+			 frase = frase.replace("año " + anyos, "");
+			 return anyos;
 		 }
 		 
 		 p = Pattern.compile(pattern3);
@@ -152,9 +152,11 @@ public class Parser {
 			 m = p.matcher(frase);
 			 m.find();
 			 frase = frase.replace("ultimos " + m.group(0) + " años", "");
-			 return (anyoActual - Integer.parseInt(m.group(0))) + "," + anyoActual;
+			 anyos = (anyoActual - Integer.parseInt(m.group(0))) + "," + anyoActual;
+			 return anyos;
 		 }
-		
+		 
+		anyos = resultado;
 		return resultado;
 	}
 	
@@ -186,13 +188,8 @@ public class Parser {
 		resultado += tema + frase;
 		if ( fecha != SearchFiles.FECHA+":" ) resultado += " " + fecha;
 		if ( autor != SearchFiles.AUTOR +":" ) resultado += " " + autor;
-	    
+	    System.out.println(parser.parse(resultado));
 		return parser.parse(resultado);
 	}
-	
-	/*public static void main(String[] args) throws ParseException{
-		Parser pars = new Parser("Un usuario necesita obtener técnicas de inteligencia artificial para implementarlas en un videojuego. Ofrecer proyectos relacionados con la inteligencia artificial en los ultimos 5 años.");
-		System.out.println(pars.execute());
-	}*/
 
 }

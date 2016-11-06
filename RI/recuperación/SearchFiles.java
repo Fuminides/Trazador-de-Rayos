@@ -1,4 +1,4 @@
-package trabajo;
+package recuperaci√≥n;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
@@ -32,6 +32,7 @@ import org.apache.lucene.document.StringField;
 import org.apache.lucene.index.DirectoryReader;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.ScoreDoc;
@@ -118,7 +119,7 @@ public class SearchFiles {
     
     
     Query q=null;
-    ArrayList<String> result = new ArrayList<String>();
+    ArrayList<String> result = null;
     
     FileWriter fichero = null;
     PrintWriter pw = null;
@@ -127,41 +128,37 @@ public class SearchFiles {
         pw = new PrintWriter(fichero);
 	    
 	    for(int i=1;i<necesidades.length;i++){
-	    	
 	    	Parser pars = new Parser(necesidades[i]);
 	    	q= pars.execute();
 	    	
-	    	//Se aÒade la consulta booleana para la fecha 
-	    	String fecha=pars.buscarFecha();
-	    	System.out.println("Lo que se ha obtenido en consulta "+i+" es: "+fecha);
+	    	//Se aÔøΩade la consulta booleana para la fecha 
+	    	String fecha=pars.getFecha();
 	  
-	    	BooleanQuery dateQuery = new BooleanQuery();
-	    	if(!fecha.equals("null")){
+	    	BooleanQuery globalQuery = new BooleanQuery();
+	    	globalQuery.add(q, Occur.MUST);
+	    	
+	    	if(!fecha.equals("")){
 	    		String [] anyos = fecha.split(",");
 	    		try{
 		    		int anno1 = Integer.parseInt(anyos[0]);
 		    		if(anyos.length>1){
 		    			int anno2 = Integer.parseInt(anyos[1]);
-				  		NumericRangeQuery<Integer> entre = NumericRangeQuery.newIntRange("entre", anno1, anno2, true, true);
-				  		dateQuery.add(entre, BooleanClause.Occur.MUST);
+				  		NumericRangeQuery<Integer> entre = NumericRangeQuery.newIntRange(FECHA, anno1, anno2, true, true);
+				  		globalQuery.add(entre, BooleanClause.Occur.MUST);
 		    		}
 		    		else{
-		    			NumericRangeQuery<Integer> apartir = NumericRangeQuery.newIntRange("apartir", anno1, null, true, true);
-		    			dateQuery.add(apartir, BooleanClause.Occur.MUST);
+		    			NumericRangeQuery<Integer> apartir = NumericRangeQuery.newIntRange(FECHA, anno1, null, true, false);
+		    			globalQuery.add(apartir, BooleanClause.Occur.MUST);
 		    		}
-			  		result = doPagingSearchString(searcher, dateQuery, necesidades[i] == null && queryString == null,result); 	
+		    		
 	    		}
-	    		catch(NumberFormatException e){}
+	    		catch(NumberFormatException e){
+	    			e.printStackTrace();
+	    		}
 	    	}
-	    	result = doPagingSearchString(searcher, q, necesidades[i] == null && queryString == null,result);
-	    	
-	    	//ordenamos los resultados de forma creciente como exige en el guion
-	    	//Collections.sort(result);
-	    	
-	    	//Escribimos los resultados de la consulta obtenidos, en el fichero resultFile
-	    	
-	        //System.out.println("Consulta: "+necesidades[i]);
-	        //System.out.println("Total de documentos encontrados: "+result.size());
+	    	result = doPagingSearchString(searcher, q, new ArrayList<String>());
+	  
+	        System.out.println("Total de documentos encontrados: "+result.size());
 	    	
             for (int j = 0; j < result.size(); j++){
             	pw.println(id[i]+'	'+result.get(j));
@@ -188,7 +185,7 @@ public class SearchFiles {
    */
   
   public static ArrayList<String> doPagingSearchString(IndexSearcher searcher, Query query, 
-                                       boolean interactive,ArrayList<String> resultados) throws IOException {
+                                       ArrayList<String> resultados) throws IOException {
 	  
 	//System.out.println("Query: " + query);
 	TopDocs results = searcher.search(query,100);
@@ -210,6 +207,9 @@ public class SearchFiles {
         	else{
         		if(resultados.contains(id)){
         			resultadosFinales.add(id);
+        		}
+        		else {
+        			
         		}
         	}
         	
