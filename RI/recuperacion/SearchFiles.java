@@ -72,7 +72,7 @@ public class SearchFiles {
 	        }
 	    }
       }
- 
+    
     if (infoNeeds == null || resultFile == null || index == null) {
         System.err.println("Usage: " + usage);
         System.exit(1);

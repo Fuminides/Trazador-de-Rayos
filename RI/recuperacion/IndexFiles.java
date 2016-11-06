@@ -67,6 +67,7 @@ public class IndexFiles {
 	      } 
     	}
     }
+    
     if (docsPath == null) {
       System.err.println("Usage: " + usage);
       System.exit(1);

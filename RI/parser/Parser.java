@@ -112,9 +112,9 @@ public class Parser {
 	public String buscarAutor(){
 		String resultado = "";
 		String[] palabras = frase.split(" ");
-		for ( int i = 1; i < palabras.length; i++){
-			if ( Character.isUpperCase(palabras[i].charAt(0))){
-				resultado += palabras[i] + " ";
+		for ( int i = 1; i < palabras.length-1; i++){
+			if ( Character.isUpperCase(palabras[i].charAt(0)) && Character.isUpperCase(palabras[i+1].charAt(0))){
+				resultado += palabras[i] + " " + palabras[i+1] + " ";
 			}
 		}
 		
@@ -133,8 +133,8 @@ public class Parser {
 	public String buscarFecha(){
 		String resultado = "",
 				pattern = "entre ([0-9])+ y ([0-9])+",
-				pattern2 = "aï¿½o ([0-9])+",
-				pattern3 = "ultimos ([0-9])+ aï¿½os",
+				pattern2 = "año ([0-9])+",
+				pattern3 = "ultimos ([0-9])+ años",
 				patternNumber = "([0-9])+";
 		
 		Pattern p = Pattern.compile(pattern);
@@ -163,7 +163,7 @@ public class Parser {
 			 m = p.matcher(frase);
 			 m.find();
 			 anyos = m.group(0);
-			 frase = frase.replace("aï¿½o " + anyos, "");
+			 frase = frase.replace("año " + anyos, "");
 			 return anyos;
 		 }
 		 
@@ -175,7 +175,7 @@ public class Parser {
 			 p = Pattern.compile(patternNumber);
 			 m = p.matcher(frase);
 			 m.find();
-			 frase = frase.replace("ultimos " + m.group(0) + " aï¿½os", "");
+			 frase = frase.replace("ultimos " + m.group(0) + " años", "");
 			 anyos = (anyoActual - Integer.parseInt(m.group(0))) + "," + anyoActual;
 			 return anyos;
 		 }
