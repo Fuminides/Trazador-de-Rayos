@@ -83,6 +83,7 @@ public class IndexFiles {
 	      } 
     	}
     }
+    
     if (docsPath == null) {
       System.err.println("Usage: " + usage);
       System.exit(1);
@@ -177,7 +178,7 @@ public class IndexFiles {
           indexTematico(parseador, doc);
          
           if (writer.getConfig().getOpenMode() == OpenMode.CREATE) {
-            //System.out.println("Añadiendo: " + file);
+            System.out.println("Añadiendo: " + file);
             writer.addDocument(doc);
           } else {         
             System.out.println("Actualizando: " + file);

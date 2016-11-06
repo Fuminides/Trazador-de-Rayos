@@ -118,11 +118,17 @@ public class Parser {
 			 m = p.matcher(m.group(0));
 			 m.find();
 			 String anyo1 = m.group(0);
+			 String fecha=m.group(0);
+			 System.out.println("fecha antes es: "+fecha);
 			 m.find();
 			 String anyo2 = m.group(0);
+			 fecha=fecha+","+m.group(0);
+			 System.out.println("fecha despues es: "+fecha);
 			 frase = frase.replace(anyo1, "");
 			 frase = frase.replace(anyo2, "");
-			 return anyo1 + "," + anyo2;
+			 /**El problema esta aqui en este return **/
+			 return fecha;
+			 //return (anyo1 + "," + anyo2);
 		 }
 		 
 		 p = Pattern.compile(pattern2);
@@ -184,9 +190,9 @@ public class Parser {
 		return parser.parse(resultado);
 	}
 	
-	public static void main(String[] args) throws ParseException{
+	/*public static void main(String[] args) throws ParseException{
 		Parser pars = new Parser("Un usuario necesita obtener técnicas de inteligencia artificial para implementarlas en un videojuego. Ofrecer proyectos relacionados con la inteligencia artificial en los ultimos 5 años.");
 		System.out.println(pars.execute());
-	}
+	}*/
 
 }

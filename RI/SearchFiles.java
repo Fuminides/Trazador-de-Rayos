@@ -77,7 +77,7 @@ public class SearchFiles {
       	  resultFile=args[i+1];
       	  i++;
         }
-    }
+    }    
     if (infoNeeds == null || resultFile == null || index == null) {
         System.err.println("Usage: " + usage);
         System.exit(1);
@@ -133,25 +133,27 @@ public class SearchFiles {
 	    	
 	    	//Se añade la consulta booleana para la fecha 
 	    	String fecha=pars.buscarFecha();
+	    	System.out.println("Lo que se ha obtenido en consulta "+i+" es: "+fecha);
+	  
 	    	BooleanQuery dateQuery = new BooleanQuery();
 	    	if(!fecha.equals("null")){
 	    		String [] anyos = fecha.split(",");
-	    		int anno1 = Integer.parseInt(anyos[0]);
-	    		if(anyos.length>1){
-	    			int anno2 = Integer.parseInt(anyos[1]);
-			  		NumericRangeQuery<Integer> entre = NumericRangeQuery.newIntRange("entre", anno1, anno2, true, true);
-			  		dateQuery.add(entre, BooleanClause.Occur.MUST);
+	    		try{
+		    		int anno1 = Integer.parseInt(anyos[0]);
+		    		if(anyos.length>1){
+		    			int anno2 = Integer.parseInt(anyos[1]);
+				  		NumericRangeQuery<Integer> entre = NumericRangeQuery.newIntRange("entre", anno1, anno2, true, true);
+				  		dateQuery.add(entre, BooleanClause.Occur.MUST);
+		    		}
+		    		else{
+		    			NumericRangeQuery<Integer> apartir = NumericRangeQuery.newIntRange("apartir", anno1, null, true, true);
+		    			dateQuery.add(apartir, BooleanClause.Occur.MUST);
+		    		}
+			  		result = doPagingSearchString(searcher, dateQuery, necesidades[i] == null && queryString == null,result); 	
 	    		}
-	    		else{
-	    			NumericRangeQuery<Integer> apartir = NumericRangeQuery.newIntRange("apartir", anno1, null, true, true);
-	    			dateQuery.add(apartir, BooleanClause.Occur.MUST);
-	    		}
-		  		result = doPagingSearchString(searcher, dateQuery, necesidades[i] == null && queryString == null,result); 		
+	    		catch(NumberFormatException e){}
 	    	}
-	    	/**No se si esta segunda llamada se ejecuta siempre o solo en el caso de que no haya fecha**/
-	    	else{
-	    		result = doPagingSearchString(searcher, q, necesidades[i] == null && queryString == null,result);
-	    	}
+	    	result = doPagingSearchString(searcher, q, necesidades[i] == null && queryString == null,result);
 	    	
 	    	//ordenamos los resultados de forma creciente como exige en el guion
 	    	//Collections.sort(result);
@@ -188,7 +190,7 @@ public class SearchFiles {
   public static ArrayList<String> doPagingSearchString(IndexSearcher searcher, Query query, 
                                        boolean interactive,ArrayList<String> resultados) throws IOException {
 	  
-	  System.out.println("Query: " + query);
+	//System.out.println("Query: " + query);
 	TopDocs results = searcher.search(query,100);
     ScoreDoc[] hits = results.scoreDocs;
     ArrayList<String> resultadosFinales= new ArrayList<String>();
