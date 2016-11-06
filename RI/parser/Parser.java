@@ -1,3 +1,4 @@
+
 package parser;
 
 import java.util.regex.Matcher;
@@ -9,9 +10,14 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.util.Version;
 
-import recuperaciÃ³n.SearchFiles;
+import recuperacion.SearchFiles;
 
-
+/**
+ * Clase: Parser
+ * Se encarga de parsear las consultas para formar una query valida para Lucene con los indices existentes.
+ * 
+ * Javier Fumanal Idocin, 684229, Silvia Uson Fortanet 681721
+ */
 public class Parser {
 
 	int anyoActual = 2016;
@@ -39,8 +45,9 @@ public class Parser {
 	public String getFecha(){ return anyos; }
 	
 	/**
-	 * Devuelve el id buscado en la consulta que siga el siguiente esquema Tesis-<id>-<id> o bien "oai:zaguan.unizar.es:<id>” 
-	 * si no lo hay devuelve ""
+	 * Devuelve el id buscado en la consulta el siguiente patrÃ³n:
+	 *  "Tesis-<id>-<id>" o "oai:zaguan.unizar.es:<id>" 
+	 *  Si no lo hay, devuelve la cadena vacÃ­a.
 	 */
 	public String buscarID(){
 		String resultado = "";
@@ -66,7 +73,8 @@ public class Parser {
 		return resultado;
 	}
 	/**
-	 * Devuelve el publisher buscado en la consulta realizada por el usuario  si no lo hay devuelve ""
+	 * Devuelve el publisher buscado en la consulta realizada por el usuario.  
+	 * Si no lo hay, devuelve la cadena vacÃ­a. 
 	 */
 	public String buscarPublisher(){
 		String resultado = "";
@@ -83,7 +91,8 @@ public class Parser {
 		return resultado;
 	}
 	/**
-	 * Devuelve el lenguaje buscado en la consulta realizada por el usuario si no lo hay deveulve ""
+	 * Devuelve el lenguaje buscado en la consulta realizada por el usuario.
+	 * Si no lo hay, deveulve la cadena vacÃ­a.
 	 */
 	public String buscarLenguaje(){
 		String resultado = ""; String[] palabras = frase.split(" ");
@@ -97,7 +106,8 @@ public class Parser {
 		return resultado;
 	}
 	/**
-	 * Devuelve el autor buscado en la consulta realizada por el usuario si no lo hay devuelve ""
+	 * Devuelve el autor buscado en la consulta realizada por el usuario. 
+	 * Si no lo hay devuelve la cadena vacÃ­a.
 	 */
 	public String buscarAutor(){
 		String resultado = "";
@@ -117,13 +127,14 @@ public class Parser {
 		return resultado;
 	}
 	/**
-	 * Devuelve la fecha buscada en la consulta realizada por el usuario si no la hay devuelve "" 
+	 * Devuelve la fecha buscada en la consulta realizada por el usuario. 
+	 * Si no la hay, devuelve la cadena vacÃ­a. 
 	 */
 	public String buscarFecha(){
 		String resultado = "",
 				pattern = "entre ([0-9])+ y ([0-9])+",
-				pattern2 = "año ([0-9])+",
-				pattern3 = "ultimos ([0-9])+ años",
+				pattern2 = "aï¿½o ([0-9])+",
+				pattern3 = "ultimos ([0-9])+ aï¿½os",
 				patternNumber = "([0-9])+";
 		
 		Pattern p = Pattern.compile(pattern);
@@ -152,7 +163,7 @@ public class Parser {
 			 m = p.matcher(frase);
 			 m.find();
 			 anyos = m.group(0);
-			 frase = frase.replace("año " + anyos, "");
+			 frase = frase.replace("aï¿½o " + anyos, "");
 			 return anyos;
 		 }
 		 
@@ -164,7 +175,7 @@ public class Parser {
 			 p = Pattern.compile(patternNumber);
 			 m = p.matcher(frase);
 			 m.find();
-			 frase = frase.replace("ultimos " + m.group(0) + " años", "");
+			 frase = frase.replace("ultimos " + m.group(0) + " aï¿½os", "");
 			 anyos = (anyoActual - Integer.parseInt(m.group(0))) + "," + anyoActual;
 			 return anyos;
 		 }
@@ -174,7 +185,7 @@ public class Parser {
 	}
 	/**
 	 * Devuelve la query que se ha formado despues de procesar la consulta hecha en lenguaje natural 
-	 * por el usuario y separar sus términos en los distintos campos 
+	 * por el usuario y de separar sus terminos en los distintos campos 
 	 */
 	public Query execute() throws ParseException{
 		String id = buscarID(), publisher = buscarPublisher(),
@@ -204,7 +215,7 @@ public class Parser {
 		resultado += tema + frase;
 		if ( fecha != SearchFiles.FECHA+":" ) resultado += " " + fecha;
 		if ( autor != SearchFiles.AUTOR +":" ) resultado += " " + autor;
-	    System.out.println(parser.parse(resultado));
+		
 		return parser.parse(resultado);
 	}
 
