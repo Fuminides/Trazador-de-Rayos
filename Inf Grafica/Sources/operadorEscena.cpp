@@ -79,8 +79,10 @@ void operadorEscena::anyadirLuz(Luz l){
 }
 
 Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Punto origenVista, double refraccionMedio){
-    double distancia; bool libre, debug = true;
-    Color inicial = figura->getColor();
+    double distancia; bool libre, libreCompleto = true;
+    Color negro;
+    negro.set_values(0,0,0);
+    Color inicial = negro;
     
     double kd = AMBIENTE; 
     Vector dirLuz;
@@ -114,7 +116,7 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
 
         if ( libre ){
             Color auxC = figura->getColor();
-            auxC.multiplicar(kd);
+            auxC.multiplicar(kd / M_PI);
             inicial.sumar(phong(figura, p, dirLuz,restaPuntos(camara.getPosicion(),p), luz)); 
             inicial.sumar(auxC);
 
@@ -123,16 +125,18 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                 Vector R;
                 R = restaVectores(valorPorVector(figura->normal(p), 2 * productoEscalar(dirLuz, figura->normal(p))), dirLuz);
                 Color auxC = reboteEspecular(figura, p, R, numeroRebotes);
-                std::cout << "Color refractado: " << auxC.to_string() << '\n';
                 auxC.multiplicar(figura->getReflejo());
                 inicial.sumar(auxC);
 
                 auxC = refraccionEspecular(figura, p, restaPuntos(origenVista, p), refraccionMedio, figura->getRefraccion(), numeroRebotes);
+                if ( figura->figuraId() == 4) std::cout << "Color refractado: " << auxC.to_string() << '\n';
+                else std::cout << std::to_string(figura->figuraId()) << "\n";
                 auxC.multiplicar (figura->getCoefRefraccion());
                 inicial.sumar(auxC);
             }
         }
     }
+
 
     //Anadimos aqui la luz indirecta
 
@@ -241,8 +245,8 @@ Color operadorEscena::refraccionEspecular(Figura * figura, Punto origen, Vector 
         puntoRender.set_values(origen.getX() + refraccion.getX() * min, origen.getY() + refraccion.getY() * min, 
             origen.getZ() + refraccion.getZ() * min);
     
-        return choque->getColor();
-        //return renderizar(puntoRender, choque, numeroRebotes -1, origen, n2);
+        //return choque->getColor();
+        return renderizar(puntoRender, choque, numeroRebotes -1, origen, n2);
     }
     else{
         return defecto;

@@ -25,6 +25,10 @@ double Plano::intersectar(Rayo r){
 	Vector proyectar;
 	t = -(a*ox+b*oy + c*oz-d)/(a*vx+b*vy+c*vz);
 
+	if ( (t*t < 1) | (t < 0)){
+		return -1;
+	}
+
 	vx = vx * t + ox;
 	vy = vy * t + oy;
 	vz = vz * t + oz;
