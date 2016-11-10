@@ -28,6 +28,7 @@ private:
     const int NUMERO_REBOTES  = 4;
     const double AMBIENTE = 0.1;
     const double REFRACCION_MEDIO = 1;
+    const int NUMERO_RAYOS_INDIRECTA = 0;
 
     Camara camara;
     std :: vector < Figura * > figuras;
@@ -64,7 +65,7 @@ public:
     /**
      * Renderiza el color de un punto
      */
-    Color renderizar(Punto c, Figura * figura, int, Punto, double);
+    Color renderizar(Punto c, Figura * figura, int, Punto, double, bool);
 
     /**
      * Define un rebote especular y lo calcula con el numero dado de rebotes de profundidad.

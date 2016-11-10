@@ -41,7 +41,7 @@ void operadorEscena::dibujar(){
             Vector direccion = rayo.getVector();
             puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
                 origenRayos.getZ() + direccion.getZ() * min);
-            pixels.push_back(renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), REFRACCION_MEDIO));
+            pixels.push_back(renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), REFRACCION_MEDIO, true));
             min = -1;
         }
         else{
@@ -78,7 +78,7 @@ void operadorEscena::anyadirLuz(Luz l){
     luces.push_back(l);
 }
 
-Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Punto origenVista, double refraccionMedio){
+Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Punto origenVista, double refraccionMedio, bool indirecto){
     double distancia; bool libre, libreCompleto = true;
     Color negro;
     negro.set_values(0,0,0);
@@ -135,12 +135,40 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                 inicial.sumar(auxC);
             }
         }
+
+        if ( indirecto ){
+            Rayo rayosIndir = Rayo[NUMERO_RAYOS_INDIRECTA];
+            generarRayos(rayosIndir, NUMERO_RAYOS_INDIRECTA);
+
+            for ( Rayo rayo : rayosIndir){
+                for ( Figura * figuraP : figuras){
+                    distancia = figuraP->intersectar(rayo);
+                    
+                    if ( distancia >= 0 ){
+                        if ( min == -1){
+                            min = distancia;
+                            choque = figuraP;
+                        }
+                        else if (distancia < min){
+                            min = distancia;
+                            choque = figuraP;
+                        }
+                    }
+                }
+                if ( min != -1){
+                    Punto puntoRender, origenRayos = camara.getPosicion();
+                    Vector direccion = rayo.getVector();
+                    puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
+                        origenRayos.getZ() + direccion.getZ() * min);
+                    Color cIndir = renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), refraccionMedio, false);
+                    cIndir.multiplicar(K_LUZ_INDIR);
+                    inicial.sumar(cIndir);
+
+                    min = -1;
+                }
+            }
+        }
     }
-
-
-    //Anadimos aqui la luz indirecta
-
-    //Transformamos a local, sampleamos 
 
     return inicial;
 }
@@ -199,10 +227,9 @@ Color operadorEscena::reboteEspecular(Figura * figura, Punto origen, Vector R, i
             puntoRender.set_values(origen.getX() + direccion.getX() * min, origen.getY() + direccion.getY() * min, 
                 origen.getZ() + direccion.getZ() * min);
             
-            return renderizar(puntoRender, choque, numero -1, origen, figura->getRefraccion());
+            return renderizar(puntoRender, choque, numero -1, origen, figura->getRefraccion(), false);
         }
     else{
-        //std::cout << "No refracc" << "\n";
         return defecto;
     }
 }
@@ -245,8 +272,7 @@ Color operadorEscena::refraccionEspecular(Figura * figura, Punto origen, Vector 
         puntoRender.set_values(origen.getX() + refraccion.getX() * min, origen.getY() + refraccion.getY() * min, 
             origen.getZ() + refraccion.getZ() * min);
     
-        //return choque->getColor();
-        return renderizar(puntoRender, choque, numeroRebotes -1, origen, n2);
+        return renderizar(puntoRender, choque, numeroRebotes -1, origen, n2, false);
     }
     else{
         return defecto;
