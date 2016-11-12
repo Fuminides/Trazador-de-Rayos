@@ -117,7 +117,9 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
         if ( libre ){
             Color auxC = figura->getColor();
             auxC.multiplicar(kd / M_PI);
-            inicial.sumar(phong(figura, p, dirLuz,restaPuntos(camara.getPosicion(),p), luz)); 
+
+            if ( figura->getBRDF() == 0) inicial.sumar(phong(figura, p, dirLuz,restaPuntos(camara.getPosicion(),p), luz)); 
+            else if (figura->getBRDF() == 1) inicial.sumar(ward(restaPuntos(camara.getPosicion(),p), dirLuz, figura->normal(p), luz, p));
             inicial.sumar(auxC);
 
             //Caminos especulares
@@ -129,14 +131,12 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                 inicial.sumar(auxC);
 
                 auxC = refraccionEspecular(figura, p, restaPuntos(origenVista, p), refraccionMedio, figura->getRefraccion(), numeroRebotes);
-                if ( figura->figuraId() == 4) std::cout << "Color refractado: " << auxC.to_string() << '\n';
-                else std::cout << std::to_string(figura->figuraId()) << "\n";
                 auxC.multiplicar (figura->getCoefRefraccion());
                 inicial.sumar(auxC);
             }
         }
-
-        if ( indirecto ){
+        //DESCOMENTAR CUANDO EL MONTERCARLO ESTE HECHO
+       /* if ( indirecto ){
             Rayo rayosIndir = Rayo[NUMERO_RAYOS_INDIRECTA];
             generarRayos(rayosIndir, NUMERO_RAYOS_INDIRECTA);
 
@@ -167,7 +167,7 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                     min = -1;
                 }
             }
-        }
+        }*/
     }
 
     return inicial;
@@ -195,6 +195,28 @@ Color operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista, 
     base.sumar(colorLuz);
 
     return base;
+}
+
+Color operadorEscena::ward(Vector o, Vector i, Vector n, Luz fuente, Punto p){
+    double distancia = restaPuntos(p, fuente.getOrigen()).modulo();
+    fuente.atenuar(distancia);
+
+    double ps = 0.75, ax = 0.20, ay = 0.10, difuso, especular, exponente;
+    Vector h, x, y;
+    Color color= fuente.getColor();
+    i.normalizar();
+    o.normalizar();
+    n.normalizar();
+
+    h = valorPorVector(sumaVectores(i,o), 1 / (sumaVectores(i,o).modulo()));
+    x = productoVectorial(n, i);
+    y = productoVectorial(n, x);
+    exponente = -(pow(productoEscalar(h,x)/ax,2) + pow(productoEscalar(h,y)/ay,2)) / pow(productoEscalar(h, n),2);
+    especular = ps / (4*M_PI*ax*ay*sqrt(productoEscalar(i,n) * productoEscalar(o, n))) * pow(M_E, exponente);
+    if ( especular < 0 ) especular = -especular;
+    color.multiplicar(especular);
+
+    return color;
 }
 
 Color operadorEscena::reboteEspecular(Figura * figura, Punto origen, Vector R, int numero){

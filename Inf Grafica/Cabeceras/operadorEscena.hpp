@@ -40,6 +40,11 @@ private:
      */
     Color phong(Figura * figura, Punto x, Vector entrada, Vector salida, Luz);
 
+     /**
+     * Calcula la BDRF de Ward en el punto dado de la figura dada.
+     */
+    Color ward(Vector o, Vector i, Vector n, Luz fuente, Punto x);
+
 public:
 
     /**

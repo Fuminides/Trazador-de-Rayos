@@ -13,10 +13,13 @@
 
 class Figura {
 
-	Color color;
-
+	
 protected:
 
+	Color color;
+
+	//0 -> Phong, 1 -> Ward
+	int brdf = 0;
 	int idFigura;
 	double reflejo, refraccion, kr = 1; //Kr es coeficiente de refraccion del medio de la figura. Valor por defecto = Valor en el aire.
 
@@ -30,6 +33,7 @@ public:
 	double getRefraccion();
 	double getCoefRefraccion();
 	int figuraId();
+	int getBRDF();
 
 	/*
 	 * Setters.
@@ -39,6 +43,7 @@ public:
 	void setCoefRefraccion(double);
 	void setId(int);
 	void setColor(Color);
+	void setBRDF(int);
 
 	/*
 	 * Devuelve la distancia a la que intersecta el rayo r la figura, o devuelve un valor negativo si no lo hace.
