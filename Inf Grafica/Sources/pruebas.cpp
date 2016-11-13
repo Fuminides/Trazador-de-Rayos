@@ -18,6 +18,7 @@ int cuentaInt = 1;
 int cuenta();
 
 int main(int argc, char ** argv){
+    int escenaID = 0;
     operadorEscena escena;
     Camara camara;
     Plano plano;
@@ -41,60 +42,80 @@ int main(int argc, char ** argv){
     vc2.set_values(0,1,0);
     vc3.set_values(0,0,1);
 
-    esfera.setOrigen(90, -10, 40);
-    esfera.setColor(azul);
-    esfera.setRadio(10);
-    esfera.setId(cuenta());
-    esfera.setReflejo(0);
-    esfera.setRefraccion(0);
+    if ( escenaID == 0 ){
+        esfera.setOrigen(90, -10, 50);
+        esfera.setColor(azul);
+        esfera.setRadio(10);
+        esfera.setId(cuenta());
+        esfera.setReflejo(0.05);
+        esfera.setRefraccion(0.2);
+        esfera.setCoefRefraccion(0.2);
+        esfera.setBRDF(0);
 
-    esfera2.setOrigen(30, 20, -20);
-    esfera2.setColor(verde);
-    esfera2.setRadio(10);
-    esfera2.setId(cuenta());
-    esfera2.setReflejo(0.0);
-    esfera2.setRefraccion(0.1);
-    esfera2.setCoefRefraccion(0.4);
+        esfera2.setOrigen(30, 20, -20);
+        esfera2.setColor(verde);
+        esfera2.setRadio(10);
+        esfera2.setId(cuenta());
+        esfera2.setReflejo(0.0);
+        esfera2.setRefraccion(0.1);
+        esfera2.setCoefRefraccion(0.4);
+        esfera2.setBRDF(0);
 
-    esfera3.setOrigen(100, 0, -10);
-    esfera3.setColor(rojo);
-    esfera3.setRadio(20);
-    esfera3.setReflejo(0.05);
-    esfera3.setId(cuenta());
-    esfera3.setRefraccion(0.2);
-    esfera3.setCoefRefraccion(0.6);
-    esfera3.setBRDF(1);
+        esfera3.setOrigen(100, 0, -10);
+        esfera3.setColor(rojo);
+        esfera3.setRadio(20);
+        esfera3.setReflejo(0.05);
+        esfera3.setId(cuenta());
+        esfera3.setRefraccion(0.2);
+        esfera3.setCoefRefraccion(0.6);
+        esfera3.setBRDF(0);
 
-    origenPlano.set_values(300, -50, -50);
-    normalPlano.set_values(-1,0,0);
-    plano.set_values(origenPlano, normalPlano, vc3, 200, vc2, 200);
-    plano.setColor(naranja);
-    plano.setReflejo(0.5);
-    plano.setRefraccion(0);
-    plano.setCoefRefraccion(0);
+        origenPlano.set_values(300, -50, -50);
+        normalPlano.set_values(-1,0,0);
+        plano.set_values(origenPlano, normalPlano, vc3, 200, vc2, 200);
+        plano.setColor(naranja);
+        plano.setReflejo(0.5);
+        plano.setRefraccion(0);
+        plano.setCoefRefraccion(0);
 
-    origenLuz.set_values(0, 0, 10);
-    luz1.set_values(origenLuz, blanco, 50);
+        origenLuz.set_values(0, 0, 10);
+        luz1.set_values(origenLuz, blanco, 50);
 
-    origenLuz2.set_values(65, 10, 10);
-    luz2.set_values(origenLuz2, blanco, 50);
+        origenLuz2.set_values(65, 10, 10);
+        luz2.set_values(origenLuz2, blanco, 50);
 
-    origenLuz3.set_values(100, -50, 0);
-    luz3.set_values(origenLuz2, blanco, 50);
+        origenLuz3.set_values(100, -50, 0);
+        luz3.set_values(origenLuz3, blanco, 50);
 
-    camara.set_values(origenCamara, vc1, vc2, vc3, 10* 100, 10 * 100,  pow(10* 100,2) );
+        camara.set_values(origenCamara, vc1, vc2, vc3, 10* 100, 10 * 100,  pow(10* 100,2) );
 
-    
-    escena.anyadirFigura(&esfera2);
-    escena.anyadirFigura(&esfera);
-    escena.anyadirFigura(&esfera3);
-    escena.anyadirFigura(&plano);
+        
+        escena.anyadirFigura(&esfera2);
+        escena.anyadirFigura(&esfera);
+        escena.anyadirFigura(&esfera3);
+        escena.anyadirFigura(&plano);
 
-    
-    escena.anyadirLuz(luz1);   
-    escena.anyadirLuz(luz2);
-    escena.anyadirLuz(luz3);
+        
+        //escena.anyadirLuz(luz1);   
+        escena.anyadirLuz(luz2);
+        //escena.anyadirLuz(luz3);
+    } 
+    else if ( escenaID == 1){
+        esfera3.setOrigen(60, 0, 0);
+        esfera3.setColor(rojo);
+        esfera3.setRadio(10);
+        esfera3.setReflejo(0.0);
+        esfera3.setRefraccion(0.2);
+        esfera3.setCoefRefraccion(0.6);
+        esfera3.setBRDF(0);
 
+        origenLuz3.set_values(0, 0, 30);
+        luz3.set_values(origenLuz3, blanco, 40);
+        camara.set_values(origenCamara, vc1, vc2, vc3, 10* 100, 10 * 100,  pow(10* 100,2) );
+
+        escena.anyadirFigura(&esfera3);
+        escena.anyadirLuz(luz3);
+    }
 
     escena.setCamara(camara);
     escena.dibujar();

@@ -60,15 +60,21 @@
         t1 = t1 / 2.0;
         double t2 = 0.0 - b - sqrt(aux);
         t2 = t2 / 2.0;
-
-        if ( (t1 == t2) && (t1>0.0) && ( t1*t1 > 0.8 )){
+        std::cout << "T1: " << std::to_string(t1) << " y T2: " << std::to_string(t2) << "\n";
+        if ( (t1 == t2) && (t1>0.0) && ( t1*t1 > UMBRAL )){
             return t1;
         }
-        else if ( (t1>=0.0) && (t2<0.0) && ( t1*t1 > 0.8 )){
+        else if ((t1>0.0) && (t2>0.0) && (t1 < t2) && (t1*t1 > UMBRAL)){
             return t1;
         }
-        else if( (t1>=0.0) && (t2>0.0) && ( t2*t2 > 0.8 )){
+        else if ((t1>0.0) && (t2>0.0) && (t2 < t1) && (t2*t2 > UMBRAL)){
             return t2;
+        }
+        else if ((t1>0.0) && (t2<0.0) && (t1*t1 > UMBRAL)){
+            return t1;
+        }
+        else if ((t2>0.0) && (t1<0.0) && (t2*t2 > UMBRAL)){
+            return t1;
         }
         else{
             return -1.0;

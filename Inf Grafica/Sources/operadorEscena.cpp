@@ -37,6 +37,7 @@ void operadorEscena::dibujar(){
             }
         }
         if ( min != -1){
+            std::cout << "renderizar\n";
             Punto puntoRender, origenRayos = camara.getPosicion();
             Vector direccion = rayo.getVector();
             puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
@@ -100,7 +101,8 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
         for ( Figura * figuraP : figuras){
             distancia = figuraP->intersectar(puntoDirLuz);
 
-            if ( (distancia > 0) &&  (distancia < dLuz) ){
+            if ( (distancia > 0) ){
+
                 if ( min == -1){
                     min = distancia;
                 }

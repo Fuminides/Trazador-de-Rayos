@@ -19,6 +19,7 @@
         double radio;
         Punto origen;
         Color color;
+        const double UMBRAL = 0.0;
 
         double puntoPorPunto(Punto p1, Punto p2);
         double puntoPorVector(Punto p1, Vector p2);
