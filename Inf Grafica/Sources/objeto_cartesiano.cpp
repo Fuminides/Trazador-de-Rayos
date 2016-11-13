@@ -46,6 +46,10 @@ void ObjetoCartesiano::set_Z(double valor){
 	valores[2] = valor;
 }
 
+void ObjetoCartesiano::set_D(double valor){
+	valores[3] = valor;
+}
+
 double ObjetoCartesiano::get(int indice){
 	return valores[indice-1];
 }

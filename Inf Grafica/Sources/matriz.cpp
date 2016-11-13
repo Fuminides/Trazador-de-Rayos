@@ -16,7 +16,18 @@ void Matriz::set_values(Vector _v1, Vector _v2, Vector _v3, Vector _v4){
 	vectores[2] = _v3;
 	vectores[3] = _v4;
 }
-
+void Matriz::set_valuesColum(Vector _v1, Vector _v2, Vector _v3,Vector _v4){
+	Vector vR,u1,u2,u3;
+	vR.set_values(0.0,0.0,0.0,1.0);
+    u1.set_values(_v1.getX(),_v2.getX(),_v3.getX(),_v4.getX());
+    u2.set_values(_v1.getY(),_v2.getY(),_v3.getY(),_v4.getY());
+    u3.set_values(_v1.getZ(),_v2.getZ(),_v3.getZ(),_v4.getZ());
+    
+	vectores[0] = u1;
+	vectores[1] = u2;
+	vectores[2] = u3;
+	vectores[3] = vR;
+}
 Vector Matriz::getVector1(){
 	return vectores[0];
 }

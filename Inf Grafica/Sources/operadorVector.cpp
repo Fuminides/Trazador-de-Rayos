@@ -76,7 +76,7 @@ Vector matrizPorVector(Matriz m, Vector v){
 	return vR;
 }
 
-Punto matrizPorPunto(Matriz m, Vector v){
+Punto matrizPorPunto(Matriz m, Punto v){
 	Punto vR;
 	double a1 = m.get(1,1), a2 = m.get(2,1), a3 = m.get(3,1), a4 = m.get(4,1),
 		b1 = m.get(1,2), b2 = m.get(2,2), b3 = m.get(3,2), b4 = m.get(4,2),
