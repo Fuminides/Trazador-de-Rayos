@@ -50,7 +50,8 @@ Matriz montecarlo::calcularT(){
 }
 
 Matriz montecarlo::inversaT(Matriz T){
-    double det = T.get(1,1)*T.get(2,2)*T.get(3,3)-T.get(3,1)*T.get(2,2)*T.get(1,3);
+    //Para esto el ultimo vector de la matriz siempre sera [0 0 0 1]
+    double det = T.get(1,3)*T.get(2,1)*T.get(3,2) - T.get(1,3)*T.get(3,1)*T.get(2,2) -T.get(2,3)*T.get(1,1)*T.get(3,2) + T.get(2,3)*T.get(3,1)*T.get(1,2) + T.get(3,3)*T.get(1,1)*T.get(2,2) - T.get(3,3)*T.get(2,1)*T.get(1,2);
     Matriz nueva;
     Vector u;
     
