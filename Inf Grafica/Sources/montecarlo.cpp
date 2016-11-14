@@ -28,167 +28,74 @@ double montecarlo::getInclination(){
 double montecarlo::getAzimuth(){
     return azimuth;
 }
+Vector montecarlo::getn(){
+    return n;
+}
+Vector montecarlo::getx(){
+    return x;
+}
 Matriz montecarlo::calcularT(){
     Vector azar;
     azar.set_values(0,1,0);
+    Vector n= getn();
+    Vector x = getx();
+    
     Vector u = productoVectorial(azar,n);
     Vector v = productoVectorial(n,u);
-    cout<<"El vector u es:"<<u.getX()<<","<<u.getY()<<","<<u.getZ()<<","<<u.getD()<<endl;
-    cout<<"El vector v es:"<<v.getX()<<","<<v.getY()<<","<<v.getZ()<<","<<v.getD()<<endl;
+    
     Matriz T;
     T.set_valuesColum(u,v,n,x);
-    Vector u1 =T.getVector1();
-    Vector u2 =T.getVector2();
-    Vector u3 =T.getVector3();
-    Vector u4 =T.getVector4();
-    cout<<"El vector u1 es:"<<u1.getX()<<","<<u1.getY()<<","<<u1.getZ()<<","<<u1.getD()<<endl;
-    cout<<"El vector u2 es:"<<u2.getX()<<","<<u2.getY()<<","<<u2.getZ()<<","<<u2.getD()<<endl;
-    cout<<"El vector u3 es:"<<u3.getX()<<","<<u3.getY()<<","<<u3.getZ()<<","<<u3.getD()<<endl;
-    cout<<"El vector u4 es:"<<u4.getX()<<","<<u4.getY()<<","<<u4.getZ()<<","<<u4.getD()<<endl;
+       
     return T;
 }
 
 Matriz montecarlo::inversaT(Matriz T){
-    double det = determinante(T,4);
+    double det = T.get(1,1)*T.get(2,2)*T.get(3,3)-T.get(3,1)*T.get(2,2)*T.get(1,3);
     Matriz nueva;
     Vector u;
     
-    u.set_X((T.getVector2().getY()*T.getVector3().getZ()-T.getVector2().getZ()*T.getVector3().getY())/det);
-    u.set_Y(-(T.getVector1().getY()*T.getVector3().getZ()-T.getVector3().getY()*T.getVector1().getZ())/det);
-    u.set_Z((T.getVector1().getY()*T.getVector2().getZ()-T.getVector2().getY()*T.getVector1().getZ())/det);
-    u.set_D(-(T.getVector1().getY()*T.getVector2().getZ()*T.getVector3().getD()+T.getVector1().getZ()*T.getVector2().getD()*T.getVector3().getY()+T.getVector2().getY()*T.getVector3().getZ()*T.getVector1().getD()-T.getVector3().getY()*T.getVector2().getZ()*T.getVector1().getD()-T.getVector3().getZ()*T.getVector2().getD()*T.getVector1().getY()-T.getVector2().getY()*T.getVector1().getZ()*T.getVector3().getD())/det);
+    u.set_X((T.get(2,2)*T.get(3,3)-T.get(2,3)*T.get(3,2))/det);
+    u.set_Y(-(T.get(1,2)*T.get(3,3)-T.get(3,2)*T.get(1,3))/det);
+    u.set_Z((T.get(1,2)*T.get(2,3)-T.get(2,2)*T.get(1,3))/det);
+    u.set_D(-(T.get(1,2)*T.get(2,3)*T.get(3,4)+T.get(1,3)*T.get(2,3)*T.get(3,2)+T.get(2,2)*T.get(3,3)*T.get(1,4)-T.get(3,2)*T.get(2,3)*T.get(1,4)-T.get(3,3)*T.get(2,4)*T.get(1,2)-T.get(2,2)*T.get(1,3)*T.get(3,4))/det);
     nueva.setVector1(u);
     
-    u.set_X(-(T.getVector2().getX()*T.getVector3().getZ()-T.getVector3().getX()*T.getVector2().getZ())/det);
-    u.set_Y((T.getVector1().getX()*T.getVector3().getZ()-T.getVector3().getX()*T.getVector1().getZ())/det);
-    u.set_Z(-(T.getVector1().getX()*T.getVector2().getZ()-T.getVector2().getX()*T.getVector1().getZ())/det);
-    u.set_D((T.getVector1().getX()*T.getVector2().getZ()*T.getVector3().getD()+T.getVector1().getZ()*T.getVector2().getD()*T.getVector3().getX()+T.getVector2().getX()*T.getVector3().getZ()*T.getVector1().getX()-T.getVector1().getD()*T.getVector2().getZ()*T.getVector3().getX()-T.getVector3().getZ()*T.getVector2().getD()*T.getVector1().getX()-T.getVector2().getX()*T.getVector1().getZ()*T.getVector3().getD())/det);
+    u.set_X(-(T.get(2,1)*T.get(3,3)-T.get(3,1)*T.get(2,3))/det);
+    u.set_Y((T.get(1,1)*T.get(3,3)-T.get(3,1)*T.get(1,3))/det);
+    u.set_Z(-(T.get(1,1)*T.get(2,3)-T.get(2,1)*T.get(1,3))/det);
+    u.set_D((T.get(1,1)*T.get(2,3)*T.get(3,4)+T.get(1,3)*T.get(2,4)*T.get(3,1)+T.get(2,1)*T.get(3,3)*T.get(1,1)-T.get(1,4)*T.get(2,3)*T.get(3,1)-T.get(3,3)*T.get(2,4)*T.get(1,1)-T.get(2,1)*T.get(1,3)*T.get(3,4))/det);
     nueva.setVector2(u);
     
-    u.set_X((T.getVector2().getX()*T.getVector3().getY()-T.getVector3().getX()*T.getVector2().getY())/det);
-    u.set_Y(-(T.getVector1().getX()*T.getVector3().getY()-T.getVector3().getX()*T.getVector1().getY())/det);
-    u.set_Z((T.getVector1().getX()*T.getVector2().getY()-T.getVector2().getX()*T.getVector1().getY())/det);
-    u.set_D(-(T.getVector1().getX()*T.getVector2().getY()*T.getVector3().getD()+T.getVector2().getX()*T.getVector3().getY()*T.getVector1().getD()+T.getVector3().getX()*T.getVector1().getY()*T.getVector2().getD()-T.getVector3().getX()*T.getVector2().getY()*T.getVector1().getD()-T.getVector2().getX()*T.getVector1().getY()*T.getVector3().getD()-T.getVector3().getY()*T.getVector2().getD()*T.getVector1().getX())/det);
+    u.set_X((T.get(2,1)*T.get(3,2)-T.get(3,1)*T.get(2,2))/det);
+    u.set_Y(-(T.get(1,1)*T.get(3,2)-T.get(3,1)*T.get(1,2))/det);
+    u.set_Z((T.get(1,1)*T.get(2,2)-T.get(2,1)*T.get(1,2))/det);
+    u.set_D(-(T.get(1,1)*T.get(2,2)*T.get(3,4)+T.get(2,1)*T.get(3,2)*T.get(1,4)+T.get(3,1)*T.get(1,2)*T.get(2,4)-T.get(3,1)*T.get(2,2)*T.get(1,4)-T.get(2,1)*T.get(1,2)*T.get(3,4)-T.get(3,2)*T.get(2,4)*T.get(1,1))/det);
     nueva.setVector3(u);
     
     u.set_X(0.0);
     u.set_Y(0.0);
     u.set_Z(0.0);
-    u.set_D((T.getVector1().getX()*T.getVector2().getY()*T.getVector3().getD() + T.getVector1().getY()*T.getVector2().getZ()*T.getVector3().getX() + T.getVector2().getX()*T.getVector3().getY()*T.getVector1().getZ() - T.getVector3().getX()*T.getVector2().getY()*T.getVector1().getZ() - T.getVector3().getY()*T.getVector2().getZ()*T.getVector1().getX() - T.getVector2().getX()*T.getVector1().getY()*T.getVector3().getD())/det);
+    u.set_D((T.get(1,1)*T.get(2,2)*T.get(3,3) + T.get(1,2)*T.get(2,3)*T.get(3,1) + T.get(2,1)*T.get(3,2)*T.get(1,3) - T.get(3,1)*T.get(2,2)*T.get(1,3) - T.get(3,2)*T.get(2,3)*T.get(1,1) - T.get(2,1)*T.get(1,2)*T.get(3,3))/det);
     nueva.setVector4(u);
    
     return nueva;    
 }
 
-double montecarlo::determinante(Matriz aux,int orden){
-    double det = 0.0;
-    for(int j=0;j<orden;j++){
-        if(j==0){
-            det =  det + aux.getVector1().getX() + cofactor(aux,orden,0,j);
-        }
-        else if(j==1){
-            det =  det + aux.getVector1().getY() + cofactor(aux,orden,0,j);
-        }
-        else if(j==2){
-            det =  det + aux.getVector1().getZ() + cofactor(aux,orden,0,j);
-        }
-        else{
-            det =  det + aux.getVector1().getD() + cofactor(aux,orden,0,j);
-        }
-    }
-    return det;
+Vector montecarlo::multiplicarMatrizValores(Matriz T1,double x1, double x2,double x3){
+    //como lo multiplico si los tamaños no coinciden?? El valor T1.get(1,4) lo multiplico x 0, o x que?
+    Vector w;
+    
+    w.set_X(T1.get(1,1)*x1+T1.get(1,2)*x2+T1.get(1,3)*x3);
+    w.set_Y(T1.get(2,1)*x1+T1.get(2,2)*x2+T1.get(2,3)*x3);
+    w.set_Z(T1.get(3,1)*x1+T1.get(3,2)*x2+T1.get(3,3)*x3);
+    w.set_D(T1.get(4,1)*x1+T1.get(4,2)*x2+T1.get(4,3)*x3);
+    
+    return w;
 }
-
-double montecarlo ::cofactor(Matriz aux,int orden,int fila,int columna){
-    Matriz subm;
-    Vector u;
-    int n=orden-1;
-    int x=0;
-    int y=0;
-    for(int i=0;i<orden;i++){
-        for(int j=0;j<orden;j++){
-            if(i!=fila && j!=columna){
-                if(y==0){
-                    if(j==0){
-                        u.set_X(aux.getVector(i).getX());
-                    }
-                    else if(j==1){
-                        u.set_X(aux.getVector(i).getY());
-                    }
-                    else if(j==2){
-                        u.set_X(aux.getVector(i).getZ());
-                    }
-                    else {
-                        u.set_X(aux.getVector(i).getD());
-                    }
-                }
-                else if(y==1){
-                    if(j==0){
-                        u.set_Y(aux.getVector(i).getX());
-                    }
-                    else if(j==1){
-                        u.set_Y(aux.getVector(i).getY());
-                    }
-                    else if(j==2){
-                        u.set_Y(aux.getVector(i).getZ());
-                    }
-                    else {
-                        u.set_Y(aux.getVector(i).getD());
-                    }
-                }
-                else if(y==2){
-                    if(j==0){
-                        u.set_Z(aux.getVector(i).getX());
-                    }
-                    else if(j==1){
-                        u.set_Z(aux.getVector(i).getY());
-                    }
-                    else if(j==2){
-                        u.set_Z(aux.getVector(i).getZ());
-                    }
-                    else {
-                        u.set_Z(aux.getVector(i).getD());
-                    }
-                }
-                else {
-                    if(j==0){
-                        u.set_D(aux.getVector(i).getX());
-                    }
-                    else if(j==1){
-                        u.set_D(aux.getVector(i).getY());
-                    }
-                    else if(j==2){
-                        u.set_D(aux.getVector(i).getZ());
-                    }
-                    else {
-                        u.set_D(aux.getVector(i).getD());
-                    }
-                }
-                subm.setVector(x+1,u);
-                y++;
-                if(y>=n){
-                    x++;
-                    y=0;
-                }
-                
-            }
-        }
-    }
-    return pow(-1.0,fila+columna) * determinante(subm,n);
-}
-Matriz montecarlo::multiplicarMatrizValores(Matriz T1,double x1, double x2,double x3){
-    Matriz final;
-    for(int i=1;i<=4;i++){
-       for(int j=1;j<=4;j++){
-            //Falta por hacer esto.
-        } 
-    }
-    return final;
-}
-Matriz montecarlo::calcularw(){
+Vector montecarlo::calcularw(){
     Matriz T = calcularT();
     Matriz T1 = inversaT(T);
-    //como lo multiplico si los tamaños no coinciden
-    Matriz wi = multiplicarMatrizValores(T1,sin(getInclination())*cos(getAzimuth()),sin(getInclination())*sin(getAzimuth()),cos(getInclination()));
+    Vector wi = multiplicarMatrizValores(T1,sin(getInclination())*cos(getAzimuth()),sin(getInclination())*sin(getAzimuth()),cos(getInclination()));
+    return wi;
 }
 

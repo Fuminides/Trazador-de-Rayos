@@ -22,16 +22,15 @@ public:
     
     double getInclination();
     double getAzimuth();
-    
+    Vector getn();
+    Vector getx();
     
     Matriz calcularT();
     Matriz inversaT(Matriz T);
-    double determinante(Matriz aux,int orden);
-    double cofactor(Matriz aux,int orden,int fila,int columna);
+        
+    Vector calcularw();
     
-    Matriz calcularw();
-    
-    Matriz multiplicarMatrizValores(Matriz T1,double x1, double x2,double x3);
+    Vector multiplicarMatrizValores(Matriz T1,double x1, double x2,double x3);
     
     
 
