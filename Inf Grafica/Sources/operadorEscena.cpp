@@ -132,7 +132,7 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                 auxC.multiplicar(figura->getReflejo());
                 inicial.sumar(auxC);
 
-                auxC = refraccionEspecular(figura, p, restaPuntos(origenVista, p), refraccionMedio, figura->getRefraccion(), numeroRebotes);
+                auxC = refraccionEspecular(figura, p, restaPuntos(p, origenVista), refraccionMedio, figura->getRefraccion(), numeroRebotes);
                 auxC.multiplicar (figura->getCoefRefraccion());
                 inicial.sumar(auxC);
             }
@@ -259,22 +259,23 @@ Color operadorEscena::reboteEspecular(Figura * figura, Punto origen, Vector R, i
 }
 
 Color operadorEscena::refraccionEspecular(Figura * figura, Punto origen, Vector vista, double n1, double n2, int numeroRebotes){
-    Vector normal = figura->normal(origen), refraccion = valorPorVector(normal, -1);
-    double sin1 = sqrt( 1 - pow(productoEscalar(normal, vista) / (normal.modulo() * vista.modulo()),2)), sin2, cos;
+    Vector normal = figura->normal(origen), refraccion;
+    vista.normalizar();
+    normal.normalizar();
+    double cosenoAngulo1 = (productoEscalar(vista, normal) / (normal.modulo() * vista.modulo()));
+    double senoCAngulo2 = pow(n1/n2,2) * (1 - pow(cosenoAngulo1,2));
     Rayo rebote;
     Color defecto;
-    int distancia, min = -1; 
+    int distancia, min = -1;
     Figura * choque;
 
     defecto.set_values(0,0,0);
 
-    sin2 = n1 * sin1 / n2; 
-    cos = sqrt(1 - pow(sin2,2));
-    refraccion = valorPorVector(refraccion, 1 / cos);
+    refraccion = sumaVectores(valorPorVector(vista, n1/n2), valorPorVector(normal, (n1/n2 * cosenoAngulo1 - sqrt(1-senoCAngulo2))));
+    refraccion.normalizar();
 
     rebote.set_values(origen, refraccion);
-    refraccion.normalizar();
-    
+   
     for ( Figura * figuraP : figuras){
         distancia = figuraP->intersectar(rebote);
 
@@ -292,10 +293,10 @@ Color operadorEscena::refraccionEspecular(Figura * figura, Punto origen, Vector 
 
     if ( min != -1){
         Punto puntoRender;
-    
-        puntoRender.set_values(origen.getX() + refraccion.getX() * min, origen.getY() + refraccion.getY() * min, 
+   
+        puntoRender.set_values(origen.getX() + refraccion.getX() * min, origen.getY() + refraccion.getY() * min,
             origen.getZ() + refraccion.getZ() * min);
-    
+   
         return renderizar(puntoRender, choque, numeroRebotes -1, origen, n2, false);
     }
     else{

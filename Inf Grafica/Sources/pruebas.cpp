@@ -66,7 +66,7 @@ int main(int argc, char ** argv){
         esfera3.setRadio(20);
         esfera3.setReflejo(0.05);
         esfera3.setId(cuenta());
-        esfera3.setRefraccion(0.2);
+        esfera3.setRefraccion(1);
         esfera3.setCoefRefraccion(0.6);
         esfera3.setBRDF(0);
 
