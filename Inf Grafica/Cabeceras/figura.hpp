@@ -45,6 +45,7 @@ public:
 	void setColor(Color);
 	void setBRDF(int);
 
+	bool isBox();
 	/*
 	 * Devuelve la distancia a la que intersecta el rayo r la figura, o devuelve un valor negativo si no lo hace.
 	 */

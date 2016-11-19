@@ -26,13 +26,12 @@ void operadorEscena::dibujar(){
             distancia = figuraP->intersectar(rayo);
             
             if ( distancia >= 0 ){
-                if ( min == -1){
+                if ( (min == -1) | (distancia < min)){
                     min = distancia;
                     choque = figuraP;
-                }
-                else if (distancia < min){
-                    min = distancia;
-                    choque = figuraP;
+                    if (choque->isBox()){
+                        choque = ((Box *) choque)->store();
+                    } 
                 }
             }
         }

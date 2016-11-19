@@ -10,6 +10,7 @@
 #include "rayo.hpp"
 #include "esfera.hpp"
 #include "camara.hpp"
+#include "box.hpp"
 
 #include <vector>
 #include <string>
