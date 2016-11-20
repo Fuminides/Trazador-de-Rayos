@@ -19,6 +19,7 @@
         double radio;
         Punto origen;
         Color color;
+        Luz l;
         const double UMBRAL = 0.0;
 
         double puntoPorPunto(Punto p1, Punto p2);
@@ -55,6 +56,11 @@
          * Devuelve la normal de la figura dado un punto
          */
          Vector normal(Punto);
+
+         /*
+          * Añade una luz para conseguir una luz de area.
+          */
+         void setLuz(Luz);
 
  };
 

@@ -19,6 +19,7 @@ class Plano : public Figura
 {
 
 	Vector vNormal, vectorX, vectorY;
+	Luz luces[5];
 	Punto origen;
 	double altura, anchura, d;
 
@@ -28,6 +29,8 @@ public:
 
 	double intersectar(Rayo);
 	Vector normal(Punto);
+
+	void setLuz(Luz);
 };
 
 #endif

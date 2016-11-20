@@ -36,13 +36,17 @@ void operadorEscena::dibujar(){
             }
         }
         if ( min != -1){
-            std::cout << "renderizar\n";
-            Punto puntoRender, origenRayos = camara.getPosicion();
-            Vector direccion = rayo.getVector();
-            puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
-                origenRayos.getZ() + direccion.getZ() * min);
-            pixels.push_back(renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), REFRACCION_MEDIO, true));
-            min = -1;
+            if ( !choque->isLuz() ) {
+                Punto puntoRender, origenRayos = camara.getPosicion();
+                Vector direccion = rayo.getVector();
+                puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
+                    origenRayos.getZ() + direccion.getZ() * min);
+                pixels.push_back(renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), REFRACCION_MEDIO, true));
+                min = -1;
+            }
+            else{
+                pixels.push_back(choque->getColor());
+            }
         }
         else{
             pixels.push_back(defecto);

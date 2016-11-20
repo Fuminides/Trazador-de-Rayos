@@ -49,3 +49,21 @@ double Plano::intersectar(Rayo r){
 Vector Plano::normal(Punto p){
 	return vNormal;
 }
+
+void Plano::setLuz(Luz _l){
+	double intensidad = _l.getPotencia();
+	Color cLuz = _l.getColor();
+	Punto aux;
+	color = cLuz;
+
+	luces[0].set_values(origen, cLuz, intensidad);
+	aux = sumaPuntoVector(origen, valorPorVector(vectorX, anchura));
+	luces[1].set_values(aux, cLuz, intensidad);
+	aux = sumaPuntoVector(aux, valorPorVector(vectorY, altura));
+	luces[2].set_values(aux, cLuz, intensidad);
+	aux = sumaPuntoVector(origen, valorPorVector(vectorY, altura));
+	luces[3].set_values(aux, cLuz, intensidad);
+	aux = sumaPuntoVector(origen, valorPorVector(vectorY, altura/2));
+	aux = sumaPuntoVector(aux, valorPorVector(vectorX, anchura/2));
+	luces[4].set_values(aux, cLuz, intensidad);
+}

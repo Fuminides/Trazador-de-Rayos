@@ -23,6 +23,7 @@ public:
 	 */
 	Color getColor();
 	Punto getOrigen();
+	double getPotencia();
 
 	/*
 	 * Disminuye la potencia de la luz en funcion de la distancia dada.

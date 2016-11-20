@@ -96,3 +96,8 @@ Vector Esfera::normal(Punto p){
     v.normalizar();
     return v;
 }
+
+void Esfera::setLuz(Luz _l){
+    color = _l.getColor();
+    l = _l;
+}

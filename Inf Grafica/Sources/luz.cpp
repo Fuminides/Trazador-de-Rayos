@@ -18,3 +18,7 @@ void Luz::set_values(Punto p, Color c, int pot){
 	color = c;
 	potencia = pot;
 }
+
+double Luz::getPotencia(){
+	return potencia;
+}

@@ -10,6 +10,7 @@
 
 #include "color.hpp"
 #include "rayo.hpp"
+#include "luz.hpp"
 
 class Figura {
 
@@ -17,6 +18,7 @@ class Figura {
 protected:
 
 	Color color;
+	bool luz = false;
 
 	//0 -> Phong, 1 -> Ward
 	int brdf = 0;
@@ -46,6 +48,14 @@ public:
 	void setBRDF(int);
 
 	bool isBox();
+
+	bool isLuz();
+
+	virtual void setLuz(Luz) = 0;
+
+	/*
+	 * 
+	 */
 	/*
 	 * Devuelve la distancia a la que intersecta el rayo r la figura, o devuelve un valor negativo si no lo hace.
 	 */

@@ -25,3 +25,5 @@ void Figura::setId(int id) { idFigura = id; }
 void Figura::setBRDF(int b){ brdf = b; }
 
 bool Figura::isBox() { return false; }
+
+bool Figura::isLuz() { return luz; }
