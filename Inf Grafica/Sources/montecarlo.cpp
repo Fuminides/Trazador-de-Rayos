@@ -15,12 +15,13 @@
 using namespace std;
 
 
-montecarlo::montecarlo(double i,double a,Vector px, Vector normal)
+montecarlo::montecarlo(double i,double a,Vector px, Vector normal, int numRayos)
 {
     inclination=i;
     azimuth = a;
     n = normal;
     x = px;
+    num = numRayos;
 }
 double montecarlo::getInclination(){
     return inclination;
@@ -34,9 +35,14 @@ Vector montecarlo::getn(){
 Vector montecarlo::getx(){
     return x;
 }
+int montecarlo::getNum(){
+    return num;
+}
 Matriz montecarlo::calcularT(){
+    //Este vector azar tiene que ser un rand y que ademas no se haya utilizado ya.Cambiar estas dos lineas
     Vector azar;
     azar.set_values(0,1,0);
+    
     Vector n= getn();
     Vector x = getx();
     
@@ -48,42 +54,71 @@ Matriz montecarlo::calcularT(){
        
     return T;
 }
-
+/*
+ * devuelve el determinante de la matriz 4x4 T 
+ */
+double montecarlo::determinante(Matriz T){
+    double t1 = T.get(2,1)*T.get(3,2)*T.get(4,4) + T.get(3,1)*T.get(4,2)*T.get(2,4) + T.get(2,2)*T.get(3,4)*T.get(4,1) - T.get(4,1)*T.get(3,2)*T.get(2,4) - T.get(4,2)*T.get(3,4)*T.get(2,1) - T.get(3,1)*T.get(2,2)*T.get(4,4);
+    double t2 = T.get(1,1)*T.get(3,2)*T.get(4,4) + T.get(1,2)*T.get(3,4)*T.get(4,1) + T.get(3,1)*T.get(4,2)*T.get(1,4) - T.get(4,1)*T.get(3,2)*T.get(1,4) - T.get(4,2)*T.get(3,4)*T.get(1,1) - T.get(1,2)*T.get(3,1)*T.get(4,4);
+    double t3 = T.get(1,1)*T.get(2,2)*T.get(4,4) + T.get(2,1)*T.get(4,2)*T.get(1,4) + T.get(1,2)*T.get(2,4)*T.get(4,1) - T.get(4,1)*T.get(2,2)*T.get(1,4) - T.get(4,2)*T.get(2,4)*T.get(1,1) - T.get(2,1)*T.get(1,2)*T.get(4,4);
+    double t4 = T.get(1,1)*T.get(2,2)*T.get(3,4) + T.get(2,1)*T.get(3,2)*T.get(1,4) + T.get(1,2)*T.get(2,4)*T.get(3,1) - T.get(3,1)*T.get(2,2)*T.get(1,4) - T.get(3,2)*T.get(2,4)*T.get(1,1) - T.get(2,1)*T.get(1,2)*T.get(3,4); 
+    
+    return (T.get(1,3)*t1 - T.get(2,3)*t2 + T.get(3,3)*t3 - T.get(4,3)*t4);
+    
+}
 Matriz montecarlo::inversaT(Matriz T){
-    //Para esto el ultimo vector de la matriz siempre sera [0 0 0 1]
-    double det = T.get(1,3)*T.get(2,1)*T.get(3,2) - T.get(1,3)*T.get(3,1)*T.get(2,2) -T.get(2,3)*T.get(1,1)*T.get(3,2) + T.get(2,3)*T.get(3,1)*T.get(1,2) + T.get(3,3)*T.get(1,1)*T.get(2,2) - T.get(3,3)*T.get(2,1)*T.get(1,2);
+    double det = determinante(T);
+    
     Matriz nueva;
     Vector u;
     
-    u.set_X((T.get(2,2)*T.get(3,3)-T.get(2,3)*T.get(3,2))/det);
-    u.set_Y(-(T.get(1,2)*T.get(3,3)-T.get(3,2)*T.get(1,3))/det);
-    u.set_Z((T.get(1,2)*T.get(2,3)-T.get(2,2)*T.get(1,3))/det);
-    u.set_D(-(T.get(1,2)*T.get(2,3)*T.get(3,4)+T.get(1,3)*T.get(2,3)*T.get(3,2)+T.get(2,2)*T.get(3,3)*T.get(1,4)-T.get(3,2)*T.get(2,3)*T.get(1,4)-T.get(3,3)*T.get(2,4)*T.get(1,2)-T.get(2,2)*T.get(1,3)*T.get(3,4))/det);
+    u.set_X((T.get(2,2)*T.get(3,3)*T.get(4,4) + T.get(3,2)*T.get(4,3)*T.get(2,4) + T.get(4,2)*T.get(2,3) *T.get(3,4) -T.get(4,2)*T.get(3,3)*T.get(2,4) - T.get(3,2)*T.get(2,3)*T.get(4,4) - T.get(2,2)*T.get(4,3)*T.get(3,4))/det);
+    u.set_Y(-(T.get(2,1)*T.get(3,3)*T.get(4,4) + T.get(3,1)*T.get(4,3)*T.get(2,4) + T.get(4,1)*T.get(2,3) *T.get(3,4) -T.get(4,1)*T.get(3,3)*T.get(2,4) - T.get(3,1)*T.get(2,3)*T.get(4,4) - T.get(2,1)*T.get(4,3)*T.get(3,4))/det);
+    u.set_Z((T.get(2,1)*T.get(3,2)*T.get(4,4) + T.get(3,1)*T.get(4,2)*T.get(2,4) + T.get(4,1)*T.get(2,2) *T.get(3,4) -T.get(4,1)*T.get(3,2)*T.get(2,4) - T.get(3,1)*T.get(2,2)*T.get(4,4) - T.get(2,1)*T.get(4,2)*T.get(3,4))/det);
+    u.set_D(-(T.get(2,1)*T.get(3,2)*T.get(4,3) + T.get(3,1)*T.get(4,2)*T.get(2,3) + T.get(4,1)*T.get(2,2) *T.get(3,3) -T.get(4,1)*T.get(3,2)*T.get(2,3) - T.get(3,1)*T.get(2,2)*T.get(4,3) - T.get(2,1)*T.get(4,2)*T.get(3,3))/det);
     nueva.setVector1(u);
     
-    u.set_X(-(T.get(2,1)*T.get(3,3)-T.get(3,1)*T.get(2,3))/det);
-    u.set_Y((T.get(1,1)*T.get(3,3)-T.get(3,1)*T.get(1,3))/det);
-    u.set_Z(-(T.get(1,1)*T.get(2,3)-T.get(2,1)*T.get(1,3))/det);
-    u.set_D((T.get(1,1)*T.get(2,3)*T.get(3,4)+T.get(1,3)*T.get(2,4)*T.get(3,1)+T.get(2,1)*T.get(3,3)*T.get(1,1)-T.get(1,4)*T.get(2,3)*T.get(3,1)-T.get(3,3)*T.get(2,4)*T.get(1,1)-T.get(2,1)*T.get(1,3)*T.get(3,4))/det);
+    u.set_X(-(T.get(1,2)*T.get(3,3)*T.get(4,4) + T.get(4,2)*T.get(1,3)*T.get(3,4) + T.get(3,2)*T.get(4,3) *T.get(1,4) -T.get(4,2)*T.get(3,3)*T.get(1,4) - T.get(3,2)*T.get(1,3)*T.get(4,4) - T.get(1,2)*T.get(4,3)*T.get(3,4))/det);
+    u.set_Y((T.get(1,1)*T.get(3,3)*T.get(4,4) + T.get(3,1)*T.get(4,3)*T.get(1,4) + T.get(4,1)*T.get(1,3) *T.get(3,4) -T.get(4,1)*T.get(3,3)*T.get(1,4) - T.get(3,1)*T.get(1,3)*T.get(4,4) - T.get(1,1)*T.get(4,3)*T.get(3,4))/det);    
+    u.set_Z(-(T.get(1,1)*T.get(3,2)*T.get(4,4) + T.get(3,1)*T.get(4,2)*T.get(1,4) + T.get(4,1)*T.get(1,2) *T.get(3,4) -T.get(4,1)*T.get(3,2)*T.get(1,4) - T.get(3,1)*T.get(1,2)*T.get(4,4) - T.get(1,1)*T.get(4,2)*T.get(3,4))/det);    
+    u.set_D((T.get(1,1)*T.get(3,2)*T.get(4,3) + T.get(3,1)*T.get(4,2)*T.get(1,3) + T.get(4,1)*T.get(1,2) *T.get(3,3) -T.get(4,1)*T.get(3,2)*T.get(1,3) - T.get(3,1)*T.get(1,2)*T.get(4,3) - T.get(1,1)*T.get(4,2)*T.get(3,3))/det);
     nueva.setVector2(u);
     
-    u.set_X((T.get(2,1)*T.get(3,2)-T.get(3,1)*T.get(2,2))/det);
-    u.set_Y(-(T.get(1,1)*T.get(3,2)-T.get(3,1)*T.get(1,2))/det);
-    u.set_Z((T.get(1,1)*T.get(2,2)-T.get(2,1)*T.get(1,2))/det);
-    u.set_D(-(T.get(1,1)*T.get(2,2)*T.get(3,4)+T.get(2,1)*T.get(3,2)*T.get(1,4)+T.get(3,1)*T.get(1,2)*T.get(2,4)-T.get(3,1)*T.get(2,2)*T.get(1,4)-T.get(2,1)*T.get(1,2)*T.get(3,4)-T.get(3,2)*T.get(2,4)*T.get(1,1))/det);
+    u.set_X((T.get(1,2)*T.get(2,3)*T.get(4,4) + T.get(2,2)*T.get(4,3)*T.get(1,4) + T.get(4,2)*T.get(1,3) *T.get(2,4) -T.get(2,2)*T.get(1,3)*T.get(4,4) - T.get(1,2)*T.get(4,3)*T.get(2,4) - T.get(4,2)*T.get(2,3)*T.get(1,4))/det);    
+    u.set_Y(-(T.get(1,1)*T.get(2,3)*T.get(4,4) + T.get(2,1)*T.get(4,3)*T.get(1,4) + T.get(4,1)*T.get(1,3) *T.get(2,4) -T.get(4,1)*T.get(2,3)*T.get(1,4) - T.get(2,1)*T.get(1,3)*T.get(4,4) - T.get(1,1)*T.get(4,3)*T.get(2,4))/det);    
+    u.set_Z((T.get(1,1)*T.get(2,2)*T.get(4,4) + T.get(2,1)*T.get(4,2)*T.get(1,4) + T.get(4,1)*T.get(1,2) *T.get(2,4) -T.get(4,1)*T.get(2,2)*T.get(1,4) - T.get(2,1)*T.get(1,2)*T.get(4,4) - T.get(1,1)*T.get(4,2)*T.get(2,4))/det);   
+    u.set_D(-(T.get(1,1)*T.get(2,2)*T.get(4,3) + T.get(2,1)*T.get(4,2)*T.get(1,3) + T.get(4,1)*T.get(1,2) *T.get(2,3) -T.get(4,1)*T.get(2,2)*T.get(1,3) - T.get(2,1)*T.get(1,2)*T.get(4,3) - T.get(1,1)*T.get(4,2)*T.get(2,3))/det);
     nueva.setVector3(u);
     
-    u.set_X(0.0);
-    u.set_Y(0.0);
-    u.set_Z(0.0);
-    u.set_D((T.get(1,1)*T.get(2,2)*T.get(3,3) + T.get(1,2)*T.get(2,3)*T.get(3,1) + T.get(2,1)*T.get(3,2)*T.get(1,3) - T.get(3,1)*T.get(2,2)*T.get(1,3) - T.get(3,2)*T.get(2,3)*T.get(1,1) - T.get(2,1)*T.get(1,2)*T.get(3,3))/det);
+    u.set_X(-(T.get(1,2)*T.get(2,3)*T.get(3,4) + T.get(2,2)*T.get(3,3)*T.get(1,4) + T.get(3,2)*T.get(1,3) *T.get(2,4) -T.get(3,2)*T.get(2,3)*T.get(1,4) - T.get(2,2)*T.get(1,3)*T.get(3,4) - T.get(1,2)*T.get(3,3)*T.get(2,4))/det);    
+    u.set_Y((T.get(1,1)*T.get(2,3)*T.get(3,4) + T.get(2,1)*T.get(3,3)*T.get(1,4) + T.get(3,1)*T.get(1,3) *T.get(2,4) -T.get(3,1)*T.get(2,3)*T.get(1,4) - T.get(2,1)*T.get(1,3)*T.get(3,4) - T.get(1,1)*T.get(3,3)*T.get(2,4))/det);    
+    u.set_Z(-(T.get(1,1)*T.get(2,2)*T.get(3,4) + T.get(2,1)*T.get(3,2)*T.get(1,4) + T.get(3,1)*T.get(1,2) *T.get(2,4) -T.get(3,1)*T.get(2,2)*T.get(1,4) - T.get(2,1)*T.get(1,2)*T.get(3,4) - T.get(1,1)*T.get(3,2)*T.get(2,4))/det);  
+    u.set_D((T.get(1,1)*T.get(2,2)*T.get(3,3) + T.get(2,1)*T.get(3,2)*T.get(1,3) + T.get(3,1)*T.get(1,2) *T.get(2,3) -T.get(3,1)*T.get(2,2)*T.get(1,3) - T.get(2,1)*T.get(1,2)*T.get(3,3) - T.get(1,1)*T.get(3,2)*T.get(2,3))/det);
     nueva.setVector4(u);
+    
+    Vector tt1 = nueva.getVector(1);
+    Vector tt2 = nueva.getVector(2);
+    Vector tt3 = nueva.getVector(3);
+    Vector tt4 = nueva.getVector(4);
+    
+    Vector n;
+    n.set_values(tt1.get(1),tt2.get(1),tt3.get(1),tt4.get(1));
+    nueva.setVector1(n);
+    
+    n.set_values(tt1.get(2),tt2.get(2),tt3.get(2),tt4.get(2));
+    nueva.setVector2(n);
+    
+    n.set_values(tt1.get(3),tt2.get(3),tt3.get(3),tt4.get(3));
+    nueva.setVector3(n);
+    
+    n.set_values(tt1.get(4),tt2.get(4),tt3.get(4),tt4.get(4));
+    nueva.setVector4(n);
+    
    
     return nueva;    
 }
 
 Vector montecarlo::multiplicarMatrizValores(Matriz T1,double x1, double x2,double x3){
-    //como lo multiplico si los tamaños no coinciden?? El valor T1.get(1,4) lo multiplico x 0, o x que?
     Vector w;
     
     w.set_X(T1.get(1,1)*x1+T1.get(1,2)*x2+T1.get(1,3)*x3);
@@ -94,9 +129,11 @@ Vector montecarlo::multiplicarMatrizValores(Matriz T1,double x1, double x2,doubl
     return w;
 }
 Vector montecarlo::calcularw(){
+    //for(int i=0;i<getNum();i++){
     Matriz T = calcularT();
     Matriz T1 = inversaT(T);
     Vector wi = multiplicarMatrizValores(T1,sin(getInclination())*cos(getAzimuth()),sin(getInclination())*sin(getAzimuth()),cos(getInclination()));
+    //Devolvere un array de vectores con todos los wi generados
     return wi;
 }
 

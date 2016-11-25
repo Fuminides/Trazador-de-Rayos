@@ -44,7 +44,7 @@ Vector Matriz::getVector4(){
 }
 
 Vector Matriz::getVector(int num){
-	return vectores[num];
+	return vectores[num-1];
 }
 
 double Matriz::get(int x, int y){
@@ -71,7 +71,7 @@ void Matriz::setVector4(Vector v){
 	vectores[3] = v;
 }
 
-std::string Matriz::toString(){
+/*std::string Matriz::toString(){
 	std::string matriz ("");
 	int i,j;
 
@@ -83,4 +83,4 @@ std::string Matriz::toString(){
 	}
 
 	return matriz; 
-}
+}*/

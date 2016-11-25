@@ -15,17 +15,20 @@ class montecarlo
 {
     double inclination;
     double azimuth;
+    int num;
     Vector x;
     Vector n;
 public:
-    montecarlo(double inclination,double azimuth,Vector x, Vector n);
+    montecarlo(double inclination,double azimuth,Vector x, Vector n,int numRayos);
     
     double getInclination();
     double getAzimuth();
     Vector getn();
     Vector getx();
+    int getNum();
     
     Matriz calcularT();
+    double determinante(Matriz T);
     Matriz inversaT(Matriz T);
         
     Vector calcularw();
