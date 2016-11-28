@@ -12,6 +12,8 @@
 #include "vector.hpp"
 #include "operadorVector.hpp"
 #include "matriz.hpp"
+#include <vector>
+#include <stdlib.h> 
 using namespace std;
 
 
@@ -38,21 +40,38 @@ Vector montecarlo::getx(){
 int montecarlo::getNum(){
     return num;
 }
-Matriz montecarlo::calcularT(){
-    //Este vector azar tiene que ser un rand y que ademas no se haya utilizado ya.Cambiar estas dos lineas
+bool montecarlo::esta(list<Vector> usados, Vector azar){
+    //Se tiene que recorrer la lista para ver si el vector azar ya esta dentro de la lista usados.
+    return false;
+}
+list<Matriz> montecarlo::calcularT(){
+    
     Vector azar;
-    azar.set_values(0,1,0);
+    list<Vector> usados;
+    list<Matriz> matT;
+    srand(0);
     
-    Vector n= getn();
-    Vector x = getx();
-    
-    Vector u = productoVectorial(azar,n);
-    Vector v = productoVectorial(n,u);
-    
-    Matriz T;
-    T.set_valuesColum(u,v,n,x);
-       
-    return T;
+    while(usados.size()<getNum()){
+        azar.set_values(rand(),rand(),rand());
+        
+        while((azar.getX()==0 && azar.getY()==0 && azar.getZ()==0) || esta(usados,azar)){
+            azar.set_values(rand(),rand(),rand());
+        }
+        usados.push_back(azar);
+        
+        
+        Vector n= getn();
+        Vector x = getx();
+        
+        Vector u = productoVectorial(azar,n);
+        Vector v = productoVectorial(n,u);
+        
+        Matriz T;
+        T.set_valuesColum(u,v,n,x);
+         
+        matT.push_back(T);
+    }
+    return matT;
 }
 /*
  * devuelve el determinante de la matriz 4x4 T 
@@ -128,12 +147,15 @@ Vector montecarlo::multiplicarMatrizValores(Matriz T1,double x1, double x2,doubl
     
     return w;
 }
-Vector montecarlo::calcularw(){
-    //for(int i=0;i<getNum();i++){
-    Matriz T = calcularT();
-    Matriz T1 = inversaT(T);
-    Vector wi = multiplicarMatrizValores(T1,sin(getInclination())*cos(getAzimuth()),sin(getInclination())*sin(getAzimuth()),cos(getInclination()));
-    //Devolvere un array de vectores con todos los wi generados
-    return wi;
+list<Vector> montecarlo::calcularw(){
+    list<Matriz> matT= calcularT();
+    list<Vector> vect;
+    for(int i=0;i<matT.size();i++){
+        Matriz T1 = inversaT(matT.back());
+        matT.pop_back();
+        Vector wi = multiplicarMatrizValores(T1,sin(getInclination())*cos(getAzimuth()),sin(getInclination())*sin(getAzimuth()),cos(getInclination()));
+        vect.push_back(wi);
+    }
+   return vect;
 }
 
