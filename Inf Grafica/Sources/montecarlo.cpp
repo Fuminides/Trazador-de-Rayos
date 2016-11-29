@@ -41,10 +41,7 @@ Vector montecarlo::getx(){
 int montecarlo::getNum(){
     return num;
 }
-bool montecarlo::esta(list<Vector> usados, Vector azar){
-    //Se tiene que recorrer la lista para ver si el vector azar ya esta dentro de la lista usados.
-    return std::find(usados.begin(), usados.end(), azar) != usados.end();
-}
+
 list<Matriz> montecarlo::calcularT(){
     
     Vector azar;
@@ -55,7 +52,7 @@ list<Matriz> montecarlo::calcularT(){
     while(usados.size()<getNum()){
         azar.set_values(rand(),rand(),rand());
         
-        while((azar.getX()==0 && azar.getY()==0 && azar.getZ()==0) || esta(usados,azar)){
+        while((azar.getX()==0 && azar.getY()==0 && azar.getZ()==0)){
             azar.set_values(rand(),rand(),rand());
         }
         usados.push_back(azar);

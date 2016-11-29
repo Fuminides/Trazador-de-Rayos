@@ -31,7 +31,6 @@ public:
     Vector getx();
     int getNum();
     
-    bool esta(list<Vector> usados, Vector azar);
     list<Matriz> calcularT();
     double determinante(Matriz T);
     Matriz inversaT(Matriz T);
