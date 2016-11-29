@@ -14,6 +14,7 @@
 #include "matriz.hpp"
 #include <vector>
 #include <stdlib.h> 
+#include <algorithm>
 using namespace std;
 
 
@@ -42,7 +43,7 @@ int montecarlo::getNum(){
 }
 bool montecarlo::esta(list<Vector> usados, Vector azar){
     //Se tiene que recorrer la lista para ver si el vector azar ya esta dentro de la lista usados.
-    return false;
+    return std::find(usados.begin(), usados.end(), azar) != usados.end();
 }
 list<Matriz> montecarlo::calcularT(){
     
