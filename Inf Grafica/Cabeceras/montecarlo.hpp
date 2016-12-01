@@ -14,7 +14,7 @@
 
 #include <list>
 using namespace std;
-class montecarlo
+class Montecarlo
 {
     double inclination;
     double azimuth;
@@ -23,7 +23,7 @@ class montecarlo
     Vector n;
     
 public:
-    montecarlo(double inclination,double azimuth,Vector x, Vector n,int numRayos);
+    void set_values(double inclination,double azimuth,Vector x, Vector n,int numRayos);
     
     double getInclination();
     double getAzimuth();

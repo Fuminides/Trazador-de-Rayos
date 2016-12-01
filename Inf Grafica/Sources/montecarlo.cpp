@@ -18,7 +18,7 @@
 using namespace std;
 
 
-montecarlo::montecarlo(double i,double a,Vector px, Vector normal, int numRayos)
+void Montecarlo::set_values(double i,double a,Vector px, Vector normal, int numRayos)
 {
     inclination=i;
     azimuth = a;
@@ -26,23 +26,23 @@ montecarlo::montecarlo(double i,double a,Vector px, Vector normal, int numRayos)
     x = px;
     num = numRayos;
 }
-double montecarlo::getInclination(){
+double Montecarlo::getInclination(){
     return inclination;
 }
-double montecarlo::getAzimuth(){
+double Montecarlo::getAzimuth(){
     return azimuth;
 }
-Vector montecarlo::getn(){
+Vector Montecarlo::getn(){
     return n;
 }
-Vector montecarlo::getx(){
+Vector Montecarlo::getx(){
     return x;
 }
-int montecarlo::getNum(){
+int Montecarlo::getNum(){
     return num;
 }
 
-list<Matriz> montecarlo::calcularT(){
+list<Matriz> Montecarlo::calcularT(){
     
     Vector azar;
     list<Vector> usados;
@@ -74,7 +74,7 @@ list<Matriz> montecarlo::calcularT(){
 /*
  * devuelve el determinante de la matriz 4x4 T 
  */
-double montecarlo::determinante(Matriz T){
+double Montecarlo::determinante(Matriz T){
     double t1 = T.get(2,1)*T.get(3,2)*T.get(4,4) + T.get(3,1)*T.get(4,2)*T.get(2,4) + T.get(2,2)*T.get(3,4)*T.get(4,1) - T.get(4,1)*T.get(3,2)*T.get(2,4) - T.get(4,2)*T.get(3,4)*T.get(2,1) - T.get(3,1)*T.get(2,2)*T.get(4,4);
     double t2 = T.get(1,1)*T.get(3,2)*T.get(4,4) + T.get(1,2)*T.get(3,4)*T.get(4,1) + T.get(3,1)*T.get(4,2)*T.get(1,4) - T.get(4,1)*T.get(3,2)*T.get(1,4) - T.get(4,2)*T.get(3,4)*T.get(1,1) - T.get(1,2)*T.get(3,1)*T.get(4,4);
     double t3 = T.get(1,1)*T.get(2,2)*T.get(4,4) + T.get(2,1)*T.get(4,2)*T.get(1,4) + T.get(1,2)*T.get(2,4)*T.get(4,1) - T.get(4,1)*T.get(2,2)*T.get(1,4) - T.get(4,2)*T.get(2,4)*T.get(1,1) - T.get(2,1)*T.get(1,2)*T.get(4,4);
@@ -83,7 +83,7 @@ double montecarlo::determinante(Matriz T){
     return (T.get(1,3)*t1 - T.get(2,3)*t2 + T.get(3,3)*t3 - T.get(4,3)*t4);
     
 }
-Matriz montecarlo::inversaT(Matriz T){
+Matriz Montecarlo::inversaT(Matriz T){
     double det = determinante(T);
     
     Matriz nueva;
@@ -135,7 +135,7 @@ Matriz montecarlo::inversaT(Matriz T){
     return nueva;    
 }
 
-Vector montecarlo::multiplicarMatrizValores(Matriz T1,double x1, double x2,double x3){
+Vector Montecarlo::multiplicarMatrizValores(Matriz T1,double x1, double x2,double x3){
     Vector w;
     
     w.set_X(T1.get(1,1)*x1+T1.get(1,2)*x2+T1.get(1,3)*x3);
@@ -145,7 +145,7 @@ Vector montecarlo::multiplicarMatrizValores(Matriz T1,double x1, double x2,doubl
     
     return w;
 }
-list<Vector> montecarlo::calcularw(){
+list<Vector> Montecarlo::calcularw(){
     list<Matriz> matT= calcularT();
     list<Vector> vect;
     for(int i=0;i<matT.size();i++){

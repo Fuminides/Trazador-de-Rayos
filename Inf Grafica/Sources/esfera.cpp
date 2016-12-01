@@ -23,7 +23,7 @@
      */
     void Esfera::setOrigen(double x, double y, double z){
             origen.set_values(x,y,z);
-            color.set_values(0,0,0);
+            //color.set_values(0,0,0);
     }
     /*
      * Devuelve la superficie de la esfera
@@ -53,14 +53,14 @@
         double aux = b * b - 4 * c;
 
         if ( aux < 0.0 ){
-            return -1;
+            return -1.0;
         }
 
         double t1 = 0.0 - b + sqrt(aux);
         t1 = t1 / 2.0;
         double t2 = 0.0 - b - sqrt(aux);
         t2 = t2 / 2.0;
-        std::cout << "T1: " << std::to_string(t1) << " y T2: " << std::to_string(t2) << "\n";
+        //std::cout << "Raiz: " << std::to_string(aux) << "T1: " << std::to_string(t1) << " y T2: " << std::to_string(t2) << "\n";
         if ( (t1 == t2) && (t1>0.0) && ( t1*t1 > UMBRAL )){
             return t1;
         }

@@ -25,7 +25,7 @@ double Plano::intersectar(Rayo r){
 	Vector proyectar;
 	t = -(a*ox+b*oy + c*oz-d)/(a*vx+b*vy+c*vz);
 
-	if ( (t*t < 1) | (t < 0)){
+	if (  (t*t < 1) | (t < 0)){
 		return -1;
 	}
 
@@ -35,11 +35,11 @@ double Plano::intersectar(Rayo r){
 
 	aux.set_values(vx, vy,vz);
 	proyectar = restaPuntos(aux, origen);
-
-	if ( productoEscalar(proyectar, vectorX) > anchura) {
+	std::cout << "Prod escal: " << std::to_string(productoEscalar(proyectar, vectorX)) << "\n";
+	if ( (productoEscalar(proyectar, vectorX) > anchura) | (productoEscalar(proyectar, vectorX) < 0)) {
 		t = -1;
 	}
-	else if ( productoEscalar(proyectar, vectorY) > altura ){
+	else if (( productoEscalar(proyectar, vectorY) > altura ) | (productoEscalar(proyectar, vectorY) < 0)){
 		t = -1;
 	}
 

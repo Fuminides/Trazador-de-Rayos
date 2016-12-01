@@ -16,8 +16,9 @@ void operadorEscena::dibujar(){
     int distancia, min = -1, filas = 0;
     Figura * choque;
 
-    defecto.set_values(0,0,0);
+    defecto.set_values(0,0,0, NORMALIZAR_COLORES);
     std::list<Rayo> rayos = camara.trazarRayos();
+    
     std::vector<Color> pixels;
     pixels.reserve(camara.getPixels());
 
@@ -65,6 +66,19 @@ void operadorEscena::dibujar(){
     myfile << "P6 " << std::to_string(fila) << " " << std::to_string((int) (columna)) << " 255\n";
     std::cout << "P6 " << std::to_string(fila) << " " << std::to_string((int) (columna) ) << " 255\n";
 
+    if ( NORMALIZAR_COLORES ){
+        double max = 0;
+        for ( Color color : pixels){
+            if ( color.max() > max) max = color.max();
+        }
+        cout << "max: " << to_string(max) << "\n";
+        if ( max > 255){
+            for ( Color color : pixels){
+                color.normalizar(max);
+                cout << "Color: " << color.to_string() << "\n";
+            }    
+        }
+    }
     for ( Color color : pixels){
         myfile << color.splashR();
         myfile << color.splashG();
@@ -85,12 +99,13 @@ void operadorEscena::anyadirLuz(Luz l){
 Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Punto origenVista, double refraccionMedio, bool indirecto){
     double distancia; bool libre, libreCompleto = true;
     Color negro;
-    negro.set_values(0,0,0);
+    negro.set_values(0,0,0, NORMALIZAR_COLORES);
     Color inicial = negro;
     
     double kd = AMBIENTE; 
     Vector dirLuz;
-    
+    //cout << "Chequea luces\n";
+    int min;
     for ( Luz luz: luces){
         libre = true;
         Vector dirLuz = restaPuntos(luz.getOrigen(), p);
@@ -99,12 +114,12 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
         dirLuz.normalizar();
         puntoDirLuz.set_values(p, dirLuz);
 
-        int min = -1;
+        min = -1;
 
         for ( Figura * figuraP : figuras){
             distancia = figuraP->intersectar(puntoDirLuz);
 
-            if ( (distancia > 0) ){
+            if ( (distancia > 0) && (dLuz > distancia)){
 
                 if ( min == -1){
                     min = distancia;
@@ -140,12 +155,19 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                 inicial.sumar(auxC);
             }
         }
-        //DESCOMENTAR CUANDO EL MONTERCARLO ESTE HECHO
-       /* if ( indirecto ){
-            Rayo rayosIndir = Rayo[NUMERO_RAYOS_INDIRECTA];
-            generarRayos(rayosIndir, NUMERO_RAYOS_INDIRECTA);
-
-            for ( Rayo rayo : rayosIndir){
+    }
+    min = -1;
+    if ( indirecto ){
+            //A SILVIA:HAY QUE LLAMAR AL MONTECARLO AQUI, QUE SAQUE LOS RAYOS Y LUEGO YA CALCULAR
+            Figura * choque;
+            Punto auxP;
+            auxP.set_values(0,0,0, NORMALIZAR_COLORES);
+            Montecarlo montecarlo;
+            montecarlo.set_values(1.0,1.0,restaPuntos(p,auxP), figura->normal(p), NUMERO_RAYOS_INDIRECTA);
+            list<Vector> vecIndir = montecarlo.calcularw();
+            for ( Vector vec : vecIndir){
+                Rayo rayo;
+                rayo.set_values(p, vec);
                 for ( Figura * figuraP : figuras){
                     distancia = figuraP->intersectar(rayo);
                     
@@ -161,19 +183,21 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                     }
                 }
                 if ( min != -1){
+                   // cout << "Interseccion\n";
                     Punto puntoRender, origenRayos = camara.getPosicion();
                     Vector direccion = rayo.getVector();
                     puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
                         origenRayos.getZ() + direccion.getZ() * min);
+                    //cout << "Renderiza:" << puntoRender.to_string() << "\n";
                     Color cIndir = renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), refraccionMedio, false);
+                    //cout << "Si\n";
                     cIndir.multiplicar(K_LUZ_INDIR);
                     inicial.sumar(cIndir);
 
                     min = -1;
                 }
             }
-        }*/
-    }
+        }
 
     return inicial;
 }
@@ -185,7 +209,7 @@ Color operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista, 
 
     Color base, colorLuz = fuente.getColor();
     double kd = AMBIENTE, La = 0.2, n = 5, ks = 0.5;
-    base.set_values(0,0,0);
+    base.set_values(0,0,0, NORMALIZAR_COLORES);
     luz.normalizar();
     vista.normalizar();
 
@@ -231,7 +255,7 @@ Color operadorEscena::reboteEspecular(Figura * figura, Punto origen, Vector R, i
     Figura * choque;
 
     especular.set_values(origen, R);
-    defecto.set_values(0,0,0);
+    defecto.set_values(0,0,0, NORMALIZAR_COLORES);
 
     for ( Figura * figuraP : figuras){
         distancia = figuraP->intersectar(especular);
@@ -272,7 +296,7 @@ Color operadorEscena::refraccionEspecular(Figura * figura, Punto origen, Vector 
     int distancia, min = -1;
     Figura * choque;
 
-    defecto.set_values(0,0,0);
+    defecto.set_values(0,0,0, NORMALIZAR_COLORES);
 
     refraccion = sumaVectores(valorPorVector(vista, n1/n2), valorPorVector(normal, (n1/n2 * cosenoAngulo1 - sqrt(1-senoCAngulo2))));
     refraccion.normalizar();

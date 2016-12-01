@@ -13,10 +13,14 @@
 
 class Color {
 	unsigned char red, green, blue;
+	double rojo, verde, azul;
+	int RANGO = 255;
+	bool normaliza = false;
+
 	
 
 	public:
-		void set_values(int,int,int);
+		void set_values(int,int,int, bool);
 
 		/*
 		 * Getters. (En formato de un bit)
@@ -32,6 +36,10 @@ class Color {
 		void sumar(Color); 
 
 		std::string to_string();
+
+		void normalizar(double max);
+
+		double max();
 
 
 };

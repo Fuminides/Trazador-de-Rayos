@@ -11,6 +11,7 @@
 #include "esfera.hpp"
 #include "camara.hpp"
 #include "box.hpp"
+#include "montecarlo.hpp"
 
 #include <vector>
 #include <string>
@@ -27,9 +28,10 @@ private:
 
     
     const int NUMERO_REBOTES  = 4;
-    const double AMBIENTE = 0.1;
+    const double AMBIENTE = 0.3;
     const double REFRACCION_MEDIO = 1;
-    const int NUMERO_RAYOS_INDIRECTA = 0;
+    const int NUMERO_RAYOS_INDIRECTA = 4;
+    const double K_LUZ_INDIR = 1/ NUMERO_RAYOS_INDIRECTA * 0.2;
 
     Camara camara;
     std :: vector < Figura * > figuras;
@@ -47,6 +49,8 @@ private:
     Color ward(Vector o, Vector i, Vector n, Luz fuente, Punto x);
 
 public:
+
+    const bool NORMALIZAR_COLORES = false;
 
     /**
      * Incluye una camara nueva en la escena
