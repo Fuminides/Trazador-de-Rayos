@@ -62,7 +62,9 @@ list<Matriz> Montecarlo::calcularT(){
         Vector x = getx();
         
         Vector u = productoVectorial(azar,n);
+        u.normalizar();
         Vector v = productoVectorial(n,u);
+        v.normalizar();
         
         Matriz T;
         T.set_valuesColum(u,v,n,x);
