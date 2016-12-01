@@ -31,7 +31,7 @@ private:
     const double AMBIENTE = 0.3;
     const double REFRACCION_MEDIO = 1;
     const int NUMERO_RAYOS_INDIRECTA = 4;
-    const double K_LUZ_INDIR = 1/ NUMERO_RAYOS_INDIRECTA * 0.2;
+    const double K_LUZ_INDIR = 1/ NUMERO_RAYOS_INDIRECTA;
 
     Camara camara;
     std :: vector < Figura * > figuras;
