@@ -18,14 +18,14 @@ int cuentaInt = 1;
 int cuenta();
 
 int main(int argc, char ** argv){
-    int escenaID = 0;
+    int escenaID = 2;
     operadorEscena escena;
     Camara camara;
     Plano plano;
     Punto origenCamara, origenLuz, origenLuz2, origenLuz3, origenPlano;
     Vector vc1, vc2, vc3, normalPlano;
     Esfera esfera, esfera2, esfera3;
-    Color rojo, blanco, azul, negro, verde, naranja;
+    Color rojo, blanco, azul, negro, verde, naranja, gris;
     Luz luz1, luz2, luz3;
 
 
@@ -36,6 +36,7 @@ int main(int argc, char ** argv){
     negro.set_values(0,0,0, escena.NORMALIZAR_COLORES);
     verde.set_values(0,255,0, escena.NORMALIZAR_COLORES);
     naranja.set_values(255,128,0, escena.NORMALIZAR_COLORES);
+    gris.set_values(255,128,0, escena.NORMALIZAR_COLORES);
 
     origenCamara.set_values(1,0,0);
     vc1.set_values(1,0,0);
@@ -68,7 +69,7 @@ int main(int argc, char ** argv){
         esfera3.setId(cuenta());
         esfera3.setRefraccion(1);
         esfera3.setCoefRefraccion(0.6);
-        esfera3.setBRDF(0);
+        esfera3.setBRDF(1);
 
         origenPlano.set_values(300, -150, -150);
         normalPlano.set_values(-1,0,0);
@@ -111,6 +112,15 @@ int main(int argc, char ** argv){
         esfera3.setCoefRefraccion(0.6);
         esfera3.setBRDF(0);
 
+        esfera.setOrigen(60, -10, 50);
+        esfera.setColor(azul);
+        esfera.setRadio(10);
+        esfera.setId(cuenta());
+        esfera.setReflejo(0.0);
+        esfera.setRefraccion(0.2);
+        esfera.setCoefRefraccion(0.2);
+        esfera.setBRDF(0);
+
         origenLuz3.set_values(0, 0, 30);
         luz3.set_values(origenLuz3, blanco, 40);
         camara.set_values(origenCamara, vc1, vc2, vc3, 10* 100, 10 * 100,  pow(10* 100,2) );
@@ -121,12 +131,12 @@ int main(int argc, char ** argv){
         escena.setCamara(camara);
     }
     else if (escenaID == 2){
-        Plano planoAbajo, planoDerecha, planoIzquierda, planoFondo, planoArriba;
+        Plano planoAbajo, planoDerecha, planoIzquierda, planoFondo, planoArriba, lampara;
         Esfera esferaEspejo, esferaRefracc;
-        Punto oPA, oPD, oPI, pF, pA, puntoLuz, origenC;
+        Punto oPA, oPD, oPI, pF, pA, puntoLuz, origenC, origenLampara;
         Vector nPA, nPD, nPI, nF, nA;
         Camara camera;
-        double boxLenght = 50;
+        double boxLenght = 50, lamparaLen = boxLenght/3;
         Luz luzBox;
 
         oPA.set_values(0, 0, 0);
@@ -134,6 +144,7 @@ int main(int argc, char ** argv){
         oPI.set_values(0, 0, 0);
         pF.set_values(boxLenght, 0, 0);
         pA.set_values(0, boxLenght, 0);
+        origenLampara.set_values(boxLenght/3, boxLenght-2, boxLenght/3);
 
         nPA.set_values(0,-1,0);
         nPD.set_values(0,0,-1);
@@ -171,15 +182,55 @@ int main(int argc, char ** argv){
         planoArriba.setRefraccion(0.0);
         planoArriba.setCoefRefraccion(0.0);
 
-        puntoLuz.set_values(25,25,25);
+        lampara.set_values(origenLampara, nA, vc1, lamparaLen, vc3, lamparaLen);
+        lampara.setReflejo(0.0);
+        lampara.setRefraccion(0.0);
+        lampara.setCoefRefraccion(0.0);
+
+        puntoLuz.set_values(12.5,40,15.0);
         luzBox.set_values(puntoLuz, blanco, 50);
+        lampara.setLuz(luzBox);
+        lampara.setColor(blanco);
 
         origenC.set_values(-43.30, 25, 25);
         camera.set_values(origenC, vc1, vc2, vc3, boxLenght, boxLenght,  boxLenght*boxLenght*10);
 
         escena.setCamara(camera);
 
-        escena.anyadirLuz(luzBox);
+        //escena.anyadirLuz(luzBox);
+        puntoLuz.set_values(boxLenght/2,boxLenght-2,boxLenght/2);
+        luz1.set_values(puntoLuz, blanco, 50);
+        //escena.anyadirLuz(luz1);
+        puntoLuz.set_values(15,45,17.5);
+        //luz2.set_values(puntoLuz, blanco, 50);
+        //escena.anyadirLuz(luz2);
+        puntoLuz.set_values(15,45,12.5);
+        //luz3.set_values(puntoLuz, blanco, 50);
+        //escena.anyadirLuz(luz3);
+        puntoLuz.set_values(12.5,45,15.0);
+        //luz2.set_values(puntoLuz, rojo, 50);
+        //escena.anyadirLuz(luz2);
+
+
+        esfera.setOrigen(boxLenght/2, 8, boxLenght/4);
+        esfera.setColor(negro);
+        esfera.setRadio(8);
+        esfera.setReflejo(0.3);
+        esfera.setRefraccion(0.0);
+        esfera.setCoefRefraccion(0.0);
+        esfera.setBRDF(0);
+
+        esfera2.setOrigen(boxLenght/3, 8, boxLenght * 0.75);
+        esfera2.setColor(negro);
+        esfera2.setRadio(8);
+        esfera2.setReflejo(0.0);
+        esfera2.setRefraccion(1/1.33);
+        esfera2.setCoefRefraccion(1);
+        esfera2.setBRDF(0);
+
+        escena.anyadirFigura(&lampara);
+        escena.anyadirFigura(&esfera);
+        escena.anyadirFigura(&esfera2);
         escena.anyadirFigura(&planoArriba);
         escena.anyadirFigura(&planoFondo);
         escena.anyadirFigura(&planoIzquierda);

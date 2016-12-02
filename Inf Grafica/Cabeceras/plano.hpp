@@ -31,6 +31,7 @@ public:
 	Vector normal(Punto);
 
 	void setLuz(Luz);
+	std::vector<Luz> getLuces();
 };
 
 #endif

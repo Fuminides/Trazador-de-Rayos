@@ -97,7 +97,41 @@ Vector Esfera::normal(Punto p){
     return v;
 }
 
-void Esfera::setLuz(Luz _l){
-    color = _l.getColor();
-    l = _l;
+Luz generarLuz(Punto abajo, Vector aux, Luz _l, Punto origen, double radio){
+    aux = restaPuntos(abajo, origen);
+    aux.normalizar();
+    aux = valorPorVector(aux, radio);
+    abajo = sumaPuntoVector(origen, aux);
+
+    Luz lNueva;
+    lNueva.set_values(abajo, _l.getColor(), _l.getPotencia());
+
+    return lNueva;
 }
+
+void Esfera::setLuz(Luz _l){
+    luz = true;
+    color = _l.getColor();
+    Punto abajo, arriba, derecha, izquierda, atras, delante;
+    Vector aux;
+
+    abajo.set_values(0,-1,0);
+    arriba.set_values(0,1,0);
+    derecha.set_values(0,0,1);
+    izquierda.set_values(0,0,-1);
+    atras.set_values(-1,0,0);
+    delante.set_values(1,0,0);
+
+    luces[0] = generarLuz(abajo, aux, _l, origen, radio);
+    luces[1] = generarLuz(arriba, aux, _l, origen, radio);
+    luces[2] = generarLuz(derecha, aux, _l, origen, radio);
+    luces[3] = generarLuz(izquierda, aux, _l, origen, radio);
+    luces[4] = generarLuz(atras, aux, _l, origen, radio);
+    luces[5] = generarLuz(delante, aux, _l, origen, radio);
+}
+
+std::vector<Luz> Esfera::getLuces(){
+    std::vector<Luz> v(std::begin(luces), std::end(luces));    
+    return v;
+}
+

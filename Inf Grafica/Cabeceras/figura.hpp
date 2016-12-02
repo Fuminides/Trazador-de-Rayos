@@ -12,6 +12,9 @@
 #include "rayo.hpp"
 #include "luz.hpp"
 
+#include <vector>
+#include <iterator>
+
 class Figura {
 
 	
@@ -51,6 +54,7 @@ public:
 
 	bool isLuz();
 
+	virtual std::vector<Luz> getLuces() = 0;
 	virtual void setLuz(Luz) = 0;
 
 	/*

@@ -4,6 +4,13 @@
  * Añade una esfera al array de figuras de la escena
  */
 void operadorEscena::anyadirFigura(Figura * f){
+    if (f->isLuz()){
+        std::vector<Luz> luces;
+        luces = f->getLuces();
+        for ( Luz luz: luces){
+            anyadirLuz(luz);
+        }
+    }
     figuras.push_back(f);
 }
 
@@ -46,6 +53,7 @@ void operadorEscena::dibujar(){
                 min = -1;
             }
             else{
+                //std::cout << "Chocamos luz\n";
                 pixels.push_back(choque->getColor());
             }
         }
@@ -119,7 +127,7 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
         for ( Figura * figuraP : figuras){
             distancia = figuraP->intersectar(puntoDirLuz);
 
-            if ( (distancia > 0) && (dLuz > distancia)){
+            if (( (distancia > 0) && (dLuz > distancia)) && (!figuraP->isLuz())){
 
                 if ( min == -1){
                     min = distancia;

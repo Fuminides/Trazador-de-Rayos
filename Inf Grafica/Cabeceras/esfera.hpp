@@ -19,7 +19,7 @@
         double radio;
         Punto origen;
         Color color;
-        Luz l;
+        Luz luces[6];
         const double UMBRAL = 0.0;
 
         double puntoPorPunto(Punto p1, Punto p2);
@@ -61,6 +61,8 @@
           * Añade una luz para conseguir una luz de area.
           */
          void setLuz(Luz);
+
+         std::vector<Luz> getLuces();
 
  };
 

@@ -35,7 +35,7 @@ double Plano::intersectar(Rayo r){
 
 	aux.set_values(vx, vy,vz);
 	proyectar = restaPuntos(aux, origen);
-	std::cout << "Prod escal: " << std::to_string(productoEscalar(proyectar, vectorX)) << "\n";
+	//std::cout << "Prod escal: " << std::to_string(productoEscalar(proyectar, vectorX)) << "\n";
 	if ( (productoEscalar(proyectar, vectorX) > anchura) | (productoEscalar(proyectar, vectorX) < 0)) {
 		t = -1;
 	}
@@ -55,6 +55,7 @@ void Plano::setLuz(Luz _l){
 	Color cLuz = _l.getColor();
 	Punto aux;
 	color = cLuz;
+	luz = true;
 
 	luces[0].set_values(origen, cLuz, intensidad);
 	aux = sumaPuntoVector(origen, valorPorVector(vectorX, anchura));
@@ -66,4 +67,10 @@ void Plano::setLuz(Luz _l){
 	aux = sumaPuntoVector(origen, valorPorVector(vectorY, altura/2));
 	aux = sumaPuntoVector(aux, valorPorVector(vectorX, anchura/2));
 	luces[4].set_values(aux, cLuz, intensidad);
+
+}
+
+std::vector<Luz> Plano::getLuces(){
+	std::vector<Luz> v(std::begin(luces), std::end(luces));    
+    return v;
 }
