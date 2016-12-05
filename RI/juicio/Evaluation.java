@@ -221,8 +221,9 @@ public class Evaluation {
 			}
 			
 			//Para añadir la posicion de los relevantes. 
-			//En el guion dice que solo un maximo de 45 resultados por consulta
-			if(relevancia == 1 && cuenta<=45){
+			//En el guion dice que solo un maximo de 45 resultados por consulta Se pone aqui tambien??
+			//if(relevancia == 1 && cuenta<=45){
+			if(relevancia == 1){
 				if(!posicionesRel.containsKey(info_need)){
 					ArrayList<Integer> pos = new ArrayList<Integer>();
 					pos.add(cuenta);
@@ -241,37 +242,44 @@ public class Evaluation {
 	public static HashMap<String, Necesidad> juicios(String resultados) throws FileNotFoundException{
 		Scanner resultadosLeer = new Scanner(new File(resultados));
 		HashMap<String, Necesidad> preguntas = new HashMap<String, Necesidad>();
-		int cuenta =-1;
+		int cuenta =1;
 		while ( resultadosLeer.hasNextLine() ){
 			String id = resultadosLeer.next(),
 				documento = resultadosLeer.next();
-			
-			
+			String [] doc = documento.split("\\\\");
+			documento = doc[1];
+			System.out.println(documento);
 			if ( !preguntas.containsKey(id) ){
-				cuenta++;
+				cuenta=1;
 				preguntas.put(id, new Necesidad(numeroDocumentos,id));
 			}
-			Necesidad necesidad = preguntas.get(id);
-			
-			if ( necesidades.get(id).containsKey(documento)){
+			else{
+				cuenta++;
+			}
+			//Dice que solo hay que coger 45 resultados por consulta 
+			if(cuenta <=45){
+				Necesidad necesidad = preguntas.get(id);
 				
-				if ( necesidades.get(id).get(documento) == 1 ){
-					//Documento recuperado y es relevante
-					necesidad.setTruePositive(necesidad.getTruePositive()+1);
-				}
-				else if ( necesidades.get(id).get(documento) == 0){
-					//Documento recuperado y no es relevante
-					necesidad.setFalsePositive(necesidad.getFalsePositive()+1);
+				if ( necesidades.get(id).containsKey(documento)){
+					
+					if ( necesidades.get(id).get(documento) == 1 ){
+						//Documento recuperado y es relevante
+						necesidad.setTruePositive(necesidad.getTruePositive()+1);
+					}
+					else if ( necesidades.get(id).get(documento) == 0){
+						//Documento recuperado y no es relevante
+						necesidad.setFalsePositive(necesidad.getFalsePositive()+1);
+					}
+					else{
+						System.out.println("Valoracion " + necesidades.get(id).get(documento) + " no permitida.");
+					}
+					
+					necesidades.get(id).remove(documento);
 				}
 				else{
-					System.out.println("Valoracion " + necesidades.get(id).get(documento) + " no permitida.");
+					// recuperados  pero No relevantes
+					necesidad.setFalsePositive(necesidad.getFalsePositive()+1);
 				}
-				
-				necesidades.get(id).remove(documento);
-			}
-			else{
-				// recuperados  pero No relevantes
-				necesidad.setFalsePositive(necesidad.getFalsePositive()+1);
 			}
 				
 		}
