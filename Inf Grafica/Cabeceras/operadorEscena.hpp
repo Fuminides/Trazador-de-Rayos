@@ -50,7 +50,7 @@ private:
 
 public:
 
-    const bool NORMALIZAR_COLORES = false;
+    const bool NORMALIZAR_COLORES = false; //Solo funciona bien en alguna escena muy concreta con muchos fogonazos
 
     /**
      * Incluye una camara nueva en la escena

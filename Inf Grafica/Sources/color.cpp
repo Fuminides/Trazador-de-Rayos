@@ -14,16 +14,21 @@ void Color::set_values(int _rojo, int _verde, int _azul, bool n){
 
 unsigned char Color::splashR(){
 	if (!normaliza) return  red;
-	return (unsigned char) (((int) rojo) % 255);
+	unsigned char aux = (unsigned char) (((int) rojo) % 255);
+	if ( rojo >= 254.5 ) aux = 255;
+	return aux;
 }
 unsigned char Color::splashG(){
 	if (!normaliza) return  green;
-	return (unsigned char) (((int) verde) % 255);
+	unsigned char aux = (unsigned char) (((int) verde) % 255);
+	if ( verde >= 254.5 ) aux = 255;
+	return aux;
 }
 unsigned char Color::splashB(){
 	if (!normaliza) return  blue;
-	return (unsigned char) (((int) azul) % 255);
-
+	unsigned char aux = (unsigned char) (((int) azul) % 255);
+	if ( azul >= 254.5 ) aux = 255;
+	return aux;
 }
 
 void Color::multiplicar(double k){
@@ -68,7 +73,8 @@ void Color::sumar(Color c){
 
 std::string Color::to_string(){
 	if (!normaliza) return "R: " + std::to_string(red) + ", G: " + std::to_string(green) + ", B: " + std::to_string(blue);
-	return "R: " + std::to_string((unsigned char) (((int) rojo) % 255)) + ", G: " + std::to_string((unsigned char) (((int) verde) % 255)) + ", B: " + std::to_string((unsigned char) (((int) azul) % 255));
+	return "R: " + std::to_string((unsigned char) (((int) rojo) % 255)) + ", G: " + std::to_string((unsigned char) (((int) verde) % 255)) + ", B: " + std::to_string((unsigned char) (((int) azul) % 255))
+	+ ", Originales: R: " + std::to_string(rojo) + ", G: " + std::to_string(verde) + ", B: " + std::to_string(azul);
 }
 
 void Color::normalizar(double max){
@@ -83,4 +89,6 @@ double Color::max(){
 	if ( (rojo >= verde) && (rojo >= azul) ) return rojo;
 	if ( (azul >= verde) && (azul >= rojo) ) return azul;
 	if ( (verde >= rojo) && (verde >= azul) ) return verde;
+
+	std::cout << "No deberia ocurrir\n";
 }

@@ -28,7 +28,7 @@ void operadorEscena::dibujar(){
     
     std::vector<Color> pixels;
     pixels.reserve(camara.getPixels());
-
+    int i = 0;
     for ( Rayo rayo : rayos){
         for ( Figura * figuraP : figuras){
             distancia = figuraP->intersectar(rayo);
@@ -55,11 +55,15 @@ void operadorEscena::dibujar(){
             else{
                 //std::cout << "Chocamos luz\n";
                 pixels.push_back(choque->getColor());
+                min = -1;
             }
         }
         else{
             pixels.push_back(defecto);
         }
+
+        i++;
+        std::cout << "Renderizamos pixel numero: " << std::to_string(i) << "\n";
     }
 
     //Habria que pintar el color de la figura
@@ -82,7 +86,8 @@ void operadorEscena::dibujar(){
         cout << "max: " << to_string(max) << "\n";
         if ( max > 255){
             for ( Color color : pixels){
-                color.normalizar(max);
+                color.multiplicar(1.0/max);
+                color.multiplicar(255);
                 cout << "Color: " << color.to_string() << "\n";
             }    
         }
