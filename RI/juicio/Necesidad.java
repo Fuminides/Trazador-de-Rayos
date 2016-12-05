@@ -1,13 +1,17 @@
 package juicio;
 
+import java.util.ArrayList;
+
 public class Necesidad {
 	
 	private int truePositive, falsePositive, falseNegative, numDoc;
+	private String id;
 
-	public Necesidad(int numeroDocumentos) {
+	public Necesidad(int numeroDocumentos,String id) {
 		numDoc = numeroDocumentos;
+		this.id=id;
 	}
-
+	
 	public void setTruePositive(int truePositive) {
 		this.truePositive = truePositive;
 	}
@@ -18,7 +22,7 @@ public class Necesidad {
 
 
 	public int getTrueNegative() {
-		return numDoc - truePositive - truePositive - falseNegative;
+		return numDoc - truePositive - falsePositive - falseNegative;
 	}
 
 	public void setFalsePositive(int falsePositive) {
@@ -36,18 +40,7 @@ public class Necesidad {
 	public int getFalseNegative() {
 		return falseNegative;
 	}
-	
-	public double precision(){
-		return truePositive / (truePositive + falsePositive);
+	public String getId(){
+		return id;
 	}
-	
-	public double recall(){
-		return truePositive / (truePositive + falseNegative);	
-	}
-	
-	public double f1Score(){
-		return 2 * precision() * recall() / (precision() + recall());
-	}
-
-
 }
