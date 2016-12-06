@@ -221,7 +221,7 @@ Color operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista, 
     fuente.atenuar(distancia);
 
     Color base, colorLuz = fuente.getColor();
-    double kd = AMBIENTE, La = 0.2, n = 5, ks = 0.5;
+    double kd = AMBIENTE, La = 0.2, n = 5, ks = 0.3;
     base.set_values(0,0,0, NORMALIZAR_COLORES);
     luz.normalizar();
     vista.normalizar();

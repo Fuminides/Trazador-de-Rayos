@@ -24,6 +24,8 @@
 	 * Normaliza el vector
 	 */
 	void normalizar();
+
+	void multiplicar(double);
  };
 
  #endif

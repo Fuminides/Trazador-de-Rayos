@@ -16,7 +16,7 @@ class Luz  {
 	double potencia;
 
 public:
-	void set_values(Punto, Color, int);
+	void set_values(Punto, Color, double);
 
 	/*
 	 * Getters.

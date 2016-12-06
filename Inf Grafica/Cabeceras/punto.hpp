@@ -12,6 +12,7 @@
  class Punto : public ObjetoCartesiano {
  public:
  	bool esVector();
+ 	bool equals(Punto);
  };
 
  #endif

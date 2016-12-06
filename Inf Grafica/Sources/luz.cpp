@@ -13,7 +13,7 @@ Punto Luz::getOrigen(){
 	return origen;
 }
 
-void Luz::set_values(Punto p, Color c, int pot){
+void Luz::set_values(Punto p, Color c, double pot){
 	origen = p;
 	color = c;
 	potencia = pot;

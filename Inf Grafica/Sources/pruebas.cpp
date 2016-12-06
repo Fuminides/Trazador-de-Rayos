@@ -8,6 +8,8 @@
 #include "matriz.hpp"
 #include "camara.hpp"
 #include "plano.hpp"
+#include "triangulo.hpp"
+#include "leer_ply.hpp"
 
 #include <math.h>
 
@@ -18,7 +20,7 @@ int cuentaInt = 1;
 int cuenta();
 
 int main(int argc, char ** argv){
-    int escenaID = 2;
+    int escenaID = 1;
     operadorEscena escena;
     Camara camara;
     Plano plano;
@@ -42,6 +44,10 @@ int main(int argc, char ** argv){
     vc1.set_values(1,0,0);
     vc2.set_values(0,1,0);
     vc3.set_values(0,0,1);
+
+    if ( argc > 1 ){
+        escenaID = atoi(argv[1]);
+    }
 
     if ( escenaID == 0 ){
         esfera.setOrigen(90, -10, 50);
@@ -105,8 +111,12 @@ int main(int argc, char ** argv){
     } 
     else if ( escenaID == 1){
         Plano lampara;
-        Punto origenLampara;
+        Punto origenLampara, tr1, tr2, tr3;
         Vector nA;
+        Triangulo tr;
+        tr1.set_values(20, 0, -10);
+        tr2.set_values(20, 10, 0);
+        tr3.set_values(20, 0, 10);
 
         nA.set_values(0,-1.0,0);
         origenLampara.set_values(50, 30, -10);
@@ -134,14 +144,23 @@ int main(int argc, char ** argv){
         esfera.setCoefRefraccion(0.2);
         esfera.setBRDF(0);
 
-        origenLuz3.set_values(0, 0, 30);
-        luz3.set_values(origenLuz3, blanco, 5);
+        tr.set_values(tr1, tr2, tr3);
+        tr.setColor(azul);
+        tr.setId(cuenta());
+        tr.setReflejo(0.05);
+        tr.setRefraccion(0.2);
+        tr.setCoefRefraccion(0.2);
+        tr.setBRDF(0);
+
+        origenLuz3.set_values(0, 0, 0);
+        luz3.set_values(origenLuz3, blanco, 40);
         lampara.setLuz(luz3);
         camara.set_values(origenCamara, vc1, vc2, vc3, 10* 100, 10 * 100,  pow(10* 100,2) );
 
-        escena.anyadirFigura(&lampara);
-        escena.anyadirFigura(&esfera3);
-        //escena.anyadirLuz(luz3);
+        //escena.anyadirFigura(&lampara);
+        //escena.anyadirFigura(&esfera3);
+        escena.anyadirFigura(&tr);
+        escena.anyadirLuz(luz3);
 
         escena.setCamara(camara);
     }
@@ -252,8 +271,16 @@ int main(int argc, char ** argv){
         escena.anyadirFigura(&planoDerecha);
         escena.anyadirFigura(&planoAbajo);
     }
+    else if ( escenaID == 4 ){
+        string fichero = argv[2];
+        vector<Triangulo> v = leer(fichero);
 
-    
+        for (std::vector<Triangulo>::iterator i = v.begin(); i != v.end(); ++i)
+        {
+            cout << (*i).to_string() << "\n";
+        }
+    }
+
     escena.dibujar();
 
 }

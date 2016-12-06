@@ -17,5 +17,10 @@ void Vector::normalizar(){
 	set_values(valores[0]/module, valores[1]/module, valores[2]/module);
 }
 
+void Vector::multiplicar(double k){
+	valores[0] = valores[0] * k;
+	valores[1] = valores[1] * k;
+	valores[2] = valores[2] * k;
+}
 
 

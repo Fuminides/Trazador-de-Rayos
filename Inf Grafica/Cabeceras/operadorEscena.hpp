@@ -30,7 +30,7 @@ private:
     const int NUMERO_REBOTES  = 4;
     const double AMBIENTE = 0.5;
     const double REFRACCION_MEDIO = 1;
-    const int NUMERO_RAYOS_INDIRECTA = 64;
+    const int NUMERO_RAYOS_INDIRECTA = 32;
     const double K_LUZ_INDIR = 1.0 / (NUMERO_RAYOS_INDIRECTA + 0.000001)* 0.4;
 
     Camara camara;

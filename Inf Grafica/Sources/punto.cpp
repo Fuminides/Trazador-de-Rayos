@@ -8,3 +8,12 @@
 
 
 bool Punto::esVector() { return false; } 
+
+bool Punto::equals(Punto p){
+	if ((p.getX() == getX()) && (p.getY() == getY()) && (p.getZ() == getZ())) {
+		return true;
+	}
+	else{
+		return false;
+	}
+}
