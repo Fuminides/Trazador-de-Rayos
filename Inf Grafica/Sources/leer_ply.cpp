@@ -12,6 +12,7 @@ void leer(string nombre, Triangulo * v) {
   myfile.open (nombre);
   Punto p1, p2, p3;
   int nTr = 0;
+  Punto vertexes[1000];
 
   do{
   	myfile >> word;
@@ -29,34 +30,18 @@ void leer(string nombre, Triangulo * v) {
   	nextLine(&myfile, &dump);
   } while ((!word.compare("end_header")==0) && myfile.good());
   cout << "Cabecera\n";
-  p1 = leerPunto(&myfile);
-  p2 = leerPunto(&myfile);
-  p3 = leerPunto(&myfile);
 
-  v[0].set_values(p2,p3,p1);
-
-  for (int i = 1; i < nTr-2; ++i)
+  for (int i = 0; i < nTr; ++i)
   {
-  	p1 = p2;
-  	p2 = p3;
-  	p3 = leerPunto(&myfile);
-  	v[i].set_values(p2,p3,p1);
+  	vertexes[i] = leerPunto(&myfile);
   }
-  triangles2 = nTr - 2;
 
-  p1 = leerPunto(&myfile);
-  p2 = leerPunto(&myfile);
-  p3 = leerPunto(&myfile);
-
-  v[triangles2].set_values(p2,p3,p1);
-
-  for (int i = triangles2 + 1; i < poligonos + triangles2; ++i)
+  for (int i = 0 ; i < poligonos; i += 1)
   {
-    p1 = p2;
-    p2 = p3;
-    myfile >> dump;
-    p3 = leerPunto(&myfile);
-    v[i].set_values(p2,p3,p1);
+    int indi,indj,indz;
+
+    myfile >> dump >> indi >> indj >> indz;
+    v[i].set_values(vertexes[indi],vertexes[indj],vertexes[indz]);
   }
 
   myfile.close();

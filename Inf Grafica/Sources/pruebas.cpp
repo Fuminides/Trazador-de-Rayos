@@ -272,12 +272,12 @@ int main(int argc, char ** argv){
         escena.anyadirFigura(&planoAbajo);
     }
     else if ( escenaID == 4 ){
-        string fichero = argv[2];
-        Triangulo pTr[3000];
+        string fichero = "apple.ply";
+        Triangulo pTr[2000];
         leer(fichero, pTr);
         std::cout << "Hemos leido\n";
 
-        for (int i = 0; i<nTriangulos() + nPoligonos(); i++)
+        for (int i = 0; i<nPoligonos(); i++)
         {
             pTr[i].setColor(rojo);
             pTr[i].multiplicar(100);
@@ -285,7 +285,8 @@ int main(int argc, char ** argv){
             escena.anyadirFigura(&(pTr[i]));
         }
         cout << "Triangulos anyadidos\n";
-        origenLuz3.set_values(0, 20, 0);
+
+        origenLuz3.set_values(-15, 0, 0);
         luz3.set_values(origenLuz3, blanco, 100);
         escena.anyadirLuz(luz3);
         origenCamara.set_values(-20,0,0);
