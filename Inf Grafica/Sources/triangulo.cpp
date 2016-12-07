@@ -104,3 +104,12 @@ std::string Triangulo::to_string(){
 	return s;
 }
 
+void Triangulo::multiplicar(double k){
+	p1.multiplicar(k);
+	p2.multiplicar(k);
+	p3.multiplicar(k);
+
+	v1 = restaPuntos(p2,p1);
+	v2 = restaPuntos(p3,p1);
+	v3 = restaPuntos(p3,p2);	
+}

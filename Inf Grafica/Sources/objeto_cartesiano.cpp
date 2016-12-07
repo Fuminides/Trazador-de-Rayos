@@ -57,3 +57,9 @@ double ObjetoCartesiano::get(int indice){
 std::string ObjetoCartesiano::to_string(){
 	return "X: " + std::to_string(valores[0]) +  ", Y: " +  std::to_string(valores[1]) + ", Z:" + std::to_string(valores[2]);
 }
+
+void ObjetoCartesiano::multiplicar(double k){
+	set_X(getX()*k);
+	set_Y(getY()*k);
+	set_Z(getZ()*k);
+}

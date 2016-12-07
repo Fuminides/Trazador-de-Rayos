@@ -23,6 +23,8 @@ class Triangulo : public Figura {
 
 		Vector normal(Punto);
 
+		void multiplicar(double);
+
 		std::vector<Luz> getLuces();
 		void setLuz(Luz);
 

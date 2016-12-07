@@ -3,7 +3,7 @@
 
 void Camara::set_values(Punto p, Vector v1, Vector v2, Vector v3, int resolucionX,
 	int resolucionY, int numPixels){
-	distancia = resolucionX / (2 * 0.5773);
+	distancia = resolucionY / (2 * 0.5773);
 	resX = resolucionX;
 	resY = resolucionY;
 	posicion = p;
@@ -46,6 +46,7 @@ std::list<Rayo> Camara::trazarRayos(){
 	std::list<Rayo> rayos;
 
 	areaPixel =  (resX * resY)*1.0 / (pixels*1.0);
+	std::cout << "Area pixel: " << std::to_string(areaPixel) << "\n";
 
 	//Nos colocamos en la esquina superior izquierda.
 	arriba = sumaPuntoVector( sumaPuntoVector(plano, valorPorVector(ejes[1], (resY / 2))), valorPorVector(ejes[1], -areaPixel/2));

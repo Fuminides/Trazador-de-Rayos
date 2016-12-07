@@ -9,8 +9,10 @@ using namespace std;
 
 #include "triangulo.hpp"
 
-vector<Triangulo> leer(string);
+void leer(string, Triangulo *);
 void nextLine(ifstream * istream, string * str);
 Punto leerPunto(ifstream * stream);
+int nTriangulos();
+int nPoligonos();
 
 #endif

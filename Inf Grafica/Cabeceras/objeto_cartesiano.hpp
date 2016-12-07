@@ -33,6 +33,8 @@ class ObjetoCartesiano {
 	 	double getD();
 
 	 	double get(int indice);
+
+	 	void multiplicar(double);
 	 	virtual bool esVector() = 0; 
 
 	 	std::string to_string();

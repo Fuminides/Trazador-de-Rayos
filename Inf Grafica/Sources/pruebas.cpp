@@ -273,15 +273,32 @@ int main(int argc, char ** argv){
     }
     else if ( escenaID == 4 ){
         string fichero = argv[2];
-        vector<Triangulo> v = leer(fichero);
+        Triangulo pTr[3000];
+        leer(fichero, pTr);
+        std::cout << "Hemos leido\n";
 
-        for (std::vector<Triangulo>::iterator i = v.begin(); i != v.end(); ++i)
+        for (int i = 0; i<nTriangulos() + nPoligonos(); i++)
         {
-            cout << (*i).to_string() << "\n";
+            pTr[i].setColor(rojo);
+            pTr[i].multiplicar(100);
+            std::cout << "Tri "<< std::to_string(i) <<": " << pTr[i].to_string() << "\n";
+            escena.anyadirFigura(&(pTr[i]));
         }
+        cout << "Triangulos anyadidos\n";
+        origenLuz3.set_values(0, 20, 0);
+        luz3.set_values(origenLuz3, blanco, 100);
+        escena.anyadirLuz(luz3);
+        origenCamara.set_values(-20,0,0);
+        camara.set_values(origenCamara, vc1, vc2, vc3, 10, 10,  pow(60,2) );
+        escena.setCamara(camara);
+
+        escena.dibujar();
+        exit(1);
     }
 
     escena.dibujar();
+
+
 
 }
 
