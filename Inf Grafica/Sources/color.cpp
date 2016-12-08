@@ -31,7 +31,7 @@ unsigned char Color::splashB(){
 	return aux;
 }
 
-void Color::multiplicar(double k){
+Color Color::multiplicar(double k){
 	if (!normaliza){
 		if ( red * k > 255 ) red = 255;
 		else{
@@ -53,6 +53,8 @@ void Color::multiplicar(double k){
 		verde = verde * k;
 		azul = azul * k;
 	}
+
+	return *this;
 }
 
 void Color::sumar(Color c){

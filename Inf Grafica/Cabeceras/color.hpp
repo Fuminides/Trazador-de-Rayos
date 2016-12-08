@@ -32,7 +32,7 @@ class Color {
 		/**
 		 * Operaciones con los RGB. En caso de overflow dejan el valor maximo (255).
 		 */
-		void multiplicar(double k);
+		Color multiplicar(double k);
 		void sumar(Color); 
 
 		std::string to_string();

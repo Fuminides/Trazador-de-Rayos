@@ -32,6 +32,7 @@ private:
     const double REFRACCION_MEDIO = 1;
     const int NUMERO_RAYOS_INDIRECTA = 64;
     const double K_LUZ_INDIR = 1.0 / (NUMERO_RAYOS_INDIRECTA + 0.000001);
+    const bool PATH_TRACING = false;
 
     Camara camara;
     std :: vector < Figura * > figuras;
@@ -47,6 +48,8 @@ private:
      * Calcula la BDRF de Ward en el punto dado de la figura dada.
      */
     Color ward(Vector o, Vector i, Vector n, Luz fuente, Punto x);
+
+    double interseccion(Rayo r, Figura * choque);
 
 public:
 
@@ -75,7 +78,7 @@ public:
     /**
      * Renderiza el color de un punto
      */
-    Color renderizar(Punto c, Figura * figura, int, Punto, double, bool);
+    Color renderizar(Punto c, Figura * figura, int, Punto, double, bool, bool);
 
     /**
      * Define un rebote especular y lo calcula con el numero dado de rebotes de profundidad.

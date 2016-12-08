@@ -49,7 +49,7 @@ void operadorEscena::dibujar(){
                 Vector direccion = rayo.getVector();
                 puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
                     origenRayos.getZ() + direccion.getZ() * min);
-                pixels.push_back(renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), REFRACCION_MEDIO, true));
+                pixels.push_back(renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), REFRACCION_MEDIO, true, false));
                 min = -1;
             }
             else{
@@ -109,7 +109,7 @@ void operadorEscena::anyadirLuz(Luz l){
     luces.push_back(l);
 }
 
-Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Punto origenVista, double refraccionMedio, bool indirecto){
+Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Punto origenVista, double refraccionMedio, bool indirecto, bool seguirCamino){
     double distancia; bool libre, libreCompleto = true;
     Color negro;
     negro.set_values(0,0,0, NORMALIZAR_COLORES);
@@ -132,7 +132,7 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
         for ( Figura * figuraP : figuras){
             distancia = figuraP->intersectar(puntoDirLuz);
 
-            if (( (distancia > 0) && (dLuz > distancia)) && (!figuraP->isLuz())){
+            if ((distancia > 0) && (dLuz > distancia)) {
 
                 if ( min == -1){
                     min = distancia;
@@ -170,14 +170,16 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
         }
     }
     min = -1;
+
     if ( indirecto ){
-            //A SILVIA:HAY QUE LLAMAR AL MONTECARLO AQUI, QUE SAQUE LOS RAYOS Y LUEGO YA CALCULAR
-            Figura * choque;
-            Punto auxP;
-            auxP.set_values(0,0,0, NORMALIZAR_COLORES);
-            Montecarlo montecarlo;
-            montecarlo.set_values(1.0,1.0,restaPuntos(p,auxP), figura->normal(p), NUMERO_RAYOS_INDIRECTA);
-            list<Vector> vecIndir = montecarlo.calcularw();
+        Figura * choque;
+        Punto auxP;
+        auxP.set_values(0,0,0, NORMALIZAR_COLORES);
+        Montecarlo montecarlo;
+        if ( !seguirCamino ) montecarlo.set_values(1.0,1.0,restaPuntos(p,auxP), figura->normal(p), NUMERO_RAYOS_INDIRECTA);
+        else montecarlo.set_values(1.0,1.0,restaPuntos(p,auxP), figura->normal(p), 1);
+        list<Vector> vecIndir = montecarlo.calcularw();
+        if (!PATH_TRACING){
             for ( Vector vec : vecIndir){
                 Rayo rayo;
                 rayo.set_values(p, vec);
@@ -202,7 +204,7 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                     puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
                         origenRayos.getZ() + direccion.getZ() * min);
                     //cout << "Renderiza:" << puntoRender.to_string() << "\n";
-                    Color cIndir = renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), refraccionMedio, false);
+                    Color cIndir = renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), refraccionMedio, false, false);
                     //cout << "Si\n";
                     cIndir.multiplicar(K_LUZ_INDIR);
                     inicial.sumar(cIndir);
@@ -211,6 +213,34 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                 }
             }
         }
+        else{
+            Rayo caminos[NUMERO_RAYOS_INDIRECTA];
+            int indexAux = 0;
+            for (Vector vec : vecIndir)
+            {
+                caminos[indexAux].set_values(p, vec);
+                indexAux++;
+            }
+            Color cIndir;
+            cIndir.set_values(0,0,0, NORMALIZAR_COLORES);
+
+            for (int i = 0; i < NUMERO_RAYOS_INDIRECTA; ++i){
+                Figura * figuraAux;
+                min = interseccion(caminos[i], figuraAux);
+                if ( min != -1){
+                    Punto puntoRender, origenRayos = p;
+                    Vector direccion = caminos[i].getVector();
+
+                    puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
+                        origenRayos.getZ() + direccion.getZ() * min);
+
+                    if ( !figuraAux->isLuz() )cIndir.sumar(renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), refraccionMedio, false, true).multiplicar(K_LUZ_INDIR));
+                    else cIndir.sumar(figuraAux->getColor().multiplicar(K_LUZ_INDIR));
+                }
+            }
+            inicial.sumar(cIndir);
+        }
+    }
 
     return inicial;
 }
@@ -291,7 +321,7 @@ Color operadorEscena::reboteEspecular(Figura * figura, Punto origen, Vector R, i
             puntoRender.set_values(origen.getX() + direccion.getX() * min, origen.getY() + direccion.getY() * min, 
                 origen.getZ() + direccion.getZ() * min);
             
-            return renderizar(puntoRender, choque, numero -1, origen, figura->getRefraccion(), false);
+            return renderizar(puntoRender, choque, numero -1, origen, figura->getRefraccion(), false, false);
         }
     else{
         return defecto;
@@ -337,9 +367,33 @@ Color operadorEscena::refraccionEspecular(Figura * figura, Punto origen, Vector 
         puntoRender.set_values(origen.getX() + refraccion.getX() * min, origen.getY() + refraccion.getY() * min,
             origen.getZ() + refraccion.getZ() * min);
    
-        return renderizar(puntoRender, choque, numeroRebotes -1, origen, n2, false);
+        return renderizar(puntoRender, choque, numeroRebotes -1, origen, n2, false, false);
     }
     else{
         return defecto;
     }
+}
+
+double operadorEscena::interseccion(Rayo r, Figura * choque){
+    double distancia, min = -1;
+
+    for ( Figura * figuraP : figuras){
+        distancia = figuraP->intersectar(r);
+
+        if ( distancia >= 0 ){
+            if ( min == -1){
+                min = distancia;
+                choque = figuraP;
+            }
+            else if (distancia < min){
+                min = distancia;
+                choque = figuraP;
+                if (choque->isBox()){
+                    choque = ((Box *) choque)->store();
+                } 
+            }
+        }
+    }
+
+    return min;
 }
