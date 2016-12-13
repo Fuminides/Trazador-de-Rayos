@@ -31,7 +31,7 @@ unsigned char Color::splashB(){
 	return aux;
 }
 
-Color Color::multiplicar(double k){
+void Color::multiplicar(double k){
 	if (!normaliza){
 		if ( red * k > 255 ) red = 255;
 		else{
@@ -54,7 +54,6 @@ Color Color::multiplicar(double k){
 		azul = azul * k;
 	}
 
-	return *this;
 }
 
 void Color::sumar(Color c){
@@ -88,9 +87,16 @@ void Color::normalizar(double max){
 }
 
 double Color::max(){
-	if ( (rojo >= verde) && (rojo >= azul) ) return rojo;
-	if ( (azul >= verde) && (azul >= rojo) ) return azul;
-	if ( (verde >= rojo) && (verde >= azul) ) return verde;
+	if ( normaliza ){
+		if ( (rojo >= green) && (rojo >= azul) ) return rojo;
+		if ( (azul >= verde) && (azul >= rojo) ) return azul;
+		if ( (verde >= rojo) && (verde >= azul) ) return verde;
+	}
+	else{
+		if ( (red >= green) && (red >= blue) ) return red;
+		if ( (blue >= green) && (blue >= red) ) return blue;
+		if ( (green >= red) && (green >= blue) ) return green;	
+	}
 
 	std::cout << "No deberia ocurrir\n";
 }

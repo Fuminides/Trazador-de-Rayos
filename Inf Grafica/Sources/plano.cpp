@@ -3,6 +3,7 @@
 void Plano::set_values(Punto o, Vector n, Vector _vy, double alt, Vector _vx, double anch){
 	origen = o;
 	vNormal = n;
+	vNormal.normalizar();
 	altura = alt;
 	anchura = anch;
 	vectorX = _vx;

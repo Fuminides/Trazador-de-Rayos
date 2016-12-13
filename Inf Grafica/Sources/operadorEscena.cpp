@@ -30,31 +30,23 @@ void operadorEscena::dibujar(){
     pixels.reserve(camara.getPixels());
     int i = 0;
     for ( Rayo rayo : rayos){
-        for ( Figura * figuraP : figuras){
-            distancia = figuraP->intersectar(rayo);
-            
-            if ( distancia >= 0 ){
-                if ( (min == -1) | (distancia < min)){
-                    min = distancia;
-                    choque = figuraP;
-                    if (choque->isBox()){
-                        choque = ((Box *) choque)->store();
-                    } 
-                }
-            }
-        }
+        min = interseccion(rayo, &choque);
+
         if ( min != -1){
             if ( !choque->isLuz() ) {
                 Punto puntoRender, origenRayos = camara.getPosicion();
                 Vector direccion = rayo.getVector();
                 puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
                     origenRayos.getZ() + direccion.getZ() * min);
-                pixels.push_back(renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), REFRACCION_MEDIO, true, false));
+                pixels.push_back(renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), REFRACCION_MEDIO, true, PATH_LEN));
                 min = -1;
             }
             else{
                 //std::cout << "Chocamos luz\n";
-                pixels.push_back(choque->getColor());
+                //double pot = choque->getLuces()[0].getPotencia();
+                Color colorAux = choque->getColor();
+                //colorAux.multiplicar((pot*pot) / (min*min));
+                pixels.push_back(colorAux);
                 min = -1;
             }
         }
@@ -63,7 +55,7 @@ void operadorEscena::dibujar(){
         }
 
         i++;
-        std::cout << "Renderizamos pixel numero: " << std::to_string(i) << "\n";
+       // std::cout << "Renderizamos pixel numero: " << std::to_string(i) << "\n";
     }
 
     //Habria que pintar el color de la figura
@@ -109,14 +101,15 @@ void operadorEscena::anyadirLuz(Luz l){
     luces.push_back(l);
 }
 
-Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Punto origenVista, double refraccionMedio, bool indirecto, bool seguirCamino){
+Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Punto origenVista, double refraccionMedio, bool indirecto, int seguirCamino){
     double distancia; bool libre, libreCompleto = true;
     Color negro;
     negro.set_values(0,0,0, NORMALIZAR_COLORES);
     Color inicial = negro;
-    
+    Figura * choque;
     double kd = AMBIENTE; 
     Vector dirLuz;
+    double bdrf;
     //cout << "Chequea luces\n";
     int min;
     for ( Luz luz: luces){
@@ -129,16 +122,20 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
 
         min = -1;
 
-        for ( Figura * figuraP : figuras){
-            distancia = figuraP->intersectar(puntoDirLuz);
+        //min = interseccion(puntoDirLuz, &choque);
+        for (int i = 0; i < figuras.size(); i++){
+            distancia = figuras[i]->intersectar(puntoDirLuz);
+            //cout << "Legal " << std::to_string(i) << "\n";
 
-            if ((distancia > 0) && (dLuz > distancia)) {
-
-                if ( min == -1){
+            if ( distancia >= 0 ){
+                if ((( min == -1) | (distancia < min)) && (!figuras[i]->isLuz()) && (distancia < dLuz)){
                     min = distancia;
-                }
-                else if (distancia < min){
-                    min = distancia;
+                    choque = figuras[i];
+                    //cout << "Util\n";
+                     if ((choque)->isBox()){
+                        //cout << "Extrano\n";
+                        choque = ((Box *) (choque))->store();
+                    } 
                 }
             }
         }
@@ -149,24 +146,52 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
 
         if ( libre ){
             Color auxC = figura->getColor();
-            auxC.multiplicar(kd / M_PI);
+            double normalLuz = productoEscalar(figura->normal(p),dirLuz);
+            if ( normalLuz < 0) normalLuz = 0;
+            //std::cout << "Prod: " << std::to_string(normalLuz)<<"\n";
 
-            if ( figura->getBRDF() == 0) inicial.sumar(phong(figura, p, dirLuz,restaPuntos(camara.getPosicion(),p), luz)); 
-            else if (figura->getBRDF() == 1) inicial.sumar(ward(restaPuntos(camara.getPosicion(),p), dirLuz, figura->normal(p), luz, p));
-            inicial.sumar(auxC);
+            auxC.multiplicar(AMBIENTE / M_PI ); //* normalLuz);
+            luz.atenuar(restaPuntos(p, luz.getOrigen()).modulo());
 
-            //Caminos especulares
-            if ( numeroRebotes > 0){
-                Vector R;
-                R = restaVectores(valorPorVector(figura->normal(p), 2 * productoEscalar(dirLuz, figura->normal(p))), dirLuz);
-                Color auxC = reboteEspecular(figura, p, R, numeroRebotes);
-                auxC.multiplicar(figura->getReflejo());
+            if ( luz.getColor().max() > 3.0){
+
+                if ( figura->getBRDF() == 0){
+                    bdrf = phong(figura, p, dirLuz,restaPuntos(origenVista,p));   
+                } 
+                else if (figura->getBRDF() == 1){
+                    bdrf = ward(restaPuntos(origenVista,p), dirLuz, figura->normal(p), p);
+                }
+
+                Color auxColor = luz.getColor();
+                auxColor.multiplicar(bdrf);
+                inicial.sumar(auxColor);
                 inicial.sumar(auxC);
 
-                auxC = refraccionEspecular(figura, p, restaPuntos(p, origenVista), refraccionMedio, figura->getRefraccion(), numeroRebotes);
-                auxC.multiplicar (figura->getCoefRefraccion());
-                inicial.sumar(auxC);
+                //Caminos especulares
+                if ( numeroRebotes > 0){
+                    Vector R, dirLuz2 = restaPuntos(p, origenVista);
+                    dirLuz2.normalizar();
+
+                    if ( figura->getReflejo() > 0.0){
+                        R = restaVectores(dirLuz2, valorPorVector(valorPorVector(figura->normal(p), productoEscalar(dirLuz2,figura->normal(p))), 2));
+                        R.normalizar();
+                        Color auxC = reboteEspecular(figura, p, R, numeroRebotes);
+                        auxC.multiplicar(figura->getReflejo());
+                        inicial.sumar(auxC);
+                    }
+
+                    if( figura->getRefraccion() > 0.0){
+                        auxC = refraccionEspecular(figura, p, restaPuntos(p, origenVista), refraccionMedio, figura->getRefraccion(), numeroRebotes);
+                        auxC.multiplicar (figura->getCoefRefraccion());
+                        inicial.sumar(auxC);
+                    }
+                }
+
+                inicial.multiplicar(K_LUZ_DIR);
             }
+
+            //else cout << "Luz atenuada " << std::to_string(luz.getColor().max()) << "\n";
+
         }
     }
     min = -1;
@@ -176,27 +201,17 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
         Punto auxP;
         auxP.set_values(0,0,0, NORMALIZAR_COLORES);
         Montecarlo montecarlo;
-        if ( !seguirCamino ) montecarlo.set_values(1.0,1.0,restaPuntos(p,auxP), figura->normal(p), NUMERO_RAYOS_INDIRECTA);
-        else montecarlo.set_values(1.0,1.0,restaPuntos(p,auxP), figura->normal(p), 1);
+
+        if ( PATH_TRACING && (seguirCamino < PATH_LEN) ) montecarlo.set_values(1.0,1.0,restaPuntos(p,auxP), figura->normal(p), 1);
+        else montecarlo.set_values(1.0,1.0,restaPuntos(p,auxP), figura->normal(p), NUMERO_RAYOS_INDIRECTA);
+        
         list<Vector> vecIndir = montecarlo.calcularw();
         if (!PATH_TRACING){
             for ( Vector vec : vecIndir){
                 Rayo rayo;
                 rayo.set_values(p, vec);
-                for ( Figura * figuraP : figuras){
-                    distancia = figuraP->intersectar(rayo);
-                    
-                    if ( distancia >= 0 ){
-                        if ( min == -1){
-                            min = distancia;
-                            choque = figuraP;
-                        }
-                        else if (distancia < min){
-                            min = distancia;
-                            choque = figuraP;
-                        }
-                    }
-                }
+                min = interseccion(rayo, &choque);
+
                 if ( min != -1){
                    // cout << "Interseccion\n";
                     Punto puntoRender, origenRayos = camara.getPosicion();
@@ -204,9 +219,20 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                     puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
                         origenRayos.getZ() + direccion.getZ() * min);
                     //cout << "Renderiza:" << puntoRender.to_string() << "\n";
-                    Color cIndir = renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), refraccionMedio, false, false);
+                    Color cIndir = renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), refraccionMedio, false, 0);
                     //cout << "Si\n";
                     cIndir.multiplicar(K_LUZ_INDIR);
+                    Vector vAux = restaPuntos(puntoRender,p);
+                    vAux.normalizar();
+
+                    if ( figura->getBRDF() == 0){
+                        bdrf = phong(figura, p, vAux,restaPuntos(origenVista,p));   
+                    } 
+                    else if (figura->getBRDF() == 1){
+                        bdrf = ward(restaPuntos(origenVista,p), vAux, figura->normal(p), p);
+                    }
+
+                    cIndir.multiplicar(bdrf);
                     inicial.sumar(cIndir);
 
                     min = -1;
@@ -214,43 +240,58 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
             }
         }
         else{
-            Rayo caminos[NUMERO_RAYOS_INDIRECTA];
-            int indexAux = 0;
-            for (Vector vec : vecIndir)
-            {
-                caminos[indexAux].set_values(p, vec);
-                indexAux++;
-            }
+            if ( seguirCamino == 0) return inicial;
+
+           // int i = 0;
             Color cIndir;
             cIndir.set_values(0,0,0, NORMALIZAR_COLORES);
-
-            for (int i = 0; i < NUMERO_RAYOS_INDIRECTA; ++i){
+            for (Vector vec : vecIndir){
                 Figura * figuraAux;
-                min = interseccion(caminos[i], figuraAux);
+                Rayo rayo;
+                rayo.set_values(p, vec);
+                min = interseccion(rayo, &figuraAux);
+                //cout << "path: " << std::to_string(seguirCamino) <<"\n";
                 if ( min != -1){
                     Punto puntoRender, origenRayos = p;
-                    Vector direccion = caminos[i].getVector();
+                    Vector direccion = rayo.getVector();
 
                     puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
                         origenRayos.getZ() + direccion.getZ() * min);
+                    Color colorAux;
 
-                    if ( !figuraAux->isLuz() )cIndir.sumar(renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), refraccionMedio, false, true).multiplicar(K_LUZ_INDIR));
-                    else cIndir.sumar(figuraAux->getColor().multiplicar(K_LUZ_INDIR));
+                    if ( !figuraAux->isLuz() ){
+                        colorAux = renderizar(puntoRender, figuraAux, NUMERO_REBOTES, camara.getPosicion(), refraccionMedio, true, seguirCamino - 1);
+                    }
+                    else {
+                        colorAux = figuraAux->getColor(); 
+                    }
+                    Vector vAux = restaPuntos(puntoRender,p);
+                    vAux.normalizar();
+
+
+                    if ( figura->getBRDF() == 0){
+                        bdrf = phong(figura, p, vAux,restaPuntos(origenVista,p));   
+                    } 
+                    else if (figura->getBRDF() == 1){
+                        bdrf = ward(restaPuntos(origenVista,p), vAux, figura->normal(p), p);
+                    }
+
+                    colorAux.multiplicar(bdrf);
+                    colorAux.multiplicar(K_LUZ_INDIR);
+    
+                    inicial.sumar(colorAux);
                 }
             }
-            inicial.sumar(cIndir);
         }
     }
 
     return inicial;
 }
 
-Color operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista, Luz fuente){
+double operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista){
     Vector normal, R;
-    double distancia = restaPuntos(x, fuente.getOrigen()).modulo();
-    fuente.atenuar(distancia);
-
-    Color base, colorLuz = fuente.getColor();
+    //fuente.atenuar(distancia);
+    Color base;
     double kd = AMBIENTE, La = 0.2, n = 5, ks = 0.3;
     base.set_values(0,0,0, NORMALIZAR_COLORES);
     luz.normalizar();
@@ -259,23 +300,19 @@ Color operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista, 
     normal = figura->normal(x);
     R = restaVectores(valorPorVector(normal, 2 * productoEscalar(luz, normal)), luz);
 
-    double coefPhong = kd/M_PI  * productoEscalar(normal, luz) + ks * (n + 2)/(2*M_PI) * pow(productoEscalar(R, vista), n);
+    double coefPhong = ks * (n + 2)/(2*M_PI) * pow(productoEscalar(R, vista), n);// + (kd/M_PI  * productoEscalar(normal, luz));
 
-    if ( coefPhong < 0) colorLuz.multiplicar(-coefPhong);
-    else colorLuz.multiplicar(coefPhong);
+    if ( coefPhong < 0) return -coefPhong;
+    else coefPhong;
 
-    base.sumar(colorLuz);
+    //base.sumar(colorLuz);
 
-    return base;
+    //return coefPhong;
 }
 
-Color operadorEscena::ward(Vector o, Vector i, Vector n, Luz fuente, Punto p){
-    double distancia = restaPuntos(p, fuente.getOrigen()).modulo();
-    fuente.atenuar(distancia);
-
-    double ps = 0.75, ax = 0.20, ay = 0.10, difuso, especular, exponente;
+double operadorEscena::ward(Vector o, Vector i, Vector n, Punto p){
+    double ps = 0.75, ax = 0.20, ay = 0.10, especular, exponente;
     Vector h, x, y;
-    Color color= fuente.getColor();
     i.normalizar();
     o.normalizar();
     n.normalizar();
@@ -286,9 +323,8 @@ Color operadorEscena::ward(Vector o, Vector i, Vector n, Luz fuente, Punto p){
     exponente = -(pow(productoEscalar(h,x)/ax,2) + pow(productoEscalar(h,y)/ay,2)) / pow(productoEscalar(h, n),2);
     especular = ps / (4*M_PI*ax*ay*sqrt(productoEscalar(i,n) * productoEscalar(o, n))) * pow(M_E, exponente);
     if ( especular < 0 ) especular = -especular;
-    color.multiplicar(especular);
 
-    return color;
+    return especular;
 }
 
 Color operadorEscena::reboteEspecular(Figura * figura, Punto origen, Vector R, int numero){
@@ -300,20 +336,7 @@ Color operadorEscena::reboteEspecular(Figura * figura, Punto origen, Vector R, i
     especular.set_values(origen, R);
     defecto.set_values(0,0,0, NORMALIZAR_COLORES);
 
-    for ( Figura * figuraP : figuras){
-        distancia = figuraP->intersectar(especular);
-
-        if ( distancia >= 0 ){
-            if ( min == -1){
-                min = distancia;
-                choque = figuraP;
-            }
-            else if (distancia < min){
-                min = distancia;
-                choque = figuraP;
-            }
-        }
-    }
+    min = interseccion(especular, &choque);
 
     if ( min != -1){
             Punto puntoRender;
@@ -321,7 +344,7 @@ Color operadorEscena::reboteEspecular(Figura * figura, Punto origen, Vector R, i
             puntoRender.set_values(origen.getX() + direccion.getX() * min, origen.getY() + direccion.getY() * min, 
                 origen.getZ() + direccion.getZ() * min);
             
-            return renderizar(puntoRender, choque, numero -1, origen, figura->getRefraccion(), false, false);
+            return renderizar(puntoRender, choque, numero -1, origen, figura->getRefraccion(), false, 0);
         }
     else{
         return defecto;
@@ -332,6 +355,8 @@ Color operadorEscena::refraccionEspecular(Figura * figura, Punto origen, Vector 
     Vector normal = figura->normal(origen), refraccion;
     vista.normalizar();
     normal.normalizar();
+    if ( productoEscalar(vista, normal) < 0 ) normal = valorPorVector(normal, -1);
+    
     double cosenoAngulo1 = (productoEscalar(vista, normal) / (normal.modulo() * vista.modulo()));
     double senoCAngulo2 = pow(n1/n2,2) * (1 - pow(cosenoAngulo1,2));
     Rayo rebote;
@@ -346,20 +371,7 @@ Color operadorEscena::refraccionEspecular(Figura * figura, Punto origen, Vector 
 
     rebote.set_values(origen, refraccion);
    
-    for ( Figura * figuraP : figuras){
-        distancia = figuraP->intersectar(rebote);
-
-        if ( distancia >= 0 ){
-            if ( min == -1){
-                min = distancia;
-                choque = figuraP;
-            }
-            else if (distancia < min){
-                min = distancia;
-                choque = figuraP;
-            }
-        }
-    }
+    min = interseccion(rebote, &choque);
 
     if ( min != -1){
         Punto puntoRender;
@@ -367,33 +379,33 @@ Color operadorEscena::refraccionEspecular(Figura * figura, Punto origen, Vector 
         puntoRender.set_values(origen.getX() + refraccion.getX() * min, origen.getY() + refraccion.getY() * min,
             origen.getZ() + refraccion.getZ() * min);
    
-        return renderizar(puntoRender, choque, numeroRebotes -1, origen, n2, false, false);
+        return renderizar(puntoRender, choque, numeroRebotes -1, origen, n2, false, 0);
     }
     else{
         return defecto;
     }
 }
 
-double operadorEscena::interseccion(Rayo r, Figura * choque){
+double operadorEscena::interseccion(Rayo r, Figura ** choque){
     double distancia, min = -1;
 
-    for ( Figura * figuraP : figuras){
-        distancia = figuraP->intersectar(r);
+    for (int i = 0; i < figuras.size(); i++){
+        distancia = figuras[i]->intersectar(r);
+        //cout << "Legal " << std::to_string(i) << "\n";
 
         if ( distancia >= 0 ){
-            if ( min == -1){
+            if (( min == -1) | (distancia < min)){
                 min = distancia;
-                choque = figuraP;
-            }
-            else if (distancia < min){
-                min = distancia;
-                choque = figuraP;
-                if (choque->isBox()){
-                    choque = ((Box *) choque)->store();
+                *choque = figuras[i];
+                //cout << "Util\n";
+                 if ((*choque)->isBox()){
+                    //cout << "Extrano\n";
+                    *choque = ((Box *) (*choque))->store();
                 } 
             }
         }
     }
+    //cout << "Done\n";
 
     return min;
 }
