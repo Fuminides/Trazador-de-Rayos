@@ -4,14 +4,12 @@ import java.util.ArrayList;
 
 public class Necesidad {
 	
-	private int truePositive, falsePositive, falseNegative, numDoc;
+	private int truePositive, falsePositive, falseNegative;
 	private String id;
 
-	public Necesidad(int numeroDocumentos,String id) {
-		numDoc = numeroDocumentos;
+	public Necesidad(String id) {
 		this.id=id;
 	}
-	
 	public void setTruePositive(int truePositive) {
 		this.truePositive = truePositive;
 	}
@@ -19,12 +17,6 @@ public class Necesidad {
 	public int getTruePositive() {
 		return truePositive;
 	}
-
-
-	public int getTrueNegative() {
-		return numDoc - truePositive - falsePositive - falseNegative;
-	}
-
 	public void setFalsePositive(int falsePositive) {
 		this.falsePositive = falsePositive;
 	}

@@ -12,7 +12,6 @@ import java.text.DecimalFormat;
 public class Evaluation {
 
 	static HashMap<String,HashMap<String, Integer>> necesidades;
-	static int numeroDocumentos = 30000; //Que tamaño tiene la coleccion de documentos?
 	static HashMap<String,ArrayList<Integer>> posicionesRel;
 	/**
 	 * @param args
@@ -56,11 +55,11 @@ public class Evaluation {
 			
 			//Para comprobar lo que ha colocado en cada posicion de la hashmap de preguntas 
 			/*System.out.println(preguntas.size());
-			System.out.println("necesidad: "+preguntas.get("01-1").getId()+" fp: "+preguntas.get("01-1").getFalsePositive()+" fn: "+preguntas.get("01-1").getFalseNegative()+" tp: "+preguntas.get("01-1").getTruePositive()+" tn: "+preguntas.get("01-1").getTrueNegative());
-			System.out.println("necesidad: "+preguntas.get("04-3").getId()+" fp: "+preguntas.get("04-3").getFalsePositive()+" fn: "+preguntas.get("04-3").getFalseNegative()+" tp: "+preguntas.get("04-3").getTruePositive()+" tn: "+preguntas.get("04-3").getTrueNegative());
-			System.out.println("necesidad: "+preguntas.get("05-1").getId()+" fp: "+preguntas.get("05-1").getFalsePositive()+" fn: "+preguntas.get("05-1").getFalseNegative()+" tp: "+preguntas.get("05-1").getTruePositive()+" tn: "+preguntas.get("05-1").getTrueNegative());
-			System.out.println("necesidad: "+preguntas.get("09-4").getId()+" fp: "+preguntas.get("09-4").getFalsePositive()+" fn: "+preguntas.get("09-4").getFalseNegative()+" tp: "+preguntas.get("09-4").getTruePositive()+" tn: "+preguntas.get("09-4").getTrueNegative());
-			System.out.println("necesidad: "+preguntas.get("11-5").getId()+" fp: "+preguntas.get("11-5").getFalsePositive()+" fn: "+preguntas.get("11-5").getFalseNegative()+" tp: "+preguntas.get("11-5").getTruePositive()+" tn: "+preguntas.get("11-5").getTrueNegative());
+			System.out.println("necesidad: "+preguntas.get("01-1").getId()+" fp: "+preguntas.get("01-1").getFalsePositive()+" fn: "+preguntas.get("01-1").getFalseNegative()+" tp: "+preguntas.get("01-1").getTruePositive());
+			System.out.println("necesidad: "+preguntas.get("04-3").getId()+" fp: "+preguntas.get("04-3").getFalsePositive()+" fn: "+preguntas.get("04-3").getFalseNegative()+" tp: "+preguntas.get("04-3").getTruePositive());
+			System.out.println("necesidad: "+preguntas.get("05-1").getId()+" fp: "+preguntas.get("05-1").getFalsePositive()+" fn: "+preguntas.get("05-1").getFalseNegative()+" tp: "+preguntas.get("05-1").getTruePositive());
+			System.out.println("necesidad: "+preguntas.get("09-4").getId()+" fp: "+preguntas.get("09-4").getFalsePositive()+" fn: "+preguntas.get("09-4").getFalseNegative()+" tp: "+preguntas.get("09-4").getTruePositive());
+			System.out.println("necesidad: "+preguntas.get("11-5").getId()+" fp: "+preguntas.get("11-5").getFalsePositive()+" fn: "+preguntas.get("11-5").getFalseNegative()+" tp: "+preguntas.get("11-5").getTruePositive());
 			*/			
 			escribirEvaluacion(outputFileName,preguntas);
 			
@@ -81,9 +80,10 @@ public class Evaluation {
 	        DecimalFormat decimales = new DecimalFormat("0.000");
 	        
 	        double map =0.0;
+	        double sumT=0.0;
 	        double prec10total = 0.0;
-	        double tp= 0.0,fp=0.0,fn=0.0;
-	        
+	        double tp= 0.0,fp=0.0,fn=0.0,tpF= 0.0,fpF=0.0,fnF=0.0;
+	        ArrayList <Objeto> o = new ArrayList<Objeto>();
 	        String [] v = new String [5];
 	        v[0] ="01-1";
 	        v[1]="04-3";
@@ -94,16 +94,20 @@ public class Evaluation {
 	        for(int i=0;i<preguntas.size();i++){
 	        	pw.println("INFORMATION_NEED	"+preguntas.get(v[i]).getId());
 	        	
-	        	tp += preguntas.get(v[i]).getTruePositive();
-	        	fp += preguntas.get(v[i]).getFalsePositive();
-	        	fn += preguntas.get(v[i]).getFalseNegative();
+	        	tp = preguntas.get(v[i]).getTruePositive();
+	        	fp = preguntas.get(v[i]).getFalsePositive();
+	        	fn = preguntas.get(v[i]).getFalseNegative();
+	        	
+	        	tpF += tp;
+	        	fpF += fp;
+	        	fnF += fn;
 	        	
 	        	//PRECISION
-	        	double precision =preguntas.get(v[i]).getTruePositive()/(preguntas.get(v[i]).getTruePositive() +preguntas.get(v[i]).getFalsePositive()) ;
+	        	double precision = tp / (tp +fp);
 	        	pw.println("precision	"+decimales.format(precision));
 	        	
 	        	// RECALL
-	        	double recall =preguntas.get(v[i]).getTruePositive()/(preguntas.get(v[i]).getTruePositive() +preguntas.get(v[i]).getFalseNegative()) ;
+	        	double recall = tp /(tp+fn);
 	        	pw.println("recall	"+decimales.format(recall));
 	        	
 	        	// F1
@@ -116,6 +120,7 @@ public class Evaluation {
 	        	for(int x=0;x<posicionesRel.get(v[i]).size();x++){
 	        		if(posicionesRel.get(v[i]).get(x) <= 10){
 	        			sum+=1;
+	        			sumT+=1;
 	        		}
 	        		else{
 	        			break;
@@ -125,7 +130,7 @@ public class Evaluation {
 	        	pw.println("prec@10	"+decimales.format(prec10));
 	        	prec10total += prec10;
 	      
-	        	// AVERAGE_PRECISION -> Es la media de la precision de recall precision
+	        	// AVERAGE_PRECISION -> Es la media de la precision de recall-precision
 	        	double average_precision =0.0; 
 	        	
 	        	double p,r;	        	
@@ -139,29 +144,47 @@ public class Evaluation {
 	        	}
 	        	average_precision = average_precision /(double) posicionesRel.get(v[i]).size();
 	        	pw.println("average_precision	"+decimales.format(average_precision));
+	        	
 	        	map += average_precision;
 	        	
-	        	// RECALL_PRECISION -> Es el recall y la precision en cada relevante encontrado
+	        	// RECALL_PRECISION -> Es el recall y la precision en cada relevante encontrado 
+	        	/**Me salen mas filas de las que le salen a el , XQ?**/
 	        	pw.println("recall_precision"); 
 	        	for(int x=0;x<h.size();x++){
 					pw.println(decimales.format(h.get(x).getR())+"	"+decimales.format(h.get(x).getP()));
 	        	}
 	        	
-	        	// INTERPOLATED_RECALL_PRECISION -> Es interpolar lo de arriba 
-	        	/**FALTA ESTA**/
-	        	double interpolated_recall_precision = 1 ; 
+	        	// INTERPOLATED_RECALL_PRECISION ->por cada 10% de recall me quedo con la max(precision) a partir de ese recall. Interpolar la de arriba 
 	        	pw.println("interpolated_recall_precision");
-	        	pw.println(interpolated_recall_precision);
-	        	
+	        	double z=0.0;
+		        while(z<=1.0){
+		        	ArrayList <Double> posiblesValores = new ArrayList<Double>();
+		        	for(int x=0;x<h.size();x++){
+		        		double valor=h.get(x).getR();
+		        		if(valor>=z){
+		        			posiblesValores.add(h.get(x).getP());
+		        		}
+		        	}		        
+	        	    double max = 0.0;
+        	    	for (int t = 0; t < posiblesValores.size(); t++) {
+        	            if (posiblesValores.get(t) > max) {
+        	                max = posiblesValores.get(t);
+        	            }
+        	    	}
+        	    	Objeto nuevo = new Objeto(max,z);
+        	    	o.add(nuevo);
+        	    	pw.println(decimales.format(z)+"	"+decimales.format(max));
+        	    	z=z+0.1;
+		        }      	        	
 	        }
 	        pw.println("TOTAL");
 	        
 	        //PRECISION
-	        double ptotal = tp/(tp+fp);
+	        double ptotal = tpF/(tpF+fpF);
 	        pw.println("precision	"+decimales.format(ptotal));
 	        
 	        //RECALL
-	        double rtotal = tp/(tp+fn);
+	        double rtotal = tpF/(tpF+fnF);
 	        pw.println("recall	"+decimales.format(rtotal));
 	        
 	        //f1
@@ -169,18 +192,26 @@ public class Evaluation {
 	        pw.println("F1	"+decimales.format(f1total));
 	        
 	        //PREC@10
-	        prec10total = prec10total / (double) preguntas.size();
+	        prec10total = sumT / (double) (10.0*preguntas.size());
 	        pw.println("prec@10	"+decimales.format(prec10total));
 	        
 	        //MAP
 	        map = map /(double) preguntas.size();
 	        pw.println("MAP	"+decimales.format(map));
 	        
-	        //INTERPOLATED_RECALL_PRECISION
-	        /**FALTA ESTA**/
-	        double interpolated_recall_precision_final = 0.0 ; 
-	        pw.println("interpolated_recall_precision");        	
-        	pw.println(interpolated_recall_precision_final);
+	        //INTERPOLATED_RECALL_PRECISION 
+	        pw.println("interpolated_recall_precision"); 
+	        for(double x=0.0;x<1.0;x+=0.1){
+	        	double precMax=0.0;
+	        	for(int t=0;t<o.size();t++){
+	        		if(o.get(t).getR()==x){
+	        			if(o.get(t).getP()>precMax){
+	        				precMax=o.get(t).getP();
+	        			}
+	        		}
+	        	}
+	        	pw.println(decimales.format(x)+"	"+decimales.format(precMax));
+	        }
 	        
 	        fichero.close();
 	    }
@@ -188,12 +219,7 @@ public class Evaluation {
 	    	e.printStackTrace();
 	    }
 	}
-	
-	
-	
-	
-	
-	
+
 	
 	/**
 	 * @throws FileNotFoundException 
@@ -221,8 +247,6 @@ public class Evaluation {
 			}
 			
 			//Para añadir la posicion de los relevantes. 
-			//En el guion dice que solo un maximo de 45 resultados por consulta Se pone aqui tambien??
-			//if(relevancia == 1 && cuenta<=45){
 			if(relevancia == 1){
 				if(!posicionesRel.containsKey(info_need)){
 					ArrayList<Integer> pos = new ArrayList<Integer>();
@@ -248,15 +272,14 @@ public class Evaluation {
 				documento = resultadosLeer.next();
 			String [] doc = documento.split("\\\\");
 			documento = doc[1];
-			System.out.println(documento);
 			if ( !preguntas.containsKey(id) ){
 				cuenta=1;
-				preguntas.put(id, new Necesidad(numeroDocumentos,id));
+				preguntas.put(id, new Necesidad(id));
 			}
 			else{
 				cuenta++;
 			}
-			//Dice que solo hay que coger 45 resultados por consulta 
+			//Dice que solo hay que coger 45 resultados por consulta por lo tanto nos quedamos con los 45 primeros
 			if(cuenta <=45){
 				Necesidad necesidad = preguntas.get(id);
 				
