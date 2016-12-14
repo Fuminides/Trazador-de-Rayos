@@ -20,7 +20,7 @@
         Punto origen;
         Color color;
         Luz luces[6];
-        const double UMBRAL = -0.10000;
+        const double UMBRAL = 1.000000;
 
         double puntoPorPunto(Punto p1, Punto p2);
         double puntoPorVector(Punto p1, Vector p2);

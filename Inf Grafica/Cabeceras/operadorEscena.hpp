@@ -20,6 +20,7 @@
 #include <math.h>
 #include <iostream>
 #include <fstream>
+#include <cmath> 
 
 class operadorEscena
 {
@@ -30,9 +31,9 @@ private:
     const int NUMERO_REBOTES  = 4;
     const double AMBIENTE = 0.6;
     const double REFRACCION_MEDIO = 1;
-    const int NUMERO_RAYOS_INDIRECTA = 32, PATH_LEN = 5;
+    const int NUMERO_RAYOS_INDIRECTA = 256, PATH_LEN = 5;
     const double K_LUZ_INDIR = 1.0 / (NUMERO_RAYOS_INDIRECTA + 0.000001), K_LUZ_DIR = 1;
-    const bool PATH_TRACING = false;
+    const bool PATH_TRACING = true;
 
     Camara camara;
     std :: vector < Figura * > figuras;

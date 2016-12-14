@@ -51,7 +51,8 @@
         c -= radio * radio;
 
         double aux = b * b - 4 * c;
-
+        if (aux * aux < UMBRAL) aux = 0;
+        
         if ( aux < 0.0 ){
             return -1.0;
         }
@@ -61,7 +62,53 @@
         double t2 = 0.0 - b - sqrt(aux);
         t2 = t2 / 2.0;
         //std::cout << "Raiz: " << std::to_string(aux) << "T1: " << std::to_string(t1) << " y T2: " << std::to_string(t2) << "\n";
-        if ( (t1 == t2) && (t1>0.0) && ( t1*t1 > UMBRAL )){
+
+        if ( (t1 > 0.0) && (t2 > 0.0) ){
+            if ( t1 < t2){
+                if ( t1*t1 > UMBRAL ){
+                    return t1;
+                }
+                else{
+                    return t2;
+                }
+            }
+            else if ( t1 > t2){
+                if (t2 * t2 > UMBRAL){
+                    return t2;
+                }
+                else{
+                    return t1;
+                }
+            }
+            else{
+                if ( t1*t1 > UMBRAL){
+                    return t1;
+                }
+                else{
+                    return -1;
+                }
+            }
+        }
+        else if ( (t1 > 0.0) ){
+            if (t1 * t1 > UMBRAL){
+                    return t1;
+            }
+            else{
+                return -1;
+            }
+        }
+        else if ( (t2 > 0.0) ){
+            if ( t2 * t2 > UMBRAL){
+                return t2;
+            }
+            else{
+                return -1;
+            }
+        } 
+
+        return -1;
+
+        /*if ( (t1 == t2) && (t1>0.0) && ( t1*t1 > UMBRAL )){
             return t1;
         }
         else if ((t1>0.0) && (t2>0.0) && (t1 < t2) && (t1*t1 > UMBRAL)){
@@ -78,7 +125,7 @@
         }
         else{
             return -1.0;
-        }
+        }*/
         
 }
 

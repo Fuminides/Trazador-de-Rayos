@@ -12,7 +12,7 @@
 #include <iostream>
 
 class Color {
-	unsigned char red, green, blue;
+	double red, green, blue;
 	double rojo, verde, azul;
 	int RANGO = 255;
 	bool normaliza = false;

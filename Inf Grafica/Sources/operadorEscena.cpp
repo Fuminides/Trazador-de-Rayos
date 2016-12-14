@@ -42,10 +42,7 @@ void operadorEscena::dibujar(){
                 min = -1;
             }
             else{
-                //std::cout << "Chocamos luz\n";
-                //double pot = choque->getLuces()[0].getPotencia();
                 Color colorAux = choque->getColor();
-                //colorAux.multiplicar((pot*pot) / (min*min));
                 pixels.push_back(colorAux);
                 min = -1;
             }
@@ -55,10 +52,8 @@ void operadorEscena::dibujar(){
         }
 
         i++;
-       // std::cout << "Renderizamos pixel numero: " << std::to_string(i) << "\n";
     }
 
-    //Habria que pintar el color de la figura
     double areaPixel = (camara.getResX() * camara.getResY()) *1.0/ (camara.getPixels()*1.0);
     
     int fila = camara.getResX() / areaPixel,
@@ -142,18 +137,16 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
 
         if ( min > -1 ){
             libre = false;
+            //cout << "Vaya\n";
         }
 
         if ( libre ){
             Color auxC = figura->getColor();
             double normalLuz = productoEscalar(figura->normal(p),dirLuz);
             if ( normalLuz < 0) normalLuz = 0;
-            //std::cout << "Prod: " << std::to_string(normalLuz)<<"\n";
 
-            auxC.multiplicar(AMBIENTE / M_PI ); //* normalLuz);
             luz.atenuar(restaPuntos(p, luz.getOrigen()).modulo());
-
-            if ( luz.getColor().max() > 3.0){
+            if ( luz.getColor().max() > 0.0){
 
                 if ( figura->getBRDF() == 0){
                     bdrf = phong(figura, p, dirLuz,restaPuntos(origenVista,p));   
@@ -173,7 +166,11 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                     dirLuz2.normalizar();
 
                     if ( figura->getReflejo() > 0.0){
-                        R = restaVectores(dirLuz2, valorPorVector(valorPorVector(figura->normal(p), productoEscalar(dirLuz2,figura->normal(p))), 2));
+                        Vector nAux = figura->normal(p);
+
+                        if ( productoEscalar(restaPuntos(origenVista,p), nAux) < 0 ) nAux = valorPorVector(nAux, -1);
+
+                        R = restaVectores(dirLuz2, valorPorVector(valorPorVector(nAux, productoEscalar(dirLuz2,nAux)), 2));
                         R.normalizar();
                         Color auxC = reboteEspecular(figura, p, R, numeroRebotes);
                         auxC.multiplicar(figura->getReflejo());
@@ -189,8 +186,6 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
 
                 inicial.multiplicar(K_LUZ_DIR);
             }
-
-            //else cout << "Luz atenuada " << std::to_string(luz.getColor().max()) << "\n";
 
         }
     }
@@ -213,14 +208,11 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                 min = interseccion(rayo, &choque);
 
                 if ( min != -1){
-                   // cout << "Interseccion\n";
                     Punto puntoRender, origenRayos = camara.getPosicion();
                     Vector direccion = rayo.getVector();
                     puntoRender.set_values(origenRayos.getX() + direccion.getX() * min, origenRayos.getY() + direccion.getY() * min, 
                         origenRayos.getZ() + direccion.getZ() * min);
-                    //cout << "Renderiza:" << puntoRender.to_string() << "\n";
                     Color cIndir = renderizar(puntoRender, choque, NUMERO_REBOTES, camara.getPosicion(), refraccionMedio, false, 0);
-                    //cout << "Si\n";
                     cIndir.multiplicar(K_LUZ_INDIR);
                     Vector vAux = restaPuntos(puntoRender,p);
                     vAux.normalizar();
@@ -242,7 +234,6 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
         else{
             if ( seguirCamino == 0) return inicial;
 
-           // int i = 0;
             Color cIndir;
             cIndir.set_values(0,0,0, NORMALIZAR_COLORES);
             for (Vector vec : vecIndir){
@@ -250,7 +241,6 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                 Rayo rayo;
                 rayo.set_values(p, vec);
                 min = interseccion(rayo, &figuraAux);
-                //cout << "path: " << std::to_string(seguirCamino) <<"\n";
                 if ( min != -1){
                     Punto puntoRender, origenRayos = p;
                     Vector direccion = rayo.getVector();
@@ -290,24 +280,18 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
 
 double operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista){
     Vector normal, R;
-    //fuente.atenuar(distancia);
     Color base;
-    double kd = AMBIENTE, La = 0.2, n = 5, ks = 0.3;
+    double kd = AMBIENTE, La = 0.2, n = 4, ks = 0.3;
     base.set_values(0,0,0, NORMALIZAR_COLORES);
     luz.normalizar();
     vista.normalizar();
-
     normal = figura->normal(x);
-    R = restaVectores(valorPorVector(normal, 2 * productoEscalar(luz, normal)), luz);
+    if ( productoEscalar(vista, normal) < 0 ) normal = valorPorVector(normal, -1);
 
-    double coefPhong = ks * (n + 2)/(2*M_PI) * pow(productoEscalar(R, vista), n);// + (kd/M_PI  * productoEscalar(normal, luz));
+    R = restaVectores(valorPorVector(normal, 2 * productoEscalar(luz, normal)), luz); //Ya normalizado
+    double aux = productoEscalar(R, vista);
 
-    if ( coefPhong < 0) return -coefPhong;
-    else coefPhong;
-
-    //base.sumar(colorLuz);
-
-    //return coefPhong;
+    return ks * (n + 2)/(2*M_PI) * pow(aux, n);// + (kd/M_PI  * productoEscalar(normal, luz));
 }
 
 double operadorEscena::ward(Vector o, Vector i, Vector n, Punto p){
@@ -316,14 +300,17 @@ double operadorEscena::ward(Vector o, Vector i, Vector n, Punto p){
     i.normalizar();
     o.normalizar();
     n.normalizar();
+    if ( productoEscalar(i, n) < 0 ) n = valorPorVector(n, -1);
 
-    h = valorPorVector(sumaVectores(i,o), 1 / (sumaVectores(i,o).modulo()));
+    h = valorPorVector(sumaVectores(i,o), 1.0 / (sumaVectores(i,o).modulo()));
     x = productoVectorial(n, i);
     y = productoVectorial(n, x);
+    x.normalizar();
+    y.normalizar();
     exponente = -(pow(productoEscalar(h,x)/ax,2) + pow(productoEscalar(h,y)/ay,2)) / pow(productoEscalar(h, n),2);
-    especular = ps / (4*M_PI*ax*ay*sqrt(productoEscalar(i,n) * productoEscalar(o, n))) * pow(M_E, exponente);
-    if ( especular < 0 ) especular = -especular;
+    especular = ps / (4*M_PI*ax*ay*sqrt(std::abs(productoEscalar(i,n) * productoEscalar(o, n)))) * pow(M_E, exponente);
 
+    if ( especular < 0 ) especular = -especular;
     return especular;
 }
 

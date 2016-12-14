@@ -1,9 +1,9 @@
 #include "color.hpp"
 
 void Color::set_values(int _rojo, int _verde, int _azul, bool n){
-	red = _rojo;
-	green = _verde;
-	blue = _azul;
+	red = _rojo*1.0 / (RANGO * 1.0);
+	green = _verde*1.0 / (RANGO * 1.0);
+	blue = _azul*1.0 / (RANGO * 1.0);
 
 	rojo = _rojo;
 	verde = _verde;
@@ -13,19 +13,28 @@ void Color::set_values(int _rojo, int _verde, int _azul, bool n){
 }
 
 unsigned char Color::splashR(){
-	if (!normaliza) return  red;
+	if (!normaliza){
+		if (red*RANGO > 245.5) return 255;
+		return  (unsigned char) (red * RANGO);	
+	} 
 	unsigned char aux = (unsigned char) (((int) rojo) % 255);
 	if ( rojo >= 254.5 ) aux = 255;
 	return aux;
 }
 unsigned char Color::splashG(){
-	if (!normaliza) return  green;
+	if (!normaliza){
+		if (green*RANGO > 245.5) return 255;
+		return  (unsigned char) (green * RANGO);	
+	}
 	unsigned char aux = (unsigned char) (((int) verde) % 255);
 	if ( verde >= 254.5 ) aux = 255;
 	return aux;
 }
 unsigned char Color::splashB(){
-	if (!normaliza) return  blue;
+	if (!normaliza){
+		if (blue*RANGO > 245.5) return 255;
+		return  (unsigned char) (blue * RANGO);	
+	}
 	unsigned char aux = (unsigned char) (((int) azul) % 255);
 	if ( azul >= 254.5 ) aux = 255;
 	return aux;
@@ -33,17 +42,17 @@ unsigned char Color::splashB(){
 
 void Color::multiplicar(double k){
 	if (!normaliza){
-		if ( red * k > 255 ) red = 255;
+		if ( red * k > 1.0 ) red = 1.0;
 		else{
 			red = red * k;
 		} 
 		
-		if ( green * k > 255 ) green = 255;
+		if ( green * k > 1.0 ) green = 1.0;
 		else{
 			green = green * k;
 		} 
 
-		if ( blue * k > 255 ) blue = 255;
+		if ( blue * k > 1.0 ) blue = 1.0;
 		else{
 			blue = blue * k;
 		}
@@ -58,11 +67,11 @@ void Color::multiplicar(double k){
 
 void Color::sumar(Color c){
 	if (!normaliza){
-		if ( red + c.red > 255) { red = 255; }
+		if ( red + c.red > 1.0) { red = 1.0; }
 		else {red += c.red;}
-		if ( green +c.green > 255) { green = 255; } 
+		if ( green +c.green > 1.0) { green = 1.0; } 
 		else { green += c.green; }
-		if ( blue + c.blue > 255) { blue = 255; }
+		if ( blue + c.blue > 1.0) { blue = 1.0; }
 		else{ blue += c.blue; }
 	}
 	else{
@@ -73,7 +82,7 @@ void Color::sumar(Color c){
 }
 
 std::string Color::to_string(){
-	if (!normaliza) return "R: " + std::to_string(red) + ", G: " + std::to_string(green) + ", B: " + std::to_string(blue);
+	if (!normaliza) return "R: " + std::to_string(splashR()) + ", G: " + std::to_string(splashG()) + ", B: " + std::to_string(splashB());
 	return "R: " + std::to_string((unsigned char) (((int) rojo) % 255)) + ", G: " + std::to_string((unsigned char) (((int) verde) % 255)) + ", B: " + std::to_string((unsigned char) (((int) azul) % 255))
 	+ ", Originales: R: " + std::to_string(rojo) + ", G: " + std::to_string(verde) + ", B: " + std::to_string(azul);
 }
