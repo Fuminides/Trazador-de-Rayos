@@ -50,7 +50,7 @@ public:
 	void setColor(Color);
 	void setBRDF(int);
 
-	bool isBox();
+	virtual bool isBox() = 0;
 
 	bool isLuz();
 

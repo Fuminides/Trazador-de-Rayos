@@ -118,12 +118,25 @@ int main(int argc, char ** argv){
         Punto origenLampara, tr1, tr2, tr3;
         Vector nA;
         Triangulo tr;
+        Punto p1,p2,p3,p4,p5,p6;
+        Box bound;
+
+        p1.set_values(10, -5, -20);
+        p2.set_values(10, 15, -20);
+        p3.set_values(30, -5, -20);
+
+        p4.set_values(10, -5, 20);
+        p5.set_values(10, 15, 20);
+        p6.set_values(30, -5, 20);
+
         tr1.set_values(20, 0, -10);
         tr2.set_values(20, 10, 0);
         tr3.set_values(20, 0, 10);
 
+        bound.set_values(p1, p2, p3, p4, p5, p6, 8);
+
         nA.set_values(0,-1.0,0);
-        origenLampara.set_values(50, 30, -10);
+        origenLampara.set_values(10, 30, -10);
 
         lampara.set_values(origenLampara, nA, vc1, 10, vc3, 15);
         lampara.setColor(azul);
@@ -131,42 +144,29 @@ int main(int argc, char ** argv){
         lampara.setRefraccion(0.0);
         lampara.setCoefRefraccion(0.0);
 
-        esfera3.setOrigen(60, 0, 10);
-        esfera3.setColor(rojo);
-        esfera3.setRadio(10);
-        esfera3.setReflejo(0.0);
-        esfera3.setRefraccion(0.2);
-        esfera3.setCoefRefraccion(0);
-        esfera3.setBRDF(1);
-
-        esfera.setOrigen(60, -10, 50);
-        esfera.setColor(azul);
-        esfera.setRadio(10);
-        esfera.setId(cuenta());
-        esfera.setReflejo(0.0);
-        esfera.setRefraccion(0.2);
-        esfera.setCoefRefraccion(0.2);
-        esfera.setBRDF(1);
-
         tr.set_values(tr1, tr2, tr3);
         tr.setColor(azul);
-        tr.setId(cuenta());
-        tr.setReflejo(0.05);
-        tr.setRefraccion(0.2);
-        tr.setCoefRefraccion(0.2);
+        tr.setReflejo(0.0);
+        tr.setRefraccion(0.0);
+        tr.setCoefRefraccion(0.0);
         tr.setBRDF(0);
 
-        origenLuz3.set_values(0, 0, 0);
+        origenLuz3.set_values(15, 5, 0);
         luz3.set_values(origenLuz3, blanco, 40);
         lampara.setLuz(luz3);
         camara.set_values(origenCamara, vc1, vc2, vc3, 10* 100, 10 * 100,  pow(10* 100,2) );
 
-        //escena.anyadirFigura(&lampara);
-        //escena.anyadirFigura(&esfera3);
-        escena.anyadirFigura(&tr);
+        bound.meter(&tr);
+        escena.anyadirFigura(&bound);
         escena.anyadirLuz(luz3);
 
         escena.setCamara(camara);
+        cout << tr.getColor().to_string() << "\n";
+
+        escena.dibujar();
+        bound.free();
+        exit(1);
+
     }
     else if (escenaID == 2){
         Plano planoAbajo, planoDerecha, planoIzquierda, planoFondo, planoArriba, lampara;
@@ -210,13 +210,13 @@ int main(int argc, char ** argv){
         planoIzquierda.setCoefRefraccion(0.0);
 
         planoFondo.set_values(pF, nF, vc2, boxLenght, vc3, boxLenght);
-        planoFondo.setColor(negro);
+        planoFondo.setColor(gris);
         planoFondo.setReflejo(0.0);
         planoFondo.setRefraccion(0.0);
         planoFondo.setCoefRefraccion(0.0);
 
         planoArriba.set_values(pA, nA, vc1, boxLenght, vc3, boxLenght);
-        planoArriba.setColor(negro);
+        planoArriba.setColor(gris);
         planoArriba.setReflejo(0.0);
         planoArriba.setRefraccion(0.0);
         planoArriba.setCoefRefraccion(0.0);
@@ -252,7 +252,7 @@ int main(int argc, char ** argv){
 
 
         esfera.setOrigen(boxLenght/2, 8, boxLenght/4);
-        esfera.setColor(negro);
+        esfera.setColor(gris);
         esfera.setRadio(8);
         esfera.setReflejo(0.15);
         esfera.setRefraccion(0.0);
@@ -260,7 +260,7 @@ int main(int argc, char ** argv){
         esfera.setBRDF(0);
 
         esfera2.setOrigen(boxLenght/3, 8, boxLenght * 0.75);
-        esfera2.setColor(negro);
+        esfera2.setColor(gris);
         esfera2.setRadio(8);
         esfera2.setReflejo(0.0);
         esfera2.setRefraccion(1.33);
@@ -281,28 +281,39 @@ int main(int argc, char ** argv){
         escena.anyadirFigura(&planoAbajo);
     }
     else if ( escenaID == 4 ){
+
+        Punto p1,p2,p3,p4,p5,p6;
+        Box bound;
+
+        p1.set_values(-10, -10, -10);
+        p2.set_values(-10, 10, -10);
+        p3.set_values(10, -10, -10);
+
+        p4.set_values(-10, -10, 10);
+        p5.set_values(-10, 10, 10);
+        p6.set_values(10, -10, 10);
+
         string fichero = "apple.ply";
         Triangulo pTr[2000];
         leer(fichero, pTr);
-        std::cout << "Hemos leido\n";
-
+        bound.set_values(p1,p2,p3,p4,p5,p6,nPoligonos());
         for (int i = 0; i<nPoligonos(); i++)
         {
             pTr[i].setColor(rojo);
             pTr[i].multiplicar(100);
-            std::cout << "Tri "<< std::to_string(i) <<": " << pTr[i].to_string() << "\n";
-            escena.anyadirFigura(&(pTr[i]));
+            bound.meter(&(pTr[i]));
         }
-        cout << "Triangulos anyadidos\n";
+        escena.anyadirFigura(&bound);
 
         origenLuz3.set_values(-15, 0, 0);
         luz3.set_values(origenLuz3, blanco, 100);
         escena.anyadirLuz(luz3);
         origenCamara.set_values(-20,0,0);
-        camara.set_values(origenCamara, vc1, vc2, vc3, 10, 10,  pow(20,2) );
-        escena.setCamara(camara);
 
+        camara.set_values(origenCamara, vc1, vc2, vc3, 10, 10,  pow(100,2) );
+        escena.setCamara(camara);
         escena.dibujar();
+        bound.free();
         exit(1);
     }
 

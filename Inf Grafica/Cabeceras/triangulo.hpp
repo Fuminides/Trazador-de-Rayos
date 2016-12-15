@@ -7,7 +7,7 @@
 
 #include <string>
 
-#define EPSILON 0.000001
+#define EPSILON 0.01
 
 class Triangulo : public Figura {
 
@@ -29,6 +29,8 @@ class Triangulo : public Figura {
 		void setLuz(Luz);
 
 		std::string to_string();
+
+		bool isBox() { return false; }
 
 };
 

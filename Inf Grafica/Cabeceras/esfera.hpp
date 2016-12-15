@@ -62,6 +62,8 @@
           */
          void setLuz(Luz);
 
+         bool isBox() { return false; }
+
          std::vector<Luz> getLuces();
 
  };

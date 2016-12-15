@@ -66,13 +66,22 @@ void Color::multiplicar(double k){
 }
 
 void Color::sumar(Color c){
+	double cred = c.splashR()*1.0 / (RANGO*1.0);
+	double cgreen = c.splashG()*1.0 / (RANGO*1.0);
+	double cblue = c.splashB()*1.0 / (RANGO*1.0);
+	
 	if (!normaliza){
-		if ( red + c.red > 1.0) { red = 1.0; }
-		else {red += c.red;}
-		if ( green +c.green > 1.0) { green = 1.0; } 
-		else { green += c.green; }
-		if ( blue + c.blue > 1.0) { blue = 1.0; }
-		else{ blue += c.blue; }
+		if ( red + cred > 1.0) { red = 1.0; }
+		else if ( red + cred < 0.0 ) { red = 0.0; }
+		else {red += (cred);}
+
+		if ( green + cgreen > 1.0) { green= 1.0; }
+		else if ( green + cgreen < 0.0 ) { green = 0.0; }
+		else {green += (cgreen);}
+
+		if ( blue + cblue > 1.0) { blue = 1.0; }
+		else if ( blue + cblue < 0.0 ) { blue = 0.0; }
+		else {blue += (cblue);}
 	}
 	else{
 		rojo += c.rojo;
@@ -83,6 +92,7 @@ void Color::sumar(Color c){
 
 std::string Color::to_string(){
 	if (!normaliza) return "R: " + std::to_string(splashR()) + ", G: " + std::to_string(splashG()) + ", B: " + std::to_string(splashB());
+
 	return "R: " + std::to_string((unsigned char) (((int) rojo) % 255)) + ", G: " + std::to_string((unsigned char) (((int) verde) % 255)) + ", B: " + std::to_string((unsigned char) (((int) azul) % 255))
 	+ ", Originales: R: " + std::to_string(rojo) + ", G: " + std::to_string(verde) + ", B: " + std::to_string(azul);
 }

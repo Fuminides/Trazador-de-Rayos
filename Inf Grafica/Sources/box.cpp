@@ -1,6 +1,6 @@
 #include "box.hpp"
 
-bool Box::isBox() { return false; }
+bool Box::isBox() { return true; }
 
 Vector Box::normal(Punto p){
 	Vector aux;
@@ -8,7 +8,7 @@ Vector Box::normal(Punto p){
 }
 
 Figura * Box::store(){
-	return storageAux;
+	return figuras[storaged];
 }
 
 Plano Box::crearPlano(Punto p1, Punto p2, Punto p3){
@@ -27,14 +27,17 @@ Plano Box::crearPlano(Punto p1, Punto p2, Punto p3){
 	return pl;
 }
 
-void Box::set_values(Punto p1, Punto p2, Punto p3, Punto p4, Punto p5, Punto p6){
+void Box::set_values(Punto p1, Punto p2, Punto p3, Punto p4, Punto p5, Punto p6, int capacidat){
 	Punto p7, p8;
 	Vector v;
 	double x;
+	capacidad = capacidat;
+	figuras = (Figura **) malloc(capacidat * sizeof(Figura *));
 	pl1 = crearPlano(p1, p2, p3);
 	pl2 = crearPlano(p4, p5, p6);
 	pl3 = crearPlano(p4, p1, p5);
 	pl4 = crearPlano(p4, p6, p2);
+
 
 	v = productoVectorial(restaPuntos(p4,p2), restaPuntos(p1,p4));
 	x = restaPuntos(p5, p4).getX() / v.getX();
@@ -45,31 +48,49 @@ void Box::set_values(Punto p1, Punto p2, Punto p3, Punto p4, Punto p5, Punto p6)
 }
 
 double Box::intersectar(Rayo r){
-	Figura * choque;
 	double distancia, min = -1;
 
 	if ( pl1.intersectar(r) > 0 | pl2.intersectar(r) > 0 | pl3.intersectar(r) > 0 | pl4.intersectar(r) > 0 |
 		pl5.intersectar(r) > 0 | pl6.intersectar(r) > 0){
-
-		for ( Figura * figuraP : figuras){
+		for ( int i = 0; i < ocupados; i++){
+			Figura * figuraP =  figuras[i];
             distancia = figuraP->intersectar(r);
-            
+
             if ( distancia >= 0 ){
                 if ( min == -1){
                     min = distancia;
-                    choque = figuraP;
+                    storaged = i;
                 }
                 else if (distancia < min){
                     min = distancia;
-                    choque = figuraP;
+                    storaged = i;
                 }
             }
         }
-        storageAux = choque;
 
-        return distancia;
+        return min;
 	}
 	else {
 		return -1;
 	}
 }
+
+void Box::meter(Figura * f){
+	//figuras.reserve(figur1);
+	figuras[ocupados] = f;
+	ocupados++;
+}
+
+void Box::free(){
+	std::free(figuras);
+}
+
+std::vector<Luz> Box::getLuces(){
+	//return NULL;
+}
+
+void Box::setLuz(Luz){
+	;
+}
+
+

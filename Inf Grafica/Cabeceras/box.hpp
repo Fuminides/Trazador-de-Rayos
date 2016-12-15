@@ -15,19 +15,21 @@
 #include "plano.hpp"
 #include "color.hpp"
 #include "figura.hpp"
+#include "triangulo.hpp"
 #include "operadorVector.hpp"
 
 class Box : public Figura{
 
-	std :: vector < Figura * > figuras;
-	Figura * storageAux;
+	//std :: vector < Figura * > figuras;
+    Figura ** figuras;
 	Plano pl1, pl2, pl3, pl4, pl5, pl6;
+    int capacidad, ocupados = 0, storaged;
 
 	Plano crearPlano(Punto, Punto, Punto);
 
 public:
 
-	void set_values(Punto, Punto, Punto, Punto, Punto, Punto);
+	void set_values(Punto, Punto, Punto, Punto, Punto, Punto, int);
 
 	/*
      * Devuelve la distancia a la que un Rayo r intercepta a un objeto de la bounding box f, -1 en caso de que no 
@@ -45,8 +47,17 @@ public:
      */
     Figura * store();
 
+    /**
+     *
+     */
+    void meter(Figura *);
+
     bool isBox();
 
+    std::vector<Luz> getLuces();
+
+    void setLuz(Luz);
+    void free();
 
 };
 

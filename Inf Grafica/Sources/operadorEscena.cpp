@@ -101,7 +101,6 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
     Color negro;
     negro.set_values(0,0,0, NORMALIZAR_COLORES);
     Color inicial = negro;
-    Figura * choque;
     double kd = AMBIENTE; 
     Vector dirLuz;
     double bdrf;
@@ -125,12 +124,6 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
             if ( distancia >= 0 ){
                 if ((( min == -1) | (distancia < min)) && (!figuras[i]->isLuz()) && (distancia < dLuz)){
                     min = distancia;
-                    choque = figuras[i];
-                    //cout << "Util\n";
-                     if ((choque)->isBox()){
-                        //cout << "Extrano\n";
-                        choque = ((Box *) (choque))->store();
-                    } 
                 }
             }
         }
@@ -142,11 +135,10 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
 
         if ( libre ){
             Color auxC = figura->getColor();
-            double normalLuz = productoEscalar(figura->normal(p),dirLuz);
-            if ( normalLuz < 0) normalLuz = 0;
-
+            auxC.multiplicar(AMBIENTE/M_PI);
             luz.atenuar(restaPuntos(p, luz.getOrigen()).modulo());
-            if ( luz.getColor().max() > 0.0){
+
+            if ( luz.getColor().max() > 0.00001){
 
                 if ( figura->getBRDF() == 0){
                     bdrf = phong(figura, p, dirLuz,restaPuntos(origenVista,p));   
@@ -154,7 +146,6 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                 else if (figura->getBRDF() == 1){
                     bdrf = ward(restaPuntos(origenVista,p), dirLuz, figura->normal(p), p);
                 }
-
                 Color auxColor = luz.getColor();
                 auxColor.multiplicar(bdrf);
                 inicial.sumar(auxColor);
@@ -177,7 +168,7 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                         inicial.sumar(auxC);
                     }
 
-                    if( figura->getRefraccion() > 0.0){
+                    if( figura->getCoefRefraccion() > 0.0){
                         auxC = refraccionEspecular(figura, p, restaPuntos(p, origenVista), refraccionMedio, figura->getRefraccion(), numeroRebotes);
                         auxC.multiplicar (figura->getCoefRefraccion());
                         inicial.sumar(auxC);
@@ -194,7 +185,7 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
     if ( indirecto ){
         Figura * choque;
         Punto auxP;
-        auxP.set_values(0,0,0, NORMALIZAR_COLORES);
+        auxP.set_values(0,0,0);
         Montecarlo montecarlo;
 
         if ( PATH_TRACING && (seguirCamino < PATH_LEN) ) montecarlo.set_values(1.0,1.0,restaPuntos(p,auxP), figura->normal(p), 1);
@@ -253,7 +244,9 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
                         colorAux = renderizar(puntoRender, figuraAux, NUMERO_REBOTES, camara.getPosicion(), refraccionMedio, true, seguirCamino - 1);
                     }
                     else {
-                        colorAux = figuraAux->getColor(); 
+                        Luz lAux = figuraAux->getLuces()[0];
+                        lAux.atenuar(min);
+                        colorAux = lAux.getColor(); 
                     }
                     Vector vAux = restaPuntos(puntoRender,p);
                     vAux.normalizar();
@@ -268,7 +261,6 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
 
                     colorAux.multiplicar(bdrf);
                     colorAux.multiplicar(K_LUZ_INDIR);
-    
                     inicial.sumar(colorAux);
                 }
             }
@@ -280,9 +272,7 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
 
 double operadorEscena::phong(Figura * figura, Punto x, Vector luz, Vector vista){
     Vector normal, R;
-    Color base;
     double kd = AMBIENTE, La = 0.2, n = 4, ks = 0.3;
-    base.set_values(0,0,0, NORMALIZAR_COLORES);
     luz.normalizar();
     vista.normalizar();
     normal = figura->normal(x);
@@ -385,9 +375,8 @@ double operadorEscena::interseccion(Rayo r, Figura ** choque){
                 min = distancia;
                 *choque = figuras[i];
                 //cout << "Util\n";
-                 if ((*choque)->isBox()){
-                    //cout << "Extrano\n";
-                    *choque = ((Box *) (*choque))->store();
+                 if (figuras[i]->isBox()){
+                    *choque = ((Box *) (figuras[i]))->store();
                 } 
             }
         }
