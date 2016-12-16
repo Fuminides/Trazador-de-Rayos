@@ -36,7 +36,8 @@ public:
     Matriz inversaT(Matriz T);
         
     list<Vector> calcularw();
-    
+    list<double> numAleatorios();
+    list<double> cNegativa(list<double> aleatorios);
     Vector multiplicarMatrizValores(Matriz T1,double x1, double x2,double x3);
     
     
