@@ -19,19 +19,17 @@
 using namespace std;
 #define PI 3.14159265
 
-void Montecarlo::set_values(double i,double a,Vector px, Vector normal, int numRayos)
+void Montecarlo::set_values(Vector px, Vector normal, int numRayos)
 {
-    inclination=i;
-    azimuth = a;
     n = normal;
     x = px;
     num = numRayos;
 }
-double Montecarlo::getInclination(){
-    return inclination;
+double Montecarlo::getInclination(int i){
+    return inclination[i];
 }
-double Montecarlo::getAzimuth(){
-    return azimuth;
+double Montecarlo::getAzimuth(int i){
+    return azimuth[i];
 }
 Vector Montecarlo::getn(){
     return n;
@@ -51,8 +49,9 @@ list<Matriz> Montecarlo::calcularT(){
     list<Vector> usados;
     list<Matriz> matT;
     srand(0);
-    
-    while(usados.size()<getNum()){
+    int n = getNum();
+    int tam = usados.size();
+    while(tam<n){
         azar.set_values(rand(),rand(),rand());
         
         while((azar.getX()==0 && azar.getY()==0 && azar.getZ()==0)){
@@ -166,7 +165,7 @@ list<Vector> Montecarlo::calcularw(){
     for(int i=0;i<n;i++){
         Matriz T1 = inversaT(matT.back());
         matT.pop_back();
-        Vector wi = multiplicarMatrizValores(T1,sin(getInclination())*cos(getAzimuth()),sin(getInclination())*sin(getAzimuth()),cos(getInclination()));
+        Vector wi = multiplicarMatrizValores(T1,sin(getInclination(i))*cos(getAzimuth(i)),sin(getInclination(i))*sin(getAzimuth(i)),cos(getInclination(i)));
         vect.push_back(wi);
     }
    return vect;
@@ -177,16 +176,14 @@ list<Vector> Montecarlo::calcularw(){
  * Devuelve un vector con todos los numeros aleatorios generados para poder 
  * aplicarles la C^(-1) posteriormente.
  */
-list<double> Montecarlo::numAleatorios(){
+void Montecarlo::numAleatorios(){
     double x=0.0;
-    list<double> aleatorios;
-    int N = getNum();
+    int N =getNum();
     srand (0);
     for(int i=0;i<N;i++){
          x = ((double) rand() / (double) (RAND_MAX));
-         aleatorios.push_back(x);
+         inclination[i]=x;
     }
-    return aleatorios;
 }
 /*
  * Calcula la C^(-1) aplicando cosine sampling a cada uno de los numeros generados
@@ -194,16 +191,28 @@ list<double> Montecarlo::numAleatorios(){
  * Devuelve un vector con todas las C^(-1) para poder aplicarlas en la ecuacion de render
  * posteriormente
  */
-list<double> Montecarlo::cNegativa(list<double> aleatorios){
+void Montecarlo::cNegativa(){
     double x=0.0,cn=0.0,param=0.0;
-    list<double> cneg;
-    int N = aleatorios.size();
+    int N =getNum();
     for(int i=0;i<N;i++){
-         x=aleatorios.back();
+         x=getInclination(i);
          param = sqrt(1-x);
-         cn = acos (param)* 180.0 / PI;;
-         aleatorios.pop_back();
-         cneg.push_back(cn);
+         cn = acos (param)* 180.0 / PI;
+         azimuth[i]=cn;
     }
-    return cneg;
+}
+
+void Montecarlo::mostrarA(){
+    int N =getNum();
+    for(int i=0;i<N;i++){
+         cout<<"dato pos "<<i<<" : "<<azimuth[i]<<endl;
+    }
+}
+
+
+void Montecarlo::mostrarI(){
+     int N = getNum();
+    for(int i=0;i<N;i++){
+         cout<<"dato pos "<<i<<" : "<<inclination[i]<<endl;
+    }
 }
