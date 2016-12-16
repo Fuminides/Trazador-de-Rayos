@@ -32,6 +32,8 @@ class Triangulo : public Figura {
 
 		bool isBox() { return false; }
 
+		void desplazar(Vector);
+
 };
 
 #endif

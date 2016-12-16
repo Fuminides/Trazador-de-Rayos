@@ -113,3 +113,13 @@ void Triangulo::multiplicar(double k){
 	v2 = restaPuntos(p3,p1);
 	v3 = restaPuntos(p3,p2);	
 }
+
+void Triangulo::desplazar(Vector v){
+	p1 = sumaPuntoVector(p1, v);
+	p2 = sumaPuntoVector(p2, v);
+	p3 = sumaPuntoVector(p3, v);
+
+	v1 = restaPuntos(p2,p1);
+	v2 = restaPuntos(p3,p1);
+	v3 = restaPuntos(p3,p2);	
+}
