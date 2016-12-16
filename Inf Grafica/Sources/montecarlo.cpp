@@ -2,7 +2,7 @@
  * Javier Fumanal Idocin 684229
  * Silvia Uson Fortanet 681721
  *
- * Clase que representa a montecarlo
+ * Clase que representa a montecarlo y cosine sampling 
  */
 #include <iostream>
 #include <cmath>
@@ -15,8 +15,9 @@
 #include <vector>
 #include <stdlib.h> 
 #include <algorithm>
+#include <math.h>
 using namespace std;
-
+#define PI 3.14159265
 
 void Montecarlo::set_values(double i,double a,Vector px, Vector normal, int numRayos)
 {
@@ -41,7 +42,9 @@ Vector Montecarlo::getx(){
 int Montecarlo::getNum(){
     return num;
 }
-
+/*
+ *Calcula N matrices T 4x4 
+ */
 list<Matriz> Montecarlo::calcularT(){
     
     Vector azar;
@@ -85,6 +88,9 @@ double Montecarlo::determinante(Matriz T){
     return (T.get(1,3)*t1 - T.get(2,3)*t2 + T.get(3,3)*t3 - T.get(4,3)*t4);
     
 }
+/*
+ * Calcula la inversa de la matriz T 4x4
+ */
 Matriz Montecarlo::inversaT(Matriz T){
     double det = determinante(T);
     
@@ -136,7 +142,9 @@ Matriz Montecarlo::inversaT(Matriz T){
    
     return nueva;    
 }
-
+/*
+ * Transforma el vector dado de coordenadas locales a coordenadas globales
+ */
 Vector Montecarlo::multiplicarMatrizValores(Matriz T1,double x1, double x2,double x3){
     Vector w;
     
@@ -147,10 +155,15 @@ Vector Montecarlo::multiplicarMatrizValores(Matriz T1,double x1, double x2,doubl
     
     return w;
 }
+/*
+ * Calcula N vectores en coordenadas globales
+ * Devuelve un vector de Vectores para poder aplicarles despues la ecuacion de render.
+ */
 list<Vector> Montecarlo::calcularw(){
     list<Matriz> matT= calcularT();
     list<Vector> vect;
-    for(int i=0;i<matT.size();i++){
+    int n = matT.size();
+    for(int i=0;i<n;i++){
         Matriz T1 = inversaT(matT.back());
         matT.pop_back();
         Vector wi = multiplicarMatrizValores(T1,sin(getInclination())*cos(getAzimuth()),sin(getInclination())*sin(getAzimuth()),cos(getInclination()));
@@ -158,4 +171,39 @@ list<Vector> Montecarlo::calcularw(){
     }
    return vect;
 }
-
+/*
+ * Calcula N numeros aleatorios entre [0,1) para utilizar cosine sampling 
+ * ( tantos numeros como vectores se han generado en montecarlo)
+ * Devuelve un vector con todos los numeros aleatorios generados para poder 
+ * aplicarles la C^(-1) posteriormente.
+ */
+list<double> Montecarlo::numAleatorios(){
+    double x=0.0;
+    list<double> aleatorios;
+    int N = getNum();
+    srand (0);
+    for(int i=0;i<N;i++){
+         x = ((double) rand() / (double) (RAND_MAX));
+         aleatorios.push_back(x);
+    }
+    return aleatorios;
+}
+/*
+ * Calcula la C^(-1) aplicando cosine sampling a cada uno de los numeros generados
+ * aleatoriamente . 
+ * Devuelve un vector con todas las C^(-1) para poder aplicarlas en la ecuacion de render
+ * posteriormente
+ */
+list<double> Montecarlo::cNegativa(list<double> aleatorios){
+    double x=0.0,cn=0.0,param=0.0;
+    list<double> cneg;
+    int N = aleatorios.size();
+    for(int i=0;i<N;i++){
+         x=aleatorios.back();
+         param = sqrt(1-x);
+         cn = acos (param)* 180.0 / PI;;
+         aleatorios.pop_back();
+         cneg.push_back(cn);
+    }
+    return cneg;
+}

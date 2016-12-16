@@ -8,7 +8,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.text.DecimalFormat;
-
+/**
+ * Clase: Evaluation.
+ * 
+ * Javier Fumanal Idocin, 684229, Silvia Uson Fortanet 681721
+ */
 public class Evaluation {
 
 	static HashMap<String,HashMap<String, Integer>> necesidades;
@@ -22,7 +26,7 @@ public class Evaluation {
 	    String resultsFileName=null;
 	    String outputFileName=null;
 	    
-	    /*if (args.length == 0) {
+	    if (args.length == 0) {
 	        System.err.println(usage);
 	        System.exit(1);
 	      }else {
@@ -40,12 +44,12 @@ public class Evaluation {
 		      	  i++;
 		        }
 		    }
-	      }*/
+	      }
 	    
 	    	//Para hacer pruebas y no tener que introducir los parametros como argumento:
-	      qrelsName = "zaguanRels.txt";
-	      resultsFileName = "equipo08.txt";
-	      outputFileName="traditionalEvaluationResults08.txt";
+	      //qrelsName = "zaguanRels.txt";
+	      //resultsFileName = "equipo08.txt";
+	      //outputFileName="traditionalEvaluationResults08.txt";
 	      
 	    try {
 	    	
@@ -69,7 +73,11 @@ public class Evaluation {
 
 	}
 	
-	
+	/**
+	 * metodo encargado de la parte de evaluacion , con todos los datos obtenidos anteriormente se calculan la
+	 * precision , recall, prec@10 , average_precision , recall-precision y la interpolada para cada consulta y
+	 * para el sistema en general
+	 */
 	public static void escribirEvaluacion(String outputFileName,HashMap<String, Necesidad> preguntas){
 		FileWriter fichero = null;
 	    PrintWriter pw = null;
@@ -148,7 +156,6 @@ public class Evaluation {
 	        	map += average_precision;
 	        	
 	        	// RECALL_PRECISION -> Es el recall y la precision en cada relevante encontrado 
-	        	/**Me salen mas filas de las que le salen a el , XQ?**/
 	        	pw.println("recall_precision"); 
 	        	for(int x=0;x<h.size();x++){
 					pw.println(decimales.format(h.get(x).getR())+"	"+decimales.format(h.get(x).getP()));
@@ -223,7 +230,8 @@ public class Evaluation {
 	
 	/**
 	 * @throws FileNotFoundException 
-	 * 
+	 * metodo encargado de leer el fichero de los juicios de valor guardando asi las posiciones de todos aquellos que 
+	 * son relevantes para posteriormente poder aplicar la evaluacion
 	 */
 	public static void LeerNecesidades(String juiciosValor) throws FileNotFoundException{
 		necesidades = new HashMap<String,HashMap<String, Integer>>();
@@ -262,7 +270,13 @@ public class Evaluation {
 		}
 		leerFichero.close();
 	}
-	
+	/**
+	 * @throws FileNotFoundException 
+	 * metodo encargado de leer el fichero de los resultados obtenidos en nuestro sistema de recuperacion de manera que solo mire 45 resultados por
+	 * cada necesidad y obtenga asi los truePositives, falsePositive y falseNegative de cada una de las consultas .
+	 * Devuelve una HashMap en la que cada celda contiene una necesidad con los valores previamente citados
+	 * 
+	 */
 	public static HashMap<String, Necesidad> juicios(String resultados) throws FileNotFoundException{
 		Scanner resultadosLeer = new Scanner(new File(resultados));
 		HashMap<String, Necesidad> preguntas = new HashMap<String, Necesidad>();
