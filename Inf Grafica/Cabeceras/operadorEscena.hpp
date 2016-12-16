@@ -29,9 +29,9 @@ private:
 
     
     const int NUMERO_REBOTES  = 4;
-    const double AMBIENTE = 0.6;
+    const double AMBIENTE = 1;
     const double REFRACCION_MEDIO = 1;
-    const int NUMERO_RAYOS_INDIRECTA = 64, PATH_LEN = 5;
+    const int NUMERO_RAYOS_INDIRECTA = 32, PATH_LEN = 5;
     const double K_LUZ_INDIR = 1.0 / (NUMERO_RAYOS_INDIRECTA + 0.000001), K_LUZ_DIR = 1;
     const bool PATH_TRACING = true;
 

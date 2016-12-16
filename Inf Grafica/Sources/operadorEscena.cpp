@@ -138,7 +138,7 @@ Color operadorEscena::renderizar(Punto p, Figura * figura, int numeroRebotes, Pu
             auxC.multiplicar(AMBIENTE/M_PI);
             luz.atenuar(restaPuntos(p, luz.getOrigen()).modulo());
 
-            if ( luz.getColor().max() > 0.00001){
+            if ( luz.getColor().max() > 0.000001){
 
                 if ( figura->getBRDF() == 0){
                     bdrf = phong(figura, p, dirLuz,restaPuntos(origenVista,p));   

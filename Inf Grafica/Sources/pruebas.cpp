@@ -61,7 +61,7 @@ int main(int argc, char ** argv){
         esfera.setReflejo(0.0);
         esfera.setRefraccion(0.2);
         esfera.setCoefRefraccion(0.2);
-        esfera.setBRDF(1);
+        esfera.setBRDF(0);
 
         esfera2.setOrigen(30, 20, -20);
         esfera2.setColor(verde);
@@ -70,7 +70,7 @@ int main(int argc, char ** argv){
         esfera2.setReflejo(0.0);
         esfera2.setRefraccion(0.1);
         esfera2.setCoefRefraccion(0.4);
-        esfera2.setBRDF(1);
+        esfera2.setBRDF(0);
 
         esfera3.setOrigen(100, 0, -10);
         esfera3.setColor(rojo);
@@ -79,7 +79,7 @@ int main(int argc, char ** argv){
         esfera3.setId(cuenta());
         esfera3.setRefraccion(0);
         esfera3.setCoefRefraccion(0);
-        esfera3.setBRDF(1);
+        esfera3.setBRDF(0);
 
         origenPlano.set_values(200, -150, -150);
         normalPlano.set_values(-1,0,0);
@@ -252,7 +252,7 @@ int main(int argc, char ** argv){
 
 
         esfera.setOrigen(boxLenght/2, 8, boxLenght/4);
-        esfera.setColor(gris);
+        esfera.setColor(negro);
         esfera.setRadio(8);
         esfera.setReflejo(0.15);
         esfera.setRefraccion(0.0);
@@ -260,7 +260,7 @@ int main(int argc, char ** argv){
         esfera.setBRDF(0);
 
         esfera2.setOrigen(boxLenght/3, 8, boxLenght * 0.75);
-        esfera2.setColor(gris);
+        esfera2.setColor(negro);
         esfera2.setRadio(8);
         esfera2.setReflejo(0.0);
         esfera2.setRefraccion(1.33);
@@ -279,6 +279,45 @@ int main(int argc, char ** argv){
         escena.anyadirFigura(&planoIzquierda);
         escena.anyadirFigura(&planoDerecha);
         escena.anyadirFigura(&planoAbajo);
+    }
+    else if ( escenaID == 3){
+        Plano planoAbajo, planoArriba;
+        Punto oPA, pLuz, cam, pluz2;
+        Esfera esfera;
+        Luz luz, luz2;
+
+        pLuz.set_values(10, 20, 10);
+        pluz2.set_values(1900, 100, 0);
+        luz.set_values(pLuz, blanco, 150);
+        luz2.set_values(pluz2, blanco, 400);
+
+        cam.set_values(-10, 5, 50);
+
+        oPA.set_values(0,0,0);
+        esfera.setOrigen(0,0,0);
+
+        esfera.setColor(negro);
+        esfera.setRadio(2000);
+        esfera.setReflejo(0.0);
+        esfera.setRefraccion(0.0);
+        esfera.setCoefRefraccion(0.0);
+        esfera.setBRDF(0);
+
+        planoAbajo.set_values(oPA, vc2, vc1, 100, vc3, 100);
+        planoAbajo.setColor(azul);
+        planoAbajo.setReflejo(0.1);
+        planoAbajo.setRefraccion(0.0);
+        planoAbajo.setCoefRefraccion(0.0);
+        planoAbajo.setBRDF(0);
+
+        escena.anyadirLuz(luz);
+        escena.anyadirLuz(luz2);
+        escena.anyadirFigura(&planoAbajo);
+        escena.anyadirFigura(&esfera);
+        
+
+        camara.set_values(cam, vc1, vc2, vc3, 10* 100, 10 * 100,  pow(500,2) );
+        escena.setCamara(camara);
     }
     else if ( escenaID == 4 ){
 
