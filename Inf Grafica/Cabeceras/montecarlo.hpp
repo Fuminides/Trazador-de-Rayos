@@ -16,17 +16,17 @@
 using namespace std;
 class Montecarlo
 {
-    double inclination;
-    double azimuth;
+    double inclination[3000];
+    double azimuth[3000];
     int num;
     Vector x;
     Vector n;
     
 public:
-    void set_values(double inclination,double azimuth,Vector x, Vector n,int numRayos);
+    void set_values(Vector x, Vector n,int numRayos);
     
-    double getInclination();
-    double getAzimuth();
+    double getInclination(int i);
+    double getAzimuth(int i);
     Vector getn();
     Vector getx();
     int getNum();
@@ -36,12 +36,12 @@ public:
     Matriz inversaT(Matriz T);
         
     list<Vector> calcularw();
-    list<double> numAleatorios();
-    list<double> cNegativa(list<double> aleatorios);
+    void numAleatorios();
+    void cNegativa();
     Vector multiplicarMatrizValores(Matriz T1,double x1, double x2,double x3);
     
-    
-
+    void mostrarA();
+    void mostrarI();
 };
 
 #endif // MONTECARLO_H
