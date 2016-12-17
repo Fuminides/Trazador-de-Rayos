@@ -161,6 +161,9 @@ Vector Montecarlo::multiplicarMatrizValores(Matriz T1,double x1, double x2,doubl
 list<Vector> Montecarlo::calcularw(){
     list<Matriz> matT= calcularT();
     list<Vector> vect;
+    //inicializa los inclination y azimuth 
+    numAleatorios();
+    cNegativa();
     int n = matT.size();
     for(int i=0;i<n;i++){
         Matriz T1 = inversaT(matT.back());
