@@ -162,7 +162,6 @@ list<Vector> Montecarlo::calcularw(){
     
     for(int i=0;i<n;i++){
         Vector wi = multiplicarMatrizValores(T1,sin(getInclination(i))*cos(getAzimuth(i)),sin(getInclination(i))*sin(getAzimuth(i)),cos(getInclination(i)));
-        cout<<wi.getX()<<"-"<<wi.getY()<<"-"<<wi.getZ()<<"-"<<wi.getD()<<endl;
         vect.push_back(wi);
     }
    return vect;
