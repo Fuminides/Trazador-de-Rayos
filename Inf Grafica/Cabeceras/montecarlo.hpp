@@ -31,7 +31,7 @@ public:
     Vector getx();
     int getNum();
     
-    list<Matriz> calcularT();
+    Matriz calcularT();
     double determinante(Matriz T);
     Matriz inversaT(Matriz T);
         

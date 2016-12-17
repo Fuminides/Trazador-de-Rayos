@@ -43,36 +43,29 @@ int Montecarlo::getNum(){
 /*
  *Calcula N matrices T 4x4 
  */
-list<Matriz> Montecarlo::calcularT(){
+Matriz Montecarlo::calcularT(){
     
     Vector azar;
-    list<Vector> usados;
-    list<Matriz> matT;
+    Matriz matT;
     srand(0);
-    int n = getNum();
-    int tam = usados.size();
-    while(tam<n){
+
+    azar.set_values(rand(),rand(),rand());
+    while((azar.getX()==0 && azar.getY()==0 && azar.getZ()==0)){
         azar.set_values(rand(),rand(),rand());
-        
-        while((azar.getX()==0 && azar.getY()==0 && azar.getZ()==0)){
-            azar.set_values(rand(),rand(),rand());
-        }
-        usados.push_back(azar);
-        
-        
-        Vector n= getn();
-        Vector x = getx();
-        
-        Vector u = productoVectorial(azar,n);
-        u.normalizar();
-        Vector v = productoVectorial(n,u);
-        v.normalizar();
-        
-        Matriz T;
-        T.set_valuesColum(u,v,n,x);
-         
-        matT.push_back(T);
     }
+ 
+    Vector n= getn();
+    Vector x = getx();
+    
+    Vector u = productoVectorial(azar,n);
+    u.normalizar();
+    Vector v = productoVectorial(n,u);
+    v.normalizar();
+    
+   
+    matT.set_valuesColum(u,v,n,x);
+     
+
     return matT;
 }
 /*
@@ -159,16 +152,17 @@ Vector Montecarlo::multiplicarMatrizValores(Matriz T1,double x1, double x2,doubl
  * Devuelve un vector de Vectores para poder aplicarles despues la ecuacion de render.
  */
 list<Vector> Montecarlo::calcularw(){
-    list<Matriz> matT= calcularT();
+    Matriz matT= calcularT();
+    Matriz T1 = inversaT(matT);
     list<Vector> vect;
     //inicializa los inclination y azimuth 
     numAleatorios();
     cNegativa();
-    int n = matT.size();
+    int n = getNum();
+    
     for(int i=0;i<n;i++){
-        Matriz T1 = inversaT(matT.back());
-        matT.pop_back();
         Vector wi = multiplicarMatrizValores(T1,sin(getInclination(i))*cos(getAzimuth(i)),sin(getInclination(i))*sin(getAzimuth(i)),cos(getInclination(i)));
+        cout<<wi.getX()<<"-"<<wi.getY()<<"-"<<wi.getZ()<<"-"<<wi.getD()<<endl;
         vect.push_back(wi);
     }
    return vect;
