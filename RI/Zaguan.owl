@@ -1,0 +1,222 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#"
+     xml:base="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:terms="http://purl.org/dc/terms/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan">
+        <owl:imports rdf:resource="http://www.w3.org/2004/02/skos/core"/>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#escritoPor -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#escritoPor">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Documento"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Autor"/>
+        <rdfs:comment xml:lang="es">Indica el/los autor(es) que han escrito o colaborado en el documento de Zaguan.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#publicadoPor -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#publicadoPor">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Documento"/>
+        <rdfs:range rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Publicador"/>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#tematica -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#tematica">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topObjectProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Documento"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <rdfs:comment xml:lang="es">Indica las categorias que trata el documento.</rdfs:comment>
+    </owl:ObjectProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Summary -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Summary">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Documento"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:comment xml:lang="es">Abstract del documento en Zaguan.</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#anyo -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#anyo">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Documento"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#dateTime"/>
+        <rdfs:comment xml:lang="es">Anyo en el que se publico el documento</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#apellidos -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#apellidos">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Autor"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#Name"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#identificador -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#identificador">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Documento"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2000/01/rdf-schema#Literal"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#nombre -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#nombre">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#nombrePub -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#nombrePub">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Publicador"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#Name"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#titulo -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#titulo">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#FunctionalProperty"/>
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Documento"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+        <rdfs:comment xml:lang="es">Nombre unico de un documento o una categoria</rdfs:comment>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- http://www.w3.org/2002/07/owl#topDataProperty -->
+
+    <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#topDataProperty">
+        <rdfs:domain rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Autor"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#Name"/>
+    </rdf:Description>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Autor -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Autor"/>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Categoria -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Categoria">
+        <rdfs:comment xml:lang="es">Representa las distintas tematicas que hay presentes en el repositorio. Cada categoria tiene un nombre y una serie de palabras clave. Funciona mejor si la consulta y los documentos se procesan utilizando un tesauro.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Documento -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Documento">
+        <rdfs:comment xml:lang="es">Un documento del repositorio Zaguan. Posee titulo, descripcion y anyo como atributos de literal, y esta relacionado con dcterm:Author para designar a su autor, y con Zaguan:Categoria para designar su tematica.</rdfs:comment>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Publicador -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Publicador"/>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#TFG -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#TFG">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Documento"/>
+        <owl:disjointWith rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#TFM"/>
+        <owl:disjointWith rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Tesis"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#TFM -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#TFM">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Documento"/>
+        <owl:disjointWith rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Tesis"/>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Tesis -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Tesis">
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Documento"/>
+    </owl:Class>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.2.6.20160910-2108) https://github.com/owlcs/owlapi -->
+
