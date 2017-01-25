@@ -2,7 +2,6 @@ package semantico;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.Scanner;
 
 import org.apache.jena.query.Query;
