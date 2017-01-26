@@ -26,6 +26,44 @@ public class Cargar {
 		return model;
 	}
 	
+	/**
+	 * Carga una coleccion en memoria en RDF.
+	 * 
+	 * @param ontoFile
+	 * @param dummy solo para diferenciar constructores con sobrecarga.
+	 */
+	public Cargar(String ontoFile, boolean dummy)
+	{   
+	    OntModel ontoModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
+	    try 
+	    {
+	        InputStream in = FileManager.get().open(ontoFile);
+	        try 
+	        {
+	            ontoModel.read(in, null);
+	        } 
+	        catch (Exception e) 
+	        {
+	            e.printStackTrace();
+	        }
+	    } 
+	    catch (JenaException je) 
+	    {
+	        System.err.println("ERROR" + je.getMessage());
+	        je.printStackTrace();
+	        System.exit(0);
+	    }
+	    model = ontoModel;
+	    
+	    NS = model.getNsPrefixURI("");
+	}
+	
+	/**
+	 * Carga una ontologia, para la posterior utilizacion en una coleccion.
+	 * Inicializa las palabras clave.
+	 * 
+	 * @param ontoFile
+	 */
 	public Cargar(String ontoFile)
 	{   
 	    OntModel ontoModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
@@ -75,16 +113,6 @@ public class Cargar {
  				}
  			}
  		}
- 		
- 		/*
- 		for(String palabra:indiceInvertido.keySet()){
- 			System.out.print(palabra +": ");
- 			for(String cat:indiceInvertido.get(palabra)){
- 				System.out.print(cat + " ");
- 			}
- 			System.out.println("");
- 		}
- 		*/
 	    
 	}
 	

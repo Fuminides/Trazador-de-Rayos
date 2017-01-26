@@ -10,14 +10,11 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.tartarus.snowball.ext.spanishStemmer;
-import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntModel;
-import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.Property;
-import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
+import org.apache.jena.riot.Lang;
+import org.apache.jena.riot.RDFDataMgr;
 import org.apache.jena.vocabulary.RDF;
-import org.apache.jena.vocabulary.RDFS;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -32,7 +29,7 @@ public class ConvertirColeccion {
 	}
 	
 	public static void main(String[] args) throws Exception{
-		String zaguan = "C:/Users/javi-/Documents/Zaguan.owl", coleccion = "C:/Users/javi-/Downloads/recordsdc/prueba", destino = "C:/Users/javi-/Downloads/recordsdc/result/Coleccion.owl";
+		String zaguan = "C:/Users/javi-/Documents/Zaguan.owl", coleccion = "C:/Users/javi-/Downloads/recordsdc/recordsdc", destino = "C:/Users/javi-/Downloads/recordsdc/result/Coleccion.owl";
 		new ConvertirColeccion().convertirColeccion(zaguan, coleccion, destino);
 	}
 	
@@ -53,7 +50,7 @@ public class ConvertirColeccion {
 		}
 		//lo guardamos en un fichero rdf
 		try {
-			model.write(new FileOutputStream(new File(destino)));
+			RDFDataMgr.write(new FileOutputStream(new File(destino)), model, Lang.RDFXML);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}	    
@@ -76,12 +73,55 @@ public class ConvertirColeccion {
     	
     	parseAutor(parseador, doc, model);
     	parsePublicadoPor(parseador, doc, model);
+    	parseContent(parseador, doc, model, claves);
     	
     	parseAnyo(parseador, doc, model);
-    	parseContent(parseador, doc, model, claves);
-
+    	parseTitulo(parseador, doc, model);
+    	parseResumen(parseador, doc, model);
 	}
 	
+	/**
+	 * Anyade el titulo de un documento al modelo.
+	 * @param parseador
+	 * @param doc
+	 * @param model
+	 */
+	private void parseTitulo(Document parseador, Resource doc, OntModel model) {
+		NodeList lista = parseador.getElementsByTagName("dc:title");
+		String id = null;
+		
+		 for(int i = 0; i<lista.getLength(); i++){
+	      	  id = lista.item(i).getFirstChild().getNodeValue();
+		 }
+		 
+     	 model.add(doc, model.getProperty(NS + "titulo"), id);
+	}
+	
+	/**
+	 * Anyade el titulo de un documento al modelo.
+	 * @param parseador
+	 * @param doc
+	 * @param model
+	 */
+	private void parseResumen(Document parseador, Resource doc, OntModel model) {
+		NodeList lista = parseador.getElementsByTagName("dc:description");
+		String id = null;
+		
+		 for(int i = 0; i<lista.getLength(); i++){
+	      	  id = lista.item(i).getFirstChild().getNodeValue();
+		 }
+		 
+     	 model.add(doc, model.getProperty(NS + "Summary"), id);
+	}
+
+	/**
+	 * Anyade las categorias al documento en el modelo.
+	 * 
+	 * @param parseador
+	 * @param doc
+	 * @param model
+	 * @param claves
+	 */
 	private void parseContent(Document parseador, Resource doc, OntModel model, HashMap<String, ArrayList<String>> claves) {
 		NodeList lista = parseador.getElementsByTagName("dc:description");
 		String id = null;
@@ -120,13 +160,19 @@ public class ConvertirColeccion {
 			 if ( claves.containsKey(palabra.trim()) ){
 				 ArrayList<String> categorias = claves.get(palabra.trim());
 				 for(String categoria: categorias){
-					 System.out.println("Cool!");
 			      	 model.add(doc, model.getProperty(NS + "tematica"), categoria);
 				 }
 			 }
 		 }
 	}
 
+	/**
+	 * Anyade el anyo del documento al modelo.
+	 * 
+	 * @param parseador
+	 * @param doc
+	 * @param model
+	 */
 	private void parseAnyo(Document parseador, Resource doc, OntModel model) {
 		NodeList lista = parseador.getElementsByTagName("dc:date");
 	        
@@ -137,6 +183,13 @@ public class ConvertirColeccion {
         }
 	}
 
+	/**
+	 * Anyade el autor al documento en el modelo.
+	 *   
+	 * @param parseador
+	 * @param doc
+	 * @param model
+	 */
 	private void parseAutor(Document parseador, Resource doc, OntModel model) {
 		NodeList lista = parseador.getElementsByTagName("dc:creator");
 	        
@@ -152,6 +205,12 @@ public class ConvertirColeccion {
         }
 	}
 	
+	/**
+	 * Anyade al modelo la entidad que ha publicado el documento.
+	 * @param parseador
+	 * @param doc
+	 * @param model
+	 */
 	private void parsePublicadoPor(Document parseador, Resource doc, OntModel model) {
 		NodeList lista = parseador.getElementsByTagName("dc:publisher");
 	        
@@ -167,6 +226,12 @@ public class ConvertirColeccion {
         }
 	}
 
+	/**
+	 *  Crea el documento en el model segun el tipo de documento que sea: TFG, TFM o Tesis.
+	 * @param parseador
+	 * @param doc
+	 * @param model
+	 */
 	private void parseTipo(Document parseador, Resource doc, OntModel model) {
 		NodeList lista = parseador.getElementsByTagName("dc:title");
 		boolean guarda = true;
@@ -193,6 +258,12 @@ public class ConvertirColeccion {
         if ( guarda ) model.add(doc,RDF.type, model.getResource(NS + "TFG"));
 	}
 
+	/**
+	 * Devuelve el numero del documento Zaguan.
+	 * 
+	 * @param parseador
+	 * @return
+	 */
 	private static String getIdentificador(Document parseador) {
 		NodeList lista = parseador.getElementsByTagName("dc:identifier");
 		String id = "";
