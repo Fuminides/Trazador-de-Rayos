@@ -8,8 +8,8 @@ import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
+import org.tartarus.snowball.ext.spanishStemmer;
 import org.apache.jena.ontology.Individual;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.rdf.model.Model;
@@ -25,6 +25,7 @@ public class ConvertirColeccion {
 
 	String NS;
 	HashMap<String, Boolean> autores, publishers;
+	spanishStemmer analizador = new spanishStemmer();
 	
 	public ConvertirColeccion() {
 		autores = new HashMap<>(); publishers = new HashMap<>();
@@ -44,6 +45,8 @@ public class ConvertirColeccion {
 			System.err.println("No se ha encontrado la coleccion!");
 			System.exit(-1);
 		}
+		
+		//iniciarKeywords(model, loader.indiceInvertido);
 		
 		for(File documento: coleccion.listFiles()){
 			anyadirModelo(loader, documento);
@@ -67,8 +70,6 @@ public class ConvertirColeccion {
     	String identificador = getIdentificador(parseador);
     	NS = loader.NS;
     	
-    	iniciarKeywords(model, claves);
-    	
     	Resource doc = model.createResource(NS + identificador);
     	
     	parseTipo(parseador, doc, model);
@@ -91,6 +92,10 @@ public class ConvertirColeccion {
 		 
 		 String[] palabras = id.split(" ");
 		 for (String palabra:palabras){
+			 palabra = palabra.trim().toLowerCase();
+			 analizador.setCurrent(palabra);
+			 analizador.stem();
+			 palabra = analizador.getCurrent();
 			 if ( claves.containsKey(palabra.trim()) ){
 				 ArrayList<String> categorias = claves.get(palabra.trim());
 				 for(String categoria: categorias){
@@ -108,6 +113,10 @@ public class ConvertirColeccion {
 		 
 		 palabras = id.split(" ");
 		 for (String palabra:palabras){
+			 palabra = palabra.trim().toLowerCase();
+			 analizador.setCurrent(palabra);
+			 analizador.stem();
+			 palabra = analizador.getCurrent();
 			 if ( claves.containsKey(palabra.trim()) ){
 				 ArrayList<String> categorias = claves.get(palabra.trim());
 				 for(String categoria: categorias){
@@ -116,28 +125,6 @@ public class ConvertirColeccion {
 				 }
 			 }
 		 }
-	}
-
-	private void iniciarKeywords(OntModel model, HashMap<String, ArrayList<String>> claves) {
-		Property prop = model
-				.getProperty(NS + "keyword");
-		ResIterator ri = model.listSubjectsWithProperty(prop);
-		while (ri.hasNext()) {
-			Resource r = ri.next();
-			String keywords = r.getProperty(prop).getString();
-			//System.out.println("URI: " + keywords);
-			
-			String[] keys = keywords.split(",");
-			for(String termino:keys){
-				termino = termino.trim();
-				if ( !claves.containsKey(termino)){
-					claves.put(termino ,new ArrayList<String>());
-				}
-				claves.get(termino).add(r.getLocalName());
-				//System.out.println(r.getLocalName());
-			}
-		}
-		for (String l:claves.keySet()) System.out.println(l);
 	}
 
 	private void parseAnyo(Document parseador, Resource doc, OntModel model) {

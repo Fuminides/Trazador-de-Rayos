@@ -12,6 +12,7 @@ import org.apache.jena.rdf.model.ResIterator;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.shared.JenaException;
 import org.apache.jena.util.FileManager;
+import org.tartarus.snowball.ext.spanishStemmer;
 
 
 public class Cargar {
@@ -53,13 +54,16 @@ public class Cargar {
  		Property prop = model
  				.getProperty(NS + keyword);
  		ResIterator ri = model.listSubjectsWithProperty(prop);
+ 		spanishStemmer stemmer = new spanishStemmer();
  		while (ri.hasNext()) {
  			Resource r = ri.next();
  			String categoria = r.getURI().split("#")[1],
  					keywords = r.getProperty(prop).getString();
- 			
  			for ( String clave:keywords.split(",")){
- 				clave = clave.trim();
+ 				clave = clave.trim().toLowerCase();
+ 				stemmer.setCurrent(clave);
+ 				stemmer.stem();
+ 				clave = stemmer.getCurrent();
  				if ( clave.length() > 0){
  					if ( indiceInvertido.containsKey(clave)){
  						indiceInvertido.get(clave).add(categoria.trim());
