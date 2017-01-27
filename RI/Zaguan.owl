@@ -239,49 +239,12 @@
     
 
 
-    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Análisis -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Análisis">
-        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Matemáticas"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Aplicación -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Aplicación">
-        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Computación"/>
-        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">videojuegos, red neruronal, aprendizaje ,inteligencia , artificial , inteligencia artificial</keyword>
-    </owl:NamedIndividual>
-    
-
-
     <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Cartografia -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Cartografia">
         <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Geologia"/>
         <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cartografia, Cartografo, Mapa</keyword>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Computación -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Computación">
-        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Cálculo -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Cálculo">
-        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Análisis"/>
-        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">implementación , ecuación, derivada , algoritmo ,cálculo , calcular , implementar</keyword>
     </owl:NamedIndividual>
     
 
@@ -305,16 +268,6 @@
     
 
 
-    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Función -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Función">
-        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Análisis"/>
-        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">lineal, curva ,  función</keyword>
-    </owl:NamedIndividual>
-    
-
-
     <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Gen -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Gen">
@@ -330,16 +283,6 @@
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Geologia">
         <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Geologia, Falla, Sierra, Valle, Clima, Geoparque, Cordillera</keyword>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Geometría -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Geometría">
-        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Matemáticas"/>
-        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">cuadrado,triángulo,círculo,vértice,área,volumen, geometría,geometrico</keyword>
     </owl:NamedIndividual>
     
 
@@ -360,24 +303,6 @@
         <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Enfermedad"/>
         <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Bacteria, Infeccion, *itis</keyword>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Matemáticas -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Matemáticas">
-        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Matemático -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Matemático">
-        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Matemáticas"/>
-        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Petri,Matlab,Gauss,Newton</keyword>
     </owl:NamedIndividual>
     
 
@@ -461,25 +386,6 @@
     
 
 
-    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Robot -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Robot">
-        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Robotica"/>
-        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Matlab, simulación , automáta ,robot, manipulador , sensor</keyword>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Robotica -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Robotica">
-        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">visión por computador ,inteligencia artificial</keyword>
-    </owl:NamedIndividual>
-    
-
-
     <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Sistema -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Sistema">
@@ -491,26 +397,16 @@
     
 
 
-    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Trigonometría -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Trigonometría">
-        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Análisis"/>
-        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">coseno,tangente,seno,ángulo,trigonométrico, trigonometría</keyword>
-    </owl:NamedIndividual>
-    
-
-
     <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Virus -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Virus">
         <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Enfermedad"/>
-        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Gripe, Sida, VIH, Antiviral</keyword>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Gripe, Sida, VIH</keyword>
     </owl:NamedIndividual>
 </rdf:RDF>
 
 
 
-<!-- Generated by the OWL API (version 4.2.5.20160517-0735) https://github.com/owlcs/owlapi -->
+<!-- Generated by the OWL API (version 4.2.6.20160910-2108) https://github.com/owlcs/owlapi -->
 

@@ -1,0 +1,277 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#"
+     xml:base="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:terms="http://purl.org/dc/terms/"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos">
+        <owl:imports rdf:resource="http://www.w3.org/2004/02/skos/core"/>
+    </owl:Ontology>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Data properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#keyword -->
+
+    <owl:DatatypeProperty rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#keyword">
+        <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+        <rdfs:domain rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <rdfs:range rdf:resource="http://www.w3.org/2001/XMLSchema#string"/>
+    </owl:DatatypeProperty>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Individuals
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Anatomia -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Anatomia">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Medicina"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Anatomia</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Cartografia -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Cartografia">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Geologia"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cartografia, Cartografo, Mapa</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Enfermedad -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Enfermedad">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Medicina"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Enfermedad, Diagnostico</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Espanya -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Espanya">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ebro, Huesca, Iberico, Pirineo, Zaragoza, Aragon, Catalunya, Madrid, Galicia, Asturias, Valencia, Gibraltar</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Gen -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Gen">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Anatomia"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Mutacion, Cromosoma, Gen</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Geologia -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Geologia">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Geologia, Falla, Sierra, Valle, Clima, Geoparque, Cordillera</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Hidrografia -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Hidrografia">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Geologia"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Hidrografia, Rio, Acuifero, Afluente</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Infeccion -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Infeccion">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Enfermedad"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Bacteria, Infeccion, itis</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Medicina -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Medicina">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Medicina, Clinica, Paciente, Hospital, Medico</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Mental -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Mental">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Enfermedad"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Alzheimer, Parkinson, Demencia</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Mineria -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Mineria">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Geologia"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Mineria, Minero, Mineral</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Organo -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Organo">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:related rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Sistema"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Higado, Pulmones, Corazon, Cerebro</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Paleontologia -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Paleontologia">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Geologia"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Paleontologia, Paleontologo, Dinosaurio, Arqueologia</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Proteina -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Proteina">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:related rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Gen"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Enzima, Aminoacido, Proteina</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Remedio -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Remedio">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Medicina"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Vacuna, Antiviral, Antibiotico, Remedio, Cura</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Rio -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Rio">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:related rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Hidrografia"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ebro, huerva, Sobrarbe, Ribagorza, Tajo, Rio</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Sistema -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Sistema">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Medicina"/>
+        <skos:related rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Organo"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Circulatorio, Respiratorio, Excretor</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Virus -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Virus">
+        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Enfermedad"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Virus, Gripe, VIH</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Anatomia -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Anatomia"/>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Enfermedad -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Enfermedad"/>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Gen -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Gen"/>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Geologia -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Geologia"/>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Hidrografia -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Hidrografia"/>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Medicina -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Medicina"/>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Organo -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Organo"/>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Sistema -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Sistema"/>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.2.6.20160910-2108) https://github.com/owlcs/owlapi -->
+
