@@ -46,12 +46,38 @@
     
 
 
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Analisis -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Analisis">
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Matematicas"/>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Anatomia -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Anatomia">
         <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Medicina"/>
         <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Anatomia</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Aplicacion -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Aplicacion">
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Computacion"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">videojuego,red neuronal,inteligencia,artificial,inteligencia artificial,aprendizaje</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Calculo -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Calculo">
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Matematicas"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">implementa*,ecuacion,derivada,algoritmo</keyword>
     </owl:NamedIndividual>
     
 
@@ -63,6 +89,12 @@
         <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Geologia"/>
         <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Cartografia, Cartografo, Mapa</keyword>
     </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Computacion -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Computacion"/>
     
 
 
@@ -81,6 +113,15 @@
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Espanya">
         <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ebro, Huesca, Iberico, Pirineo, Zaragoza, Aragon, Catalunya, Madrid, Galicia, Asturias, Valencia, Gibraltar</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Funcion -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Funcion">
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Analisis"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">curva,lineal, funcion</keyword>
     </owl:NamedIndividual>
     
 
@@ -104,6 +145,14 @@
     
 
 
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Geometria -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Geometria">
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Matematicas"/>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Hidrografia -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Hidrografia">
@@ -120,6 +169,21 @@
         <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Enfermedad"/>
         <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Bacteria, Infeccion, itis</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Matematicas -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Matematicas"/>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Matematicos -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Matematicos">
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Matematicas"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Matlab,Gauss,Petri,Newton</keyword>
     </owl:NamedIndividual>
     
 
@@ -203,6 +267,14 @@
     
 
 
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Robotica -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Robotica">
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">robot*,Matlab,simulacion,automata,vision por computador</keyword>
+    </owl:NamedIndividual>
+    
+
+
     <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Sistema -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Sistema">
@@ -210,6 +282,15 @@
         <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Medicina"/>
         <skos:related rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Organo"/>
         <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Circulatorio, Respiratorio, Excretor</keyword>
+    </owl:NamedIndividual>
+    
+
+
+    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Trigonometria -->
+
+    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Trigonometria">
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Analisis"/>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">angulo,trigonometri*,</keyword>
     </owl:NamedIndividual>
     
 
@@ -273,5 +354,5 @@
 
 
 
-<!-- Generated by the OWL API (version 4.2.6.20160910-2108) https://github.com/owlcs/owlapi -->
+<!-- Generated by the OWL API (version 4.2.5.20160517-0735) https://github.com/owlcs/owlapi -->
 

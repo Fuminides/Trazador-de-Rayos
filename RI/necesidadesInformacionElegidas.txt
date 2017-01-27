@@ -1,0 +1,5 @@
+01-1	SELECT ?title WHERE{ ?title skos:Concept Geologia ?title skos:Concept Espanya }
+04-3	SELECT ?title WHERE{ ?title skos:Concept Infeccion ?title dc:date ?date FILTER (?date >"1980-01-01T00:00:00"^^xsd:dateTime && ?date <"1991-01-01T00:00:00"^^xsd:dateTime)}
+05-1 	SELECT ?title WHERE{ {?title skos:Concept Funciones} UNION  {?title skos:Concept Geometria}}
+09-4	SELECT ?title WHERE{ ?title skos:Concept Robotica  ?title dc:publisher Martinez ?title dc:date ?date FILTER(?date>"2005-01-01T00:00:00"^^xsd:dateTime) }
+11-5	SELECT ?title WHERE{ ?title skos:Concept Aplicacion ?title dc:date ?date FILTER (?date >"2012-01-01T00:00:00"^^xsd:dateTime)}
