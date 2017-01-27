@@ -11,6 +11,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.tartarus.snowball.ext.spanishStemmer;
 import org.apache.jena.ontology.OntModel;
+import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
@@ -23,20 +25,29 @@ public class ConvertirColeccion {
 	String NS;
 	HashMap<String, Boolean> autores, publishers;
 	spanishStemmer analizador = new spanishStemmer();
+	Model coleccionOnt;
+	String namespace = "http://www.semanticweb.org/javi-/ontologies/2017/0/Coleccion";
+
 	
 	public ConvertirColeccion() {
 		autores = new HashMap<>(); publishers = new HashMap<>();
 	}
 	
 	public static void main(String[] args) throws Exception{
-		String zaguan = "C:/Users/javi-/Documents/Zaguan.owl", coleccion = "C:/Users/javi-/Downloads/recordsdc/recordsdc", destino = "C:/Users/javi-/Downloads/recordsdc/result/Coleccion.owl";
-		new ConvertirColeccion().convertirColeccion(zaguan, coleccion, destino);
+		String zaguan = "C:/Users/javi-/Documents/Zaguan.owl", coleccion = "C:/Users/javi-/Downloads/recordsdc/recordsdc", destino = "C:/Users/javi-/Downloads/recordsdc/result/Coleccion.owl",
+				skos = "C:/Users/javi-/Documents/Skos.owl";
+		new ConvertirColeccion().convertirColeccion(zaguan, skos, coleccion, destino);
 	}
 	
-	public void convertirColeccion(String rutaOntologia, String rutaColeccion, String destino) throws Exception{
-		Cargar loader = new Cargar(rutaOntologia);
-		OntModel model = loader.getOntModel(); 	
+	public void convertirColeccion(String rutaOntologia, String skos, String rutaColeccion, String destino) throws Exception{
+		Cargar loader = new Cargar(rutaOntologia, skos);
+    	NS = loader.NS;
 		File coleccion = new File(rutaColeccion);
+		coleccionOnt = ModelFactory.createDefaultModel();
+		
+		coleccionOnt.setNsPrefix("", namespace + "#");
+    	coleccionOnt.setNsPrefix("zaguan", NS);
+		coleccionOnt.setNsPrefix("terms", loader.SNS );
 		
 		if ( !coleccion.isDirectory() ){
 			System.err.println("No se ha encontrado la coleccion!");
@@ -50,24 +61,23 @@ public class ConvertirColeccion {
 		}
 		//lo guardamos en un fichero rdf
 		try {
-			RDFDataMgr.write(new FileOutputStream(new File(destino)), model, Lang.RDFXML);
+			RDFDataMgr.write(new FileOutputStream(new File(destino)), coleccionOnt, Lang.RDFXML);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}	    
 	}
 
 	private void anyadirModelo(Cargar loader, File documento) throws Exception {
+		
 		OntModel model = loader.getOntModel();
-		HashMap<String, ArrayList<String>> claves = loader.indiceInvertido;
+		HashMap<String, ArrayList<Resource>> claves = loader.indiceInvertido;
 		
 		DocumentBuilderFactory xmlParserF = DocumentBuilderFactory.newInstance();
     	DocumentBuilder xmlParser = xmlParserF.newDocumentBuilder();
     	org.w3c.dom.Document parseador = xmlParser.parse(documento);
     	
     	String identificador = getIdentificador(parseador);
-    	NS = loader.NS;
-    	
-    	Resource doc = model.createResource(NS + identificador);
+    	Resource doc = model.createResource(namespace + "#" + identificador);
     	
     	parseTipo(parseador, doc, model);
     	
@@ -94,7 +104,7 @@ public class ConvertirColeccion {
 	      	  id = lista.item(i).getFirstChild().getNodeValue();
 		 }
 		 
-     	 model.add(doc, model.getProperty(NS + "titulo"), id);
+     	 coleccionOnt.add(doc, model.getProperty(NS + "titulo"), id);
 	}
 	
 	/**
@@ -111,7 +121,7 @@ public class ConvertirColeccion {
 	      	  id = lista.item(i).getFirstChild().getNodeValue();
 		 }
 		 
-     	 model.add(doc, model.getProperty(NS + "Summary"), id);
+		 coleccionOnt.add(doc, model.getProperty(NS + "Summary"), id);
 	}
 
 	/**
@@ -122,7 +132,7 @@ public class ConvertirColeccion {
 	 * @param model
 	 * @param claves
 	 */
-	private void parseContent(Document parseador, Resource doc, OntModel model, HashMap<String, ArrayList<String>> claves) {
+	private void parseContent(Document parseador, Resource doc, OntModel model, HashMap<String, ArrayList<Resource>> claves) {
 		NodeList lista = parseador.getElementsByTagName("dc:description");
 		String id = null;
 		
@@ -137,9 +147,9 @@ public class ConvertirColeccion {
 			 analizador.stem();
 			 palabra = analizador.getCurrent();
 			 if ( claves.containsKey(palabra.trim()) ){
-				 ArrayList<String> categorias = claves.get(palabra.trim());
-				 for(String categoria: categorias){
-			      	 model.add(doc, model.getProperty(NS + "tematica"), categoria);
+				 ArrayList<Resource> categorias = claves.get(palabra.trim());
+				 for(Resource categoria: categorias){
+					 coleccionOnt.add(doc, model.getProperty(NS + "tematica"), categoria);
 				 }
 			 }
 		 }
@@ -158,9 +168,9 @@ public class ConvertirColeccion {
 			 analizador.stem();
 			 palabra = analizador.getCurrent();
 			 if ( claves.containsKey(palabra.trim()) ){
-				 ArrayList<String> categorias = claves.get(palabra.trim());
-				 for(String categoria: categorias){
-			      	 model.add(doc, model.getProperty(NS + "tematica"), categoria);
+				 ArrayList<Resource> categorias = claves.get(palabra.trim());
+				 for(Resource categoria: categorias){
+					 coleccionOnt.add(doc, model.getProperty(NS + "tematica"), categoria);
 				 }
 			 }
 		 }
@@ -179,7 +189,7 @@ public class ConvertirColeccion {
         for(int i = 0; i<lista.getLength(); i++){
       	  String id = lista.item(i).getFirstChild().getNodeValue();
       	 
-      	  model.add(doc, model.getProperty(NS + "anyo"), id);
+      	  coleccionOnt.add(doc, model.getProperty(NS + "anyo"), id);
         }
 	}
 
@@ -201,7 +211,7 @@ public class ConvertirColeccion {
       		  Resource autorC = model.getResource(NS + "Autor");
       		  model.add(autor, RDF.type, autorC);
       	  }
-      	  model.add(doc, model.getProperty(NS + "escritoPor"), model.createResource(NS + id));
+      	  coleccionOnt.add(doc, model.getProperty(NS + "escritoPor"), model.createResource(NS + id));
         }
 	}
 	
@@ -222,7 +232,7 @@ public class ConvertirColeccion {
       		  Resource pbC = model.getResource(NS + "Publicador");
       		  model.add(pb, RDF.type, pbC);
       	  }
-      	  model.add(doc, model.getProperty(NS + "publicadoPor"), model.createResource(NS + id));
+      	  coleccionOnt.add(doc, model.getProperty(NS + "publicadoPor"), model.createResource(NS + id));
         }
 	}
 
@@ -233,29 +243,29 @@ public class ConvertirColeccion {
 	 * @param model
 	 */
 	private void parseTipo(Document parseador, Resource doc, OntModel model) {
-		NodeList lista = parseador.getElementsByTagName("dc:title");
+		NodeList lista = parseador.getElementsByTagName("dc:identifier");
 		boolean guarda = true;
 	        
         for(int i = 0; i<lista.getLength(); i++){
         	if (lista.item(i).getFirstChild().getNodeValue().toUpperCase().contains("TFG")|
         			lista.item(i).getFirstChild().getNodeValue().toUpperCase().contains("PFC")){
         		Resource TFG = model.getResource(NS + "TFG");
-        		model.add(doc,RDF.type, TFG);
+        		coleccionOnt.add(doc,RDF.type, TFG);
         		guarda = false;
         	}
         	else if (lista.item(i).getFirstChild().getNodeValue().toUpperCase().contains("TFM")){
         		Resource TFM = model.getResource(NS + "TFM");
-        		model.add(doc,RDF.type, TFM);
+        		coleccionOnt.add(doc,RDF.type, TFM);
         		guarda = false;
         	}
         	else if (lista.item(i).getFirstChild().getNodeValue().toUpperCase().contains("TESIS")){
         		Resource Tesis = model.getResource(NS + "Tesis");
-        		model.add(doc,RDF.type, Tesis);
+        		coleccionOnt.add(doc,RDF.type, Tesis);
         		guarda = false;
         	}
         }
         
-        if ( guarda ) model.add(doc,RDF.type, model.getResource(NS + "TFG"));
+        if ( guarda ) coleccionOnt.add(doc,RDF.type, model.getResource(NS + "TFG"));
 	}
 
 	/**

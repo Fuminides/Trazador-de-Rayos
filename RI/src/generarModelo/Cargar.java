@@ -19,8 +19,8 @@ public class Cargar {
 
 	OntModel model;
 	
-	String NS, keyword = "keyword";
-	HashMap<String, ArrayList<String>> indiceInvertido = new HashMap<>();
+	String NS, SNS, keyword = "keyword";
+	HashMap<String, ArrayList<Resource>> indiceInvertido = new HashMap<>();
 	
 	public OntModel getOntModel() {
 		return model;
@@ -64,15 +64,24 @@ public class Cargar {
 	 * 
 	 * @param ontoFile
 	 */
-	public Cargar(String ontoFile)
+	public Cargar(String ontoFile, String skosFile)
 	{   
 	    OntModel ontoModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
+	    OntModel ontoModelAux = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
+
 	    try 
 	    {
-	        InputStream in = FileManager.get().open(ontoFile);
+	        InputStream in = FileManager.get().open(ontoFile), 
+	        		skosInput = FileManager.get().open(skosFile);
 	        try 
 	        {
 	            ontoModel.read(in, null);
+	    	    NS = ontoModel.getNsPrefixURI("");
+	    	    skosInput = FileManager.get().open(skosFile);
+	            ontoModelAux.read(skosInput, null);
+	         
+	            ontoModel.add(ontoModelAux);
+	            
 	        } 
 	        catch (Exception e) 
 	        {
@@ -87,16 +96,15 @@ public class Cargar {
 	    }
 	    model = ontoModel;
 	    
-	    NS = model.getNsPrefixURI("");
+	    SNS = ontoModelAux.getNsPrefixURI("");
 	    
  		Property prop = model
- 				.getProperty(NS + keyword);
+ 				.getProperty(SNS + keyword);
  		ResIterator ri = model.listSubjectsWithProperty(prop);
  		spanishStemmer stemmer = new spanishStemmer();
  		while (ri.hasNext()) {
  			Resource r = ri.next();
- 			String categoria = r.getURI().split("#")[1],
- 					keywords = r.getProperty(prop).getString();
+ 			String keywords = r.getProperty(prop).getString();
  			for ( String clave:keywords.split(",")){
  				clave = clave.trim().toLowerCase();
  				stemmer.setCurrent(clave);
@@ -104,21 +112,16 @@ public class Cargar {
  				clave = stemmer.getCurrent();
  				if ( clave.length() > 0){
  					if ( indiceInvertido.containsKey(clave)){
- 						indiceInvertido.get(clave).add(categoria.trim());
+ 						indiceInvertido.get(clave).add(r);
  					}
  					else{
  						indiceInvertido.put(clave, new ArrayList<>());
- 						indiceInvertido.get(clave).add(categoria.trim());
+ 						indiceInvertido.get(clave).add(r);
  					}
  				}
  			}
  		}
 	    
-	}
-	
-	public static void main(String[] args) {
-		Cargar modelo = new Cargar(args[0]);
-		
 	}
 
 }
