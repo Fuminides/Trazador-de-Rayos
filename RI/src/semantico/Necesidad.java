@@ -1,6 +1,5 @@
 package semantico;
 
-import java.util.ArrayList;
 /**
  * Clase: Necesidad.
  *  

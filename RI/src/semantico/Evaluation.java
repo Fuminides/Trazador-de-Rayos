@@ -36,7 +36,7 @@ public class Evaluation {
 		outputFileName ="semanticEvaluationResults08.txt";
 
 	}
-	public static void evaluar() {
+	public void evaluar() {
 	      
 	    try {
 	    	posicionesRel = new HashMap<String,ArrayList<Integer>>();
@@ -74,7 +74,6 @@ public class Evaluation {
 	        double sumT=0.0;
 	        double prec10total = 0.0;
 	        double tp= 0.0,fp=0.0,fn=0.0,tpF= 0.0,fpF=0.0,fnF=0.0;
-	        ArrayList <Objeto> o = new ArrayList<Objeto>();
 	        String [] v = new String [5];
 	        v[0] ="01-1";
 	        v[1]="04-3";

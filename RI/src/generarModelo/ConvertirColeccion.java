@@ -135,7 +135,6 @@ public class ConvertirColeccion {
 	private void parseContent(Document parseador, Resource doc, OntModel model, HashMap<String, ArrayList<Resource>> claves) {
 		NodeList lista = parseador.getElementsByTagName("dc:description");
 		String id = null;
-		
 		 for(int i = 0; i<lista.getLength(); i++){
 	      	  id = lista.item(i).getFirstChild().getNodeValue();
 		 }
