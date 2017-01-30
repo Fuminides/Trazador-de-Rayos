@@ -34,7 +34,7 @@ public class ConvertirColeccion {
 	}
 	
 	public static void main(String[] args) throws Exception{
-		String zaguan = "C:/Users/javi-/Documents/Zaguan.owl", coleccion = "C:/Users/javi-/Downloads/recordsdc/recordsdc", destino = "C:/Users/javi-/Downloads/recordsdc/result/Coleccion.owl",
+		String zaguan = "C:/Users/javi-/Documents/Zaguan.owl", coleccion = "C:/Users/javi-/Downloads/recordsdc/prueba", destino = "C:/Users/javi-/Downloads/recordsdc/result/Coleccion.owl",
 				skos = "C:/Users/javi-/Documents/Skos.owl";
 		new ConvertirColeccion().convertirColeccion(zaguan, skos, coleccion, destino);
 	}
@@ -48,6 +48,7 @@ public class ConvertirColeccion {
 		coleccionOnt.setNsPrefix("", namespace + "#");
     	coleccionOnt.setNsPrefix("zaguan", NS);
 		coleccionOnt.setNsPrefix("terms", loader.SNS );
+		coleccionOnt.setNsPrefix("base", namespace );
 		
 		if ( !coleccion.isDirectory() ){
 			System.err.println("No se ha encontrado la coleccion!");
@@ -199,7 +200,7 @@ public class ConvertirColeccion {
 	 * @param doc
 	 * @param model
 	 */
-	private void parseAutor(Document parseador, Resource doc, OntModel model) {
+	private void parseAutor(Document parseador, Resource doc, Model model) {
 		NodeList lista = parseador.getElementsByTagName("dc:creator");
 	        
         for(int i = 0; i<lista.getLength(); i++){
@@ -208,7 +209,7 @@ public class ConvertirColeccion {
       		  autores.put(id, true);
       		  Resource autor = model.createResource(NS + id);
       		  Resource autorC = model.getResource(NS + "Autor");
-      		  model.add(autor, RDF.type, autorC);
+      		  coleccionOnt.add(autor, RDF.type, autorC);
       	  }
       	  coleccionOnt.add(doc, model.getProperty(NS + "escritoPor"), model.createResource(NS + id));
         }
@@ -229,7 +230,7 @@ public class ConvertirColeccion {
       		  publishers.put(id, true);
       		  Resource pb = model.createResource(NS + id);
       		  Resource pbC = model.getResource(NS + "Publicador");
-      		  model.add(pb, RDF.type, pbC);
+      		  coleccionOnt.add(pb, RDF.type, pbC);
       	  }
       	  coleccionOnt.add(doc, model.getProperty(NS + "publicadoPor"), model.createResource(NS + id));
         }
