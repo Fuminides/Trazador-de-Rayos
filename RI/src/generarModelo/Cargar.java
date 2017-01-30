@@ -17,9 +17,9 @@ import org.tartarus.snowball.ext.spanishStemmer;
 
 public class Cargar {
 
-	OntModel model;
+	OntModel model, skos;
 	
-	String NS, SNS, keyword = "keyword";
+	String NS = "http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#", SNS, keyword = "keyword";
 	HashMap<String, ArrayList<Resource>> indiceInvertido = new HashMap<>();
 	
 	public OntModel getOntModel() {
@@ -54,8 +54,7 @@ public class Cargar {
 	        System.exit(0);
 	    }
 	    model = ontoModel;
-	    
-	    NS = model.getNsPrefixURI("");
+	 
 	}
 	
 	/**
@@ -64,19 +63,16 @@ public class Cargar {
 	 * 
 	 * @param ontoFile
 	 */
-	public Cargar(String ontoFile, String skosFile)
+	public Cargar(String skosFile)
 	{   
 	    OntModel ontoModel = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
 	    OntModel ontoModelAux = ModelFactory.createOntologyModel(OntModelSpec.OWL_MEM, null);
 
 	    try 
 	    {
-	        InputStream in = FileManager.get().open(ontoFile), 
-	        		skosInput = FileManager.get().open(skosFile);
+	        InputStream skosInput = FileManager.get().open(skosFile);
 	        try 
 	        {
-	            ontoModel.read(in, null);
-	    	    NS = ontoModel.getNsPrefixURI("");
 	    	    skosInput = FileManager.get().open(skosFile);
 	            ontoModelAux.read(skosInput, null);
 	         
@@ -95,7 +91,7 @@ public class Cargar {
 	        System.exit(0);
 	    }
 	    model = ontoModel;
-	    
+	    skos = ontoModelAux;
 	    SNS = ontoModelAux.getNsPrefixURI("");
 	    
  		Property prop = model

@@ -43,7 +43,7 @@ public class SemanticGenerator {
 	    	System.exit(-1);
 	    }
 	    
-	    new ConvertirColeccion().convertirColeccion(rdfsPath, skosPath, docsPath, rdfPath);
+	    new ConvertirColeccion().convertirColeccion(skosPath, docsPath, rdfPath);
 	    
 	} 
 
