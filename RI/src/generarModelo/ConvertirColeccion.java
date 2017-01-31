@@ -34,7 +34,7 @@ public class ConvertirColeccion {
 	}
 	
 	public static void main(String[] args) throws Exception{
-		String zaguan = "C:/Users/javi-/Documents/Zaguan.owl", coleccion = "C:/Users/javi-/Downloads/recordsdc/prueba", destino = "C:/Users/javi-/Downloads/recordsdc/result/Coleccion.rdf",
+		String coleccion = "C:/Users/javi-/Downloads/recordsdc/prueba", destino = "C:/Users/javi-/Downloads/recordsdc/result/Coleccion.rdf",
 				skos = "C:/Users/javi-/Documents/Skos.owl";
 		new ConvertirColeccion().convertirColeccion(skos, coleccion, destino);
 	}
@@ -67,6 +67,13 @@ public class ConvertirColeccion {
 		}	    
 	}
 
+	/**
+	 * Anyade al fichero RDF el documento de Zaguan.
+	 * 
+	 * @param loader
+	 * @param documento
+	 * @throws Exception
+	 */
 	private void anyadirModelo(Cargar loader, File documento) throws Exception {
 		
 		OntModel model = loader.getOntModel();
@@ -92,6 +99,7 @@ public class ConvertirColeccion {
 	
 	/**
 	 * Anyade el titulo de un documento al modelo.
+	 * 
 	 * @param parseador
 	 * @param doc
 	 * @param model
