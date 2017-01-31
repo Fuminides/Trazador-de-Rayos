@@ -26,7 +26,7 @@ public class ConvertirColeccion {
 	HashMap<String, Boolean> autores, publishers;
 	spanishStemmer analizador = new spanishStemmer();
 	Model coleccionOnt;
-	String namespace = "http://www.semanticweb.org/javi-/ontologies/2017/0/Coleccion";
+	public static String namespace = "http://www.semanticweb.org/javi-/ontologies/2017/0/Coleccion";
 
 	
 	public ConvertirColeccion() {

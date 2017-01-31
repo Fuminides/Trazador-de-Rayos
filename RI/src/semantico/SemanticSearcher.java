@@ -16,6 +16,9 @@ import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.FileManager;
 
+import generarModelo.Cargar;
+import generarModelo.ConvertirColeccion;
+
 
 
 public class SemanticSearcher {
@@ -28,7 +31,6 @@ public class SemanticSearcher {
 	    String rdfsPath=null;
 	    String infoNeeds=null;
 	    String resultFile = null;
-	    String skosFile = null;
 	    
 	    if (args.length <8) {
 	        System.err.println(usage);
@@ -51,20 +53,12 @@ public class SemanticSearcher {
 		      	  resultFile=args[i+1];
 		      	  i++;
 		        }
-		        else if("-skos".equals(args[i])){
-		          skosFile=args[i+1];
-		          i++;
-		        }
 		    }
 	      }
 	    String fichero =null;
 	    Model modelo = ModelFactory.createDefaultModel(),
 	    		aux = ModelFactory.createDefaultModel();
-	    if ( skosFile != null){
-	    	Model terminologico = ModelFactory.createDefaultModel();
-	    	terminologico.read(FileManager.get().open(skosFile), null);
-	    	modelo.add(terminologico);
-	    }
+	    
 	    modelo.read(FileManager.get().open(rdfsPath), null);
 	    
 	    aux.read(FileManager.get().open(rdfPath), null);
@@ -80,12 +74,19 @@ public class SemanticSearcher {
 	 public static void procesarSPARQL(String sparql,Model model) throws FileNotFoundException{
 		//Procesamos el fichero sparql
 		Scanner leerFichero = new Scanner(new File(sparql));
-		
+		String prefijos = "PREFIX  zaguan: <http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#>"
+				+ " PREFIX  Skos: <http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#> "
+				+ " PREFIX skos: <http://www.w3.org/2004/02/skos/core#> "
+				+ " PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>";
 		while ( leerFichero.hasNextLine() ){
 			@SuppressWarnings("unused")
 			String info_need = leerFichero.next(),consulta = leerFichero.nextLine();
 			//aplica las consultas al grafo y muestra los resultados
-			Query query = QueryFactory.create(consulta) ;
+			consulta = prefijos +"\n" +consulta;
+			Query query = QueryFactory.create(consulta);
+			System.out.println(query);
+			//Query query = query.a ;
+			
 			  QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
 			  try {
 			    ResultSet results = qexec.execSelect() ;

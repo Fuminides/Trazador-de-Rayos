@@ -19,7 +19,11 @@ public class Cargar {
 
 	OntModel model, skos;
 	
-	String NS = "http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#", SNS, keyword = "keyword";
+	public static String NS = "http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#";
+
+	public String SNS;
+
+	public String keyword = "keyword";
 	HashMap<String, ArrayList<Resource>> indiceInvertido = new HashMap<>();
 	
 	public OntModel getOntModel() {
