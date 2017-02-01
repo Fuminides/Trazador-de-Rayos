@@ -77,7 +77,8 @@ public class SemanticSearcher {
 		String prefijos = "PREFIX  zaguan: <http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#>"
 				+ " PREFIX  Skos: <http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#> "
 				+ " PREFIX skos: <http://www.w3.org/2004/02/skos/core#> "
-				+ " PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>";
+				+ " PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> "
+				+ " PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ";
 		while ( leerFichero.hasNextLine() ){
 			@SuppressWarnings("unused")
 			String info_need = leerFichero.next(),consulta = leerFichero.nextLine();
@@ -93,13 +94,7 @@ public class SemanticSearcher {
 			    while (results.hasNext()){
 			      QuerySolution soln = results.nextSolution() ;
 			      Resource x = soln.getResource("x");
-			      Resource y = soln.getResource("y");
-			      RDFNode z = soln.get("z") ;  
-			      if (z.isLiteral()) {
-						System.out.println(x.getURI()+" - "+ y.getURI()+" - "+ z.toString());
-					} else {
-						System.out.println(x.getURI()+" - "+ y.getURI()+" - "+ z.asResource().getURI());
-					}
+			      System.out.println(x);
 			    }
 			  } 
 			  finally { qexec.close() ; }

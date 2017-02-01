@@ -1,5 +1,5 @@
-01-1	SELECT ?title WHERE{ ?x zaguan:identificador ?title. ?x skos:Concept Skos:Geologia. ?x skos:Concept Skos:Espanya }
-04-3	SELECT ?title WHERE{ ?x zaguan:identificador ?title. ?x skos:Concept Skos:Medicina. ?x zaguan:anyo ?date. FILTER (?date >"1980-01-01T00:00:00"^^xsd:dateTime && ?date <"1991-01-01T00:00:00"^^xsd:dateTime)}
-05-1 	SELECT ?title WHERE{ ?x zaguan:identificador ?title. ?x skos:Concept Skos:Matematicas }
-09-4	SELECT ?title WHERE{ ?x zaguan:identificador ?title. ?x skos:Concept Skos:Robotica.  ?x zaguan:escritoPor ?Martinez. ?x zaguan:anyo ?date. FILTER(?date>"2005-01-01T00:00:00"^^xsd:dateTime) }
-11-5	SELECT ?title WHERE{ ?x zaguan:identificador ?title. ?x skos:Concept Skos:Computacion. ?x zaguan:anyo ?date. FILTER (?date >"2012-01-01T00:00:00"^^xsd:dateTime)}
+01-1	SELECT DISTINCT ?x WHERE{?x zaguan:tematica ?tem. {?x zaguan:tematica Skos:Espanya} UNION {?tem skos:broader Skos:Espanya}. {?x zaguan:tematica Skos:Geologia} UNION {?tem skos:broader Skos:Geologia} }
+04-3	SELECT ?title WHERE{ ?title. ?x zaguan:tematica Skos:Medicina. ?x zaguan:anyo ?date. FILTER (?date >"1980-01-01T00:00:00"^^xsd:dateTime && ?date <"1991-01-01T00:00:00"^^xsd:dateTime)}
+05-1 	SELECT ?title WHERE{ ?x zaguan:tematica Skos:Matematicas }
+09-4	SELECT ?title WHERE{ ?x zaguan:tematica Skos:Robotica.  ?x zaguan:escritoPor ?Martinez. ?x zaguan:anyo ?date. FILTER(?date>"2005-01-01T00:00:00"^^xsd:dateTime) }
+11-5	SELECT ?title WHERE{ ?x zaguan:tematica Skos:Computacion. ?x zaguan:anyo ?date. FILTER (?date >"2012-01-01T00:00:00"^^xsd:dateTime)}

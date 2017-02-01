@@ -110,6 +110,7 @@ public class Cargar {
  				stemmer.setCurrent(clave);
  				stemmer.stem();
  				clave = stemmer.getCurrent();
+ 				if ( r.getLocalName().equals("Espanya")) System.out.println(clave);
  				if ( clave.length() > 0){
  					if ( indiceInvertido.containsKey(clave)){
  						indiceInvertido.get(clave).add(r);

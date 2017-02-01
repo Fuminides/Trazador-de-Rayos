@@ -146,7 +146,7 @@ public class ConvertirColeccion {
 	 */
 	private void parseContent(Document parseador, Resource doc, OntModel model, HashMap<String, ArrayList<Resource>> claves) {
 		NodeList lista = parseador.getElementsByTagName("dc:description");
-		String id = null;
+		String id = null; boolean necesita_lugar = false; boolean lugar_especificado = false;
 		 for(int i = 0; i<lista.getLength(); i++){
 	      	  id = lista.item(i).getFirstChild().getNodeValue();
 		 }
@@ -162,6 +162,13 @@ public class ConvertirColeccion {
 			 if ( claves.containsKey(palabra.trim()) ){
 				 ArrayList<Resource> categorias = claves.get(palabra.trim());
 				 for(Resource categoria: categorias){
+					 String cat = categoria.getLocalName();
+					 if (cat.equals("Geologia")){
+						 necesita_lugar = true;
+					 }
+					 else if ( cat.equals("Espanya")){
+						 lugar_especificado=true;
+					 }
 					 coleccionOnt.add(doc, model.getProperty(NS + "tematica"), categoria);
 				 }
 			 }
@@ -183,9 +190,21 @@ public class ConvertirColeccion {
 			 if ( claves.containsKey(palabra.trim()) ){
 				 ArrayList<Resource> categorias = claves.get(palabra.trim());
 				 for(Resource categoria: categorias){
+					 String cat = categoria.getLocalName();
+					 if (cat.equals("Geologia")){
+						 necesita_lugar = true;
+					 }
+					 else if ( cat.equals("Espanya")){
+						 lugar_especificado=true;
+					 }
 					 coleccionOnt.add(doc, model.getProperty(NS + "tematica"), categoria);
 				 }
 			 }
+		 }
+		 
+		 if (lugar_especificado && necesita_lugar){ //Si necesita algun lugar, pero no se ha detectado ninguno se le da el por defecto (espanya)
+			 coleccionOnt.add(doc, model.getProperty(NS + "tematica"), 
+					 claves.get("espany").get(0));
 		 }
 	}
 
