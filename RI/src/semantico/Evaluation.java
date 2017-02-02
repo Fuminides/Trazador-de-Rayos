@@ -262,8 +262,9 @@ public class Evaluation {
 		while ( resultadosLeer.hasNextLine() ){
 			String id = resultadosLeer.next(),
 				documento = resultadosLeer.next();
-			String [] doc = documento.split("\\\\");
-			documento = doc[1];
+			//Aqui se quita el recordsdc pero no hará falta porque en el fichero de resultados se esribe sin eso
+			//String [] doc = documento.split("\\\\");
+			//documento = doc[1];
 			if ( !preguntas.containsKey(id) ){
 				cuenta=1;
 				preguntas.put(id, new Necesidad(id));

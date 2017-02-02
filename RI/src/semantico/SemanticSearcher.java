@@ -1,7 +1,11 @@
 package semantico;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 import org.apache.jena.query.Query;
@@ -32,6 +36,13 @@ public class SemanticSearcher {
 	    String infoNeeds=null;
 	    String resultFile = null;
 	    
+	    
+	    /*rdfPath ="Coleccion.rdf";
+	    rdfsPath="Zaguan.owl";
+	    infoNeeds="necesidadesInformacionElegidas.txt";
+	    resultFile ="Resultados.txt";*/
+	    
+	    
 	    if (args.length <8) {
 	        System.err.println(usage);
 	        System.exit(1);
@@ -55,7 +66,6 @@ public class SemanticSearcher {
 		        }
 		    }
 	      }
-	    String fichero =null;
 	    Model modelo = ModelFactory.createDefaultModel(),
 	    		aux = ModelFactory.createDefaultModel();
 	    
@@ -63,15 +73,14 @@ public class SemanticSearcher {
 	    
 	    aux.read(FileManager.get().open(rdfPath), null);
 	    modelo.add(aux);
+	    procesarSPARQL(infoNeeds,modelo,resultFile);
 	    
-	    procesarSPARQL(infoNeeds,modelo);
-	    
-	    Evaluation e = new Evaluation(fichero,resultFile);
+	    Evaluation e = new Evaluation("zaguanRels.txt",resultFile);
 	    e.evaluar();   
 	    
 	 }
 	 
-	 public static void procesarSPARQL(String sparql,Model model) throws FileNotFoundException{
+	 public static void procesarSPARQL(String sparql,Model model,String resultFile) throws IOException{
 		//Procesamos el fichero sparql
 		Scanner leerFichero = new Scanner(new File(sparql));
 		String prefijos = "PREFIX  zaguan: <http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#>"
@@ -79,28 +88,49 @@ public class SemanticSearcher {
 				+ " PREFIX skos: <http://www.w3.org/2004/02/skos/core#> "
 				+ " PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> "
 				+ " PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> ";
-		while ( leerFichero.hasNextLine() ){
-			@SuppressWarnings("unused")
-			String info_need = leerFichero.next(),consulta = leerFichero.nextLine();
-			//aplica las consultas al grafo y muestra los resultados
-			consulta = prefijos +"\n" +consulta;
-			Query query = QueryFactory.create(consulta);
-			System.out.println(query);
-			//Query query = query.a ;
-			
-			  QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
-			  try {
-			    ResultSet results = qexec.execSelect() ;
-			    while (results.hasNext()){
-			      QuerySolution soln = results.nextSolution() ;
-			      Resource x = soln.getResource("x");
-			      System.out.println(x);
-			    }
-			  } 
-			  finally { qexec.close() ; }
-
-			  
+		
+		//Abrimos el fichero en el que vamos a escribir los resultados		
+		FileWriter fichero = null;
+	    PrintWriter pw = null;
+	    try {
+			fichero = new FileWriter(new File(resultFile));
+			pw = new PrintWriter(fichero);
+		 
+			while ( leerFichero.hasNextLine() ){
+				@SuppressWarnings("unused")
+				String info_need = leerFichero.next(),consulta = leerFichero.nextLine();
+				//aplica las consultas al grafo y muestra los resultados
+				consulta = prefijos +"\n" +consulta;
+				Query query = QueryFactory.create(consulta);
+				System.out.println(query);
+				//Query query = query.a ;
+				
+				  QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
+				  try {
+				    ResultSet results = qexec.execSelect() ;
+				    while (results.hasNext()){
+				      QuerySolution soln = results.nextSolution() ;
+				      Resource x = soln.getResource("x");				     
+				      String [] doc = x.toString().split("#");
+				      int id = Integer.parseInt(doc[1]);
+				      String ruta=info_need+'	'+"oai_zaguan.unizar.es_"+id+".xml";
+				      //System.out.println(ruta);
+				      pw.println(ruta);
+				      
+				    }
+				    
+				  } 
+				  finally { qexec.close() ; }
+	
+				  
+			}
+			leerFichero.close();
+		 } 
+	    catch (IOException e) {
+			e.printStackTrace();
 		}
-		leerFichero.close();
+	    pw.close();
+	    fichero.close();
+		
 	 }
 }
