@@ -46,14 +46,6 @@
     
 
 
-    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Analisis -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Analisis">
-        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Matematicas"/>
-    </owl:NamedIndividual>
-    
-
-
     <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Anatomia -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Anatomia">
@@ -107,20 +99,12 @@
     </owl:NamedIndividual>
     
 
+
     <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Espanya -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Espanya">
         <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
         <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Espanya, Ebro, Huesca, Iberico, Pirineo, Zaragoza, Aragon, Catalunya, Madrid, Galicia, Asturias, Valencia, Gibraltar, Leon</keyword>
-    </owl:NamedIndividual>
-    
-
-
-    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Funcion -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Funcion">
-        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Analisis"/>
-        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">curva,lineal, funcion</keyword>
     </owl:NamedIndividual>
     
 
@@ -133,6 +117,7 @@
         <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Mutacion, Cromosoma, Gen</keyword>
     </owl:NamedIndividual>
     
+
 
     <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Geologia -->
 
@@ -147,9 +132,8 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Geometria">
         <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Matematicas"/>
-                <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Geometria, Poliedro</keyword>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Geometria, Poliedro</keyword>
     </owl:NamedIndividual>
-
     
 
 
@@ -289,7 +273,7 @@
     <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Trigonometria -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Trigonometria">
-        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Analisis"/>
+        <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Matematicas"/>
         <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">angulo,trigonometri*,</keyword>
     </owl:NamedIndividual>
     
