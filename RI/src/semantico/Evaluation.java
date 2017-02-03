@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.text.DecimalFormat;
 /**
@@ -226,25 +227,27 @@ public class Evaluation {
 		String previousInfo = "";
 		Scanner leerFichero = new Scanner(new File(juiciosValor));
 		int i = 0, index = -1; 
-		while ( leerFichero.hasNextLine() ){
-			String info_need = leerFichero.next(),documento = leerFichero.next();
+		try{
+			while ( leerFichero.hasNextLine() ){
+				String info_need = leerFichero.next(),documento = leerFichero.next();
 				int relevancia = leerFichero.nextInt();
-			if ( info_need.equals(previousInfo)){
-				necesidades.get(info_need).put(documento, relevancia);
-				if (relevancia == 1) { 
-					i++;				
+				if ( info_need.equals(previousInfo)){
+					necesidades.get(info_need).put(documento, relevancia);
+					if (relevancia == 1) { 
+						i++;				
+					}
+				}
+				else{
+					previousInfo = info_need;
+					if (index >= 0) {		
+						relevantes[index] = i;
+					}
+					i=0; index++;		
+					necesidades.put(info_need,new HashMap<String,Integer>());
+					necesidades.get(info_need).put(documento, relevancia);
 				}
 			}
-			else{
-				previousInfo = info_need;
-				if (index >= 0) {		
-					relevantes[index] = i;
-				}
-				i=0; index++;		
-				necesidades.put(info_need,new HashMap<String,Integer>());
-				necesidades.get(info_need).put(documento, relevancia);
-			}
-		}
+		} catch (NoSuchElementException e){;}
 		relevantes[index] = i; 
 		leerFichero.close();
 	}
@@ -259,65 +262,67 @@ public class Evaluation {
 		Scanner resultadosLeer = new Scanner(new File(resultados));
 		HashMap<String, Necesidad> preguntas = new HashMap<String, Necesidad>();
 		int cuenta =1;
-		while ( resultadosLeer.hasNextLine() ){
-			String id = resultadosLeer.next(),
-				documento = resultadosLeer.next();
-			//Aqui se quita el recordsdc pero no hará falta porque en el fichero de resultados se esribe sin eso
-			//String [] doc = documento.split("\\\\");
-			//documento = doc[1];
-			if ( !preguntas.containsKey(id) ){
-				cuenta=1;
-				preguntas.put(id, new Necesidad(id));
-			}
-			else{
-				cuenta++;
-			}
-			//Dice que solo hay que coger 45 resultados por consulta por lo tanto nos quedamos con los 45 primeros
-			if(cuenta <=45){
-				Necesidad necesidad = preguntas.get(id);
-				
-				if ( necesidades.get(id).containsKey(documento)){
-					
-					if ( necesidades.get(id).get(documento) == 1 ){
-						
-						//Documento recuperado y es relevante
-						//Si el documento recuperado es relevante me guardo la posicion del fichero de resultados en
-						//la que se ha recuperado
-						ArrayList<Integer> viejo =posicionesRel.get(id);
-						
-						viejo.add(cuenta);
-						posicionesRel.put(id,viejo);
-											
-						
-						
-						necesidad.setTruePositive(necesidad.getTruePositive()+1);
-					}
-					else if ( necesidades.get(id).get(documento) == 0){
-						//Documento recuperado y no es relevante
-						necesidad.setFalsePositive(necesidad.getFalsePositive()+1);
-					}
-					else{
-						System.out.println("Valoracion " + necesidades.get(id).get(documento) + " no permitida.");
-					}
-					
-					necesidades.get(id).remove(documento);
+		try{
+			while ( resultadosLeer.hasNextLine() ){
+				String id = resultadosLeer.next(),
+					documento = resultadosLeer.next();
+				//Aqui se quita el recordsdc pero no hará falta porque en el fichero de resultados se esribe sin eso
+				//String [] doc = documento.split("\\\\");
+				//documento = doc[1];
+				if ( !preguntas.containsKey(id) ){
+					cuenta=1;
+					preguntas.put(id, new Necesidad(id));
 				}
 				else{
-					// recuperados  pero No relevantes
-					necesidad.setFalsePositive(necesidad.getFalsePositive()+1);
+					cuenta++;
+				}
+				//Dice que solo hay que coger 45 resultados por consulta por lo tanto nos quedamos con los 45 primeros
+				if(cuenta <=45){
+					Necesidad necesidad = preguntas.get(id);
+					
+					if ( necesidades.get(id).containsKey(documento)){
+						
+						if ( necesidades.get(id).get(documento) == 1 ){
+							
+							//Documento recuperado y es relevante
+							//Si el documento recuperado es relevante me guardo la posicion del fichero de resultados en
+							//la que se ha recuperado
+							ArrayList<Integer> viejo =posicionesRel.get(id);
+							
+							viejo.add(cuenta);
+							posicionesRel.put(id,viejo);
+												
+							
+							
+							necesidad.setTruePositive(necesidad.getTruePositive()+1);
+						}
+						else if ( necesidades.get(id).get(documento) == 0){
+							//Documento recuperado y no es relevante
+							necesidad.setFalsePositive(necesidad.getFalsePositive()+1);
+						}
+						else{
+							System.out.println("Valoracion " + necesidades.get(id).get(documento) + " no permitida.");
+						}
+						
+						necesidades.get(id).remove(documento);
+					}
+					else{
+						// recuperados  pero No relevantes
+						necesidad.setFalsePositive(necesidad.getFalsePositive()+1);
+					}
+				}
+					
+			}
+			
+			for (String key : necesidades.keySet()){
+				
+				for(String documento : necesidades.get(key).keySet()){
+					if ( necesidades.get(key).get(documento) == 1){
+						preguntas.get(key).setFalseNegative(preguntas.get(key).getFalseNegative()+1);
+					}	
 				}
 			}
-				
-		}
-		
-		for (String key : necesidades.keySet()){
-			
-			for(String documento : necesidades.get(key).keySet()){
-				if ( necesidades.get(key).get(documento) == 1){
-					preguntas.get(key).setFalseNegative(preguntas.get(key).getFalseNegative()+1);
-				}	
-			}
-		}
+		} catch(NoSuchElementException e){;}
 		resultadosLeer.close();
 		return preguntas;
 	}

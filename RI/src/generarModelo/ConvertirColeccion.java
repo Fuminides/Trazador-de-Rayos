@@ -26,6 +26,7 @@ public class ConvertirColeccion {
 	HashMap<String, Boolean> autores, publishers;
 	spanishStemmer analizador = new spanishStemmer();
 	Model coleccionOnt;
+	private Resource lugar;
 	public static String namespace = "http://www.semanticweb.org/javi-/ontologies/2017/0/Coleccion";
 
 	
@@ -41,6 +42,7 @@ public class ConvertirColeccion {
 	
 	public void convertirColeccion(String skos, String rutaColeccion, String destino) throws Exception{
 		Cargar loader = new Cargar(skos);
+		lugar = loader.lugar;
     	NS = loader.NS;
 		File coleccion = new File(rutaColeccion);
 		coleccionOnt = ModelFactory.createDefaultModel();
@@ -204,7 +206,7 @@ public class ConvertirColeccion {
 		 
 		 if (lugar_especificado && necesita_lugar){ //Si necesita algun lugar, pero no se ha detectado ninguno se le da el por defecto (espanya)
 			 coleccionOnt.add(doc, model.getProperty(NS + "tematica"), 
-					 claves.get("espany").get(0));
+					 lugar);
 		 }
 	}
 

@@ -23,7 +23,7 @@ public class SemanticGenerator {
 		    for(int i = 0;i < args.length;i++) {
 		        if ("-rdf".equals(args[i])) {
 		        	rdfPath = args[i+1];
-		          i++;
+		        	i++;
 		        }
 		        else if("-skos".equals(args[i])){
 		        	skosPath=args[i+1];

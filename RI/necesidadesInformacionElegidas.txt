@@ -1,5 +1,5 @@
 01-1	SELECT DISTINCT ?x WHERE{?x zaguan:tematica ?tem. {?x zaguan:tematica Skos:Espanya} UNION {?tem skos:broader Skos:Espanya}. {?x zaguan:tematica Skos:Geologia} UNION {?tem skos:broader Skos:Geologia} }
-04-3	SELECT DISTINCT ?x WHERE{?x zaguan:tematica ?tem. {?x zaguan:tematica Skos:Medicina} UNION {?tem skos:broader Skos:Medicina}. {?x zaguan:anyo ?date}. {FILTER (?date >"1979" && ?date <"1991")} }
-05-1 	SELECT DISTINCT ?x WHERE{?x zaguan:tematica ?tem. {?x zaguan:tematica Skos:Matematicas} UNION {?tem skos:broader Skos:Matematicas} }
-09-4	SELECT DISTINCT ?x WHERE{?x zaguan:tematica ?tem. {?x zaguan:tematica Skos:Robotica} UNION {?tem skos:broader Skos:Robotica}. {?x zaguan:escritoPor ?Martinez}. {FILTER regex(?Martinez,"^Martinez")}. {?x zaguan:anyo ?date}. {FILTER(?date>"2004")} }
-11-5	SELECT DISTINCT ?x WHERE{?x zaguan:tematica ?tem. {?x zaguan:tematica Skos:Computacion} UNION {?tem skos:broader Skos:Computacion}. {?x zaguan:anyo ?date}. {FILTER (?date >"2011")} }
+04-3	SELECT DISTINCT ?x WHERE{?x zaguan:tematica ?tem. {?x zaguan:tematica Skos:Infeccion} UNION {?tem skos:broader Skos:Infeccion}. {?x zaguan:anyo ?date}.  }
+05-1 	SELECT DISTINCT ?x WHERE{?x zaguan:tematica ?tem. {?x zaguan:tematica Skos:Geometria} UNION {?tem skos:broader Skos:Geometria} }
+09-4	SELECT DISTINCT ?x ?Martinez WHERE{?x zaguan:tematica ?tem. {?x zaguan:tematica Skos:Robotica} UNION {?tem skos:broader Skos:Robotica}. ?x zaguan:escritoPor ?Martinez. FILTER regex(str(?Martinez), "Martinez")   }
+11-5	SELECT DISTINCT ?x WHERE{?x zaguan:tematica ?tem. {?x zaguan:tematica Skos:Computacion} UNION {?tem skos:broader Skos:Computacion}. ?x zaguan:anyo ?date. FILTER (?date >"1900-00-00"^^xsd:date) }

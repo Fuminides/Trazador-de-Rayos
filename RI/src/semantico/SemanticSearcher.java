@@ -97,7 +97,6 @@ public class SemanticSearcher {
 			pw = new PrintWriter(fichero);
 		 
 			while ( leerFichero.hasNextLine() ){
-				@SuppressWarnings("unused")
 				String info_need = leerFichero.next(),consulta = leerFichero.nextLine();
 				//aplica las consultas al grafo y muestra los resultados
 				consulta = prefijos +"\n" +consulta;
@@ -110,6 +109,7 @@ public class SemanticSearcher {
 				    ResultSet results = qexec.execSelect() ;
 				    while (results.hasNext()){
 				      QuerySolution soln = results.nextSolution() ;
+				      System.out.println(soln);
 				      Resource x = soln.getResource("x");				     
 				      String [] doc = x.toString().split("#");
 				      int id = Integer.parseInt(doc[1]);

@@ -25,6 +25,8 @@ public class Cargar {
 
 	public String keyword = "keyword";
 	HashMap<String, ArrayList<Resource>> indiceInvertido = new HashMap<>();
+
+	public Resource lugar;
 	
 	public OntModel getOntModel() {
 		return model;
@@ -104,13 +106,13 @@ public class Cargar {
  		spanishStemmer stemmer = new spanishStemmer();
  		while (ri.hasNext()) {
  			Resource r = ri.next();
+ 			if (r.getLocalName().equals("Espanya")) lugar = r;
  			String keywords = r.getProperty(prop).getString();
  			for ( String clave:keywords.split(",")){
  				clave = clave.trim().toLowerCase();
  				stemmer.setCurrent(clave);
  				stemmer.stem();
  				clave = stemmer.getCurrent();
- 				if ( r.getLocalName().equals("Espanya")) System.out.println(clave);
  				if ( clave.length() > 0){
  					if ( indiceInvertido.containsKey(clave)){
  						indiceInvertido.get(clave).add(r);

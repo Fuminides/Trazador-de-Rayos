@@ -107,12 +107,11 @@
     </owl:NamedIndividual>
     
 
-
     <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Espanya -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Espanya">
         <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Ebro, Huesca, Iberico, Pirineo, Zaragoza, Aragon, Catalunya, Madrid, Galicia, Asturias, Valencia, Gibraltar</keyword>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Espanya, Ebro, Huesca, Iberico, Pirineo, Zaragoza, Aragon, Catalunya, Madrid, Galicia, Asturias, Valencia, Gibraltar, Leon</keyword>
     </owl:NamedIndividual>
     
 
@@ -135,12 +134,11 @@
     </owl:NamedIndividual>
     
 
-
     <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Geologia -->
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Geologia">
         <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Geologia, Falla, Sierra, Valle, Clima, Geoparque, Cordillera</keyword>
+        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Geologia, Sierra, Valle, Geoparque, Cordillera</keyword>
     </owl:NamedIndividual>
     
 
@@ -149,7 +147,9 @@
 
     <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Geometria">
         <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#Matematicas"/>
+                <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Geometria, Poliedro</keyword>
     </owl:NamedIndividual>
+
     
 
 
