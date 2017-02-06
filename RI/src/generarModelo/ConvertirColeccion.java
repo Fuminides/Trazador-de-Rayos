@@ -20,6 +20,13 @@ import org.apache.jena.vocabulary.RDF;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
+/**
+ * Carga un fichero terminologico de Skos y una carpeta con documentos en dublin core
+ * para generar una representacion de esa coleccion misma en formato RDF.
+ * 
+ * @author Javier Fumanal Idocin, Silvia Uson Fortanet
+ *
+ */
 public class ConvertirColeccion {
 
 	String NS;
@@ -34,16 +41,18 @@ public class ConvertirColeccion {
 		autores = new HashMap<>(); publishers = new HashMap<>();
 	}
 	
-	public static void main(String[] args) throws Exception{
-		String coleccion = "C:/Users/javi-/Downloads/recordsdc/prueba", destino = "C:/Users/javi-/Downloads/recordsdc/result/Coleccion.rdf",
-				skos = "C:/Users/javi-/Documents/Skos.owl";
-		new ConvertirColeccion().convertirColeccion(skos, coleccion, destino);
-	}
-	
+	/**
+	 * Carga todos los ficheros dados y los indexa en RDF.
+	 * 
+	 * @param skos Modelo Terminologico a seguir para indexar los documentos.
+	 * @param rutaColeccion Ruta donde se encuentra la coleccion de documentos.
+	 * @param destino Fichero rdf a crear conteniendo la coleccion.
+	 * @throws Exception Si no encuentra algun fichero.
+	 */
 	public void convertirColeccion(String skos, String rutaColeccion, String destino) throws Exception{
 		Cargar loader = new Cargar(skos);
 		lugar = loader.lugar;
-    	NS = loader.NS;
+    	NS = Cargar.NS;
 		File coleccion = new File(rutaColeccion);
 		coleccionOnt = ModelFactory.createDefaultModel();
 		
@@ -70,7 +79,7 @@ public class ConvertirColeccion {
 	}
 
 	/**
-	 * Anyade al fichero RDF el documento de Zaguan.
+	 * Anyade al modelo RDF el documento de Zaguan.
 	 * 
 	 * @param loader
 	 * @param documento

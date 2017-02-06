@@ -14,7 +14,13 @@ import org.apache.jena.shared.JenaException;
 import org.apache.jena.util.FileManager;
 import org.tartarus.snowball.ext.spanishStemmer;
 
-
+/**
+ * Carga los datos de un fichero terminologico que utiliza la ontologia SKOS.
+ * Ademas, crea 
+ * 
+ * @author Javier Fumanal, Silvia Uson
+ *
+ */
 public class Cargar {
 
 	OntModel model, skos;
@@ -22,10 +28,9 @@ public class Cargar {
 	public static String NS = "http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#";
 
 	public String SNS;
-
 	public String keyword = "keyword";
+	//Indice que contiene la asociacion de categoria con sus palabras clave.
 	HashMap<String, ArrayList<Resource>> indiceInvertido = new HashMap<>();
-
 	public Resource lugar;
 	
 	public OntModel getOntModel() {
@@ -33,7 +38,7 @@ public class Cargar {
 	}
 	
 	/**
-	 * Carga una coleccion en memoria en RDF.
+	 * Carga una coleccion en RDF en memoria.
 	 * 
 	 * @param ontoFile
 	 * @param dummy solo para diferenciar constructores con sobrecarga.
@@ -100,6 +105,7 @@ public class Cargar {
 	    skos = ontoModelAux;
 	    SNS = ontoModelAux.getNsPrefixURI("");
 	    
+	    //Inicializa el indice invertido que contiene la asociacion de categorias con sus palabras clave.
  		Property prop = model
  				.getProperty(SNS + keyword);
  		ResIterator ri = model.listSubjectsWithProperty(prop);

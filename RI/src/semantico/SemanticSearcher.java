@@ -1,8 +1,6 @@
 package semantico;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,33 +14,19 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 import org.apache.jena.rdf.model.ModelFactory;
-import org.apache.jena.rdf.model.RDFNode;
 import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.FileManager;
 
-import generarModelo.Cargar;
-import generarModelo.ConvertirColeccion;
-
-
-
 public class SemanticSearcher {
+	
 	 public static void main(String[] args) throws Exception {	
 		String usage ="No se han introducido los archivos correctos";
-	    // ruta del fichero donde se realicen las consultas sparql
-		//String sparql = "necesidadesInformacionElegidas.txt";
 		
 	    String rdfPath = null;
 	    String rdfsPath=null;
 	    String infoNeeds=null;
 	    String resultFile = null;
-	    
-	    
-	    /*rdfPath ="Coleccion.rdf";
-	    rdfsPath="Zaguan.owl";
-	    infoNeeds="necesidadesInformacionElegidas.txt";
-	    resultFile ="Resultados.txt";*/
-	    
-	    
+	   
 	    if (args.length <8) {
 	        System.err.println(usage);
 	        System.exit(1);
@@ -80,6 +64,14 @@ public class SemanticSearcher {
 	    
 	 }
 	 
+	 /**
+	  * Procesa el fichero de consultas, y escribe los resultados y la evaluacion.
+	  * 
+	  * @param sparql Fichero con las consultas.
+	  * @param model Modelo rdf a consultar.
+	  * @param resultFile Resultados de las consultas.
+	  * @throws IOException Si no puede escribir en los ficheros.
+	  */
 	 public static void procesarSPARQL(String sparql,Model model,String resultFile) throws IOException{
 		//Procesamos el fichero sparql
 		Scanner leerFichero = new Scanner(new File(sparql));
@@ -101,20 +93,16 @@ public class SemanticSearcher {
 				//aplica las consultas al grafo y muestra los resultados
 				consulta = prefijos +"\n" +consulta;
 				Query query = QueryFactory.create(consulta);
-				System.out.println(query);
-				//Query query = query.a ;
 				
 				  QueryExecution qexec = QueryExecutionFactory.create(query, model) ;
 				  try {
 				    ResultSet results = qexec.execSelect() ;
 				    while (results.hasNext()){
 				      QuerySolution soln = results.nextSolution() ;
-				      System.out.println(soln);
 				      Resource x = soln.getResource("x");				     
 				      String [] doc = x.toString().split("#");
 				      int id = Integer.parseInt(doc[1]);
 				      String ruta=info_need+'	'+"oai_zaguan.unizar.es_"+id+".xml";
-				      //System.out.println(ruta);
 				      pw.println(ruta);
 				      
 				    }
