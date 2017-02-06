@@ -286,13 +286,6 @@
         <skos:broader rdf:resource="http://www.semanticweb.org/javi-/ontologies/2017/0/Zaguan#Enfermedad"/>
         <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Virus, Gripe, VIH</keyword>
     </owl:NamedIndividual>
-
-    <!-- http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#70s -->
-
-    <owl:NamedIndividual rdf:about="http://www.semanticweb.org/javi-/ontologies/2017/0/Skos#70s">
-        <rdf:type rdf:resource="http://www.w3.org/2004/02/skos/core#Concept"/>
-        <keyword rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1970, 1971, 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, (1970), (1971), (1972), (1973), (1974), (1975), (1976), (1977), (1978), (1979)</keyword>
-    </owl:NamedIndividual>
     
 
 
